@@ -1,0 +1,8 @@
+ Sample data: NexusMD will provide some case data, though not a large amount — around 10 cases. We don’t have much case data available since real-world data is very valuable. I will also include some reference materials. I expect to send these to you tomorrow after an internal review. My workload has been heavy the past couple of days, so time for this has been limited. 
+  
+ Target end users: The intended users are hospital staff, specifically the coding department. Doctors usually don’t do coding themselves; instead, after consultations are completed, staff members collect relevant materials and perform coding. This process is directly tied to hospitals claiming revenue from insurance companies or Medicare. 
+  
+ Approach: NexusMD is open to different methods — the key is the reasoning. Given the small amount of data, supervised learning could be challenging due to annotation requirements. From a feasibility standpoint, using large language models may be more practical. That said, if supervised learning can be applied successfully, we would of course welcome that. 
+  
+ Deliverable expectations: The best outcome would be a working demo. With so many AI-assisted coding tools available, a team that can effectively leverage these to deliver a functioning demo would be ideal. If that’s not possible, a well-documented solution with partial implementation (combining a proposal and code snippets) would also be acceptable. Pure model-based solutions — whether a custom-trained supervised model or a fine-tuned coding model — are also fine. I will evaluate based on technical challenge: the higher the difficulty of the chosen approach, the lower the required completeness; conversely, if the approach is simpler, I expect higher completeness. 
+
