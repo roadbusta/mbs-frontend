@@ -273,3 +273,18 @@
 - **Validation**: Created validate_hour_12.py confirming all requirements met
 - **Decided**: Focus on essential fields for categorizer needs, not all 15+ XML fields
 - **Files**: 89KB category_index.json, 205KB group_index.json, 3.7MB enhanced data
+
+## 2025-08-27 - Frontend Repository Setup
+- **Separated**: Frontend into dedicated repository for parallel development
+- **Created**: Environment configuration with production API endpoint
+- **Implemented**: Comprehensive API type definitions matching actual backend responses
+- **Fixed**: API response structure discrepancies from initial requirements
+  - Corrected metadata.categorization structure
+  - Updated error response format (status/message/detail)
+  - Fixed pipeline stages to match actual API (tfidf_candidates, embedding_candidates, llm_analyzed)
+- **Created**: Mock data matching exact API response structure for offline development
+- **Configured**: Vite with TypeScript, React 18, and development proxy
+- **Documented**: Frontend-specific implementation plan (10 hours of React development)
+- **Setup**: Project structure with proper linting, testing framework, and build configuration
+- **Decided**: Use Vite over Create React App for better performance and modern tooling
+- **Status**: Frontend Hour 1 complete, ready for API service layer implementation
