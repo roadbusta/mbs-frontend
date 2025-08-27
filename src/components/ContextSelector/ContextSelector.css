@@ -1,0 +1,147 @@
+/**
+ * Context Selector Component Styles
+ * 
+ * Professional styling for the consultation context selection dropdown.
+ * Matches the overall application design theme with medical color scheme.
+ */
+
+.context-selector {
+  margin-bottom: 1.5rem;
+}
+
+.context-label {
+  display: block;
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--color-text-primary, #1f2937);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.025em;
+}
+
+.context-input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.context-select {
+  width: 100%;
+  appearance: none;
+  background: white;
+  border: 2px solid var(--color-border, #d1d5db);
+  border-radius: 8px;
+  padding: 12px 44px 12px 16px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-text-primary, #1f2937);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.context-select:hover {
+  border-color: var(--color-primary, #0066cc);
+}
+
+.context-select:focus {
+  outline: none;
+  border-color: var(--color-primary, #0066cc);
+  box-shadow: 0 0 0 3px var(--color-primary-alpha, rgba(0, 102, 204, 0.1));
+}
+
+.context-select:disabled {
+  background-color: var(--color-bg-secondary, #f9fafb);
+  color: var(--color-text-secondary, #6b7280);
+  cursor: not-allowed;
+  border-color: var(--color-border-light, #e5e7eb);
+}
+
+.context-icon {
+  position: absolute;
+  right: 16px;
+  color: var(--color-text-secondary, #6b7280);
+  pointer-events: none;
+  transition: transform 0.2s ease;
+}
+
+.context-select:focus + .context-icon {
+  color: var(--color-primary, #0066cc);
+}
+
+.context-select:disabled + .context-icon {
+  color: var(--color-text-muted, #9ca3af);
+}
+
+.context-description {
+  margin-top: 0.5rem;
+  margin-bottom: 0;
+  font-size: 0.875rem;
+  color: var(--color-text-secondary, #6b7280);
+  line-height: 1.4;
+}
+
+/* Responsive Design */
+@media (max-width: 640px) {
+  .context-select {
+    padding: 10px 40px 10px 14px;
+    font-size: 0.9rem;
+  }
+  
+  .context-icon {
+    right: 14px;
+  }
+  
+  .context-description {
+    font-size: 0.8rem;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .context-select {
+    border-width: 3px;
+  }
+  
+  .context-select:focus {
+    box-shadow: 0 0 0 4px var(--color-primary-alpha, rgba(0, 102, 204, 0.2));
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .context-label {
+    color: #f9fafb;
+  }
+  
+  .context-select {
+    background: #1f2937;
+    border-color: #374151;
+    color: #f9fafb;
+  }
+  
+  .context-select:hover {
+    border-color: #3b82f6;
+  }
+  
+  .context-select:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+  
+  .context-select:disabled {
+    background-color: #111827;
+    color: #6b7280;
+    border-color: #374151;
+  }
+  
+  .context-icon {
+    color: #9ca3af;
+  }
+  
+  .context-select:focus + .context-icon {
+    color: #3b82f6;
+  }
+  
+  .context-description {
+    color: #9ca3af;
+  }
+}

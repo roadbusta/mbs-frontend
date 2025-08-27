@@ -1,0 +1,210 @@
+/**
+ * Highlighted Text Component Styles
+ * 
+ * Styling for text highlighting with evidence spans,
+ * interactive highlights, and legend display.
+ */
+
+.highlighted-text-container {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  border: 2px solid var(--color-gray-200);
+}
+
+/* Main Text Display */
+.highlighted-text {
+  font-family: 'Georgia', 'Times New Roman', serif;
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--color-gray-800);
+  margin-bottom: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  background-color: var(--color-gray-50);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-gray-200);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* Text Segments */
+.text-segment {
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.text-segment.highlighted {
+  border-radius: 3px;
+  padding: 1px 2px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.text-segment.highlighted:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  opacity: 0.9 !important;
+}
+
+.text-segment.highlighted.selected {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+  opacity: 0.9 !important;
+}
+
+.text-segment.highlighted.hovered {
+  opacity: 0.9 !important;
+  transform: scale(1.02);
+}
+
+/* Focus styles for accessibility */
+.text-segment.highlighted:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Highlight Legend */
+.highlight-legend {
+  border-top: 2px solid var(--color-gray-200);
+  padding-top: var(--spacing-lg);
+}
+
+.highlight-legend h4 {
+  color: var(--color-gray-800);
+  margin: 0 0 var(--spacing-md) 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.legend-items {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.legend-item:hover,
+.legend-item.selected {
+  background-color: var(--color-gray-100);
+  transform: translateX(4px);
+}
+
+.legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  flex-shrink: 0;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.legend-text {
+  font-size: 0.9rem;
+  color: var(--color-gray-700);
+  font-weight: 500;
+}
+
+/* Tooltip Enhancement */
+.text-segment.highlighted::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-gray-800);
+  color: white;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 10;
+  max-width: 200px;
+  text-align: center;
+}
+
+.text-segment.highlighted:hover::after {
+  opacity: 1;
+}
+
+/* Multi-span highlighting effects */
+.text-segment.highlighted[style*="linear-gradient"] {
+  position: relative;
+  animation: gradient-shift 3s ease-in-out infinite;
+}
+
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Relevance-based styling */
+.text-segment.highlighted[style*="opacity: 0.8"] {
+  font-weight: 600;
+  border-bottom: 2px solid currentColor;
+}
+
+.text-segment.highlighted[style*="opacity: 0.6"] {
+  font-weight: 500;
+}
+
+.text-segment.highlighted[style*="opacity: 0.4"] {
+  font-weight: 400;
+}
+
+/* Print styles */
+@media print {
+  .highlighted-text {
+    background: white;
+    border: 1px solid black;
+  }
+  
+  .text-segment.highlighted {
+    background: #e5e5e5 !important;
+    opacity: 1 !important;
+  }
+  
+  .highlight-legend {
+    page-break-inside: avoid;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .highlighted-text-container {
+    padding: var(--spacing-md);
+  }
+  
+  .highlighted-text {
+    font-size: 0.9rem;
+    padding: var(--spacing-md);
+  }
+  
+  .legend-items {
+    gap: var(--spacing-xs);
+  }
+  
+  .legend-item {
+    padding: var(--spacing-xs);
+  }
+  
+  .legend-text {
+    font-size: 0.8rem;
+  }
+}

@@ -1,0 +1,103 @@
+/**
+ * App Component Styles
+ * 
+ * Main application layout and structure styles.
+ * Defines the overall page layout, sections, and responsive behavior.
+ */
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-gray-50);
+}
+
+/* Main Content Area */
+.main-content {
+  flex: 1;
+  padding: var(--spacing-xl) 0;
+}
+
+/* Section Spacing */
+.input-section {
+  margin-bottom: var(--spacing-xl);
+}
+
+.loading-section,
+.error-section,
+.results-section {
+  margin-bottom: var(--spacing-lg);
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: var(--spacing-xl);
+  margin-top: var(--spacing-xl);
+}
+
+.empty-state-content {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: var(--spacing-xl);
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.empty-state-content h3 {
+  color: var(--color-gray-700);
+  margin-bottom: var(--spacing-md);
+}
+
+.empty-state-content p {
+  color: var(--color-gray-600);
+  margin-bottom: var(--spacing-md);
+}
+
+.demo-notice {
+  background-color: var(--color-warning-light);
+  border: 1px solid var(--color-warning);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  font-size: 0.9rem;
+}
+
+/* Footer */
+.app-footer {
+  background-color: var(--color-gray-800);
+  color: var(--color-gray-200);
+  padding: var(--spacing-lg) 0;
+  text-align: center;
+  font-size: 0.875rem;
+}
+
+.app-footer p {
+  margin: 0;
+}
+
+.demo-badge {
+  background-color: var(--color-warning);
+  color: white;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-left: var(--spacing-sm);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .main-content {
+    padding: var(--spacing-lg) 0;
+  }
+  
+  .input-section,
+  .results-section {
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .empty-state-content {
+    padding: var(--spacing-lg);
+  }
+}

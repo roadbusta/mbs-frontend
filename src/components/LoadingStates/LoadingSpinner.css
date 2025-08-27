@@ -1,0 +1,206 @@
+/**
+ * Loading Spinner Styles
+ * 
+ * Professional medical loading interface with progress indicators
+ * and step-by-step process visualization.
+ */
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--spacing-xl);
+  background: white;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  margin: var(--spacing-lg) 0;
+}
+
+.loading-spinner {
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+}
+
+/* Spinner Animation */
+.spinner-ring {
+  position: relative;
+  margin: 0 auto var(--spacing-lg) auto;
+}
+
+.loading-spinner.small .spinner-ring {
+  width: 40px;
+  height: 40px;
+}
+
+.loading-spinner.medium .spinner-ring {
+  width: 60px;
+  height: 60px;
+}
+
+.loading-spinner.large .spinner-ring {
+  width: 80px;
+  height: 80px;
+}
+
+.spinner-inner {
+  width: 100%;
+  height: 100%;
+  border: 3px solid var(--color-gray-200);
+  border-top: 3px solid var(--color-primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Loading Content */
+.loading-content {
+  margin-top: var(--spacing-lg);
+}
+
+.loading-message {
+  color: var(--color-gray-800);
+  margin-bottom: var(--spacing-sm);
+  font-size: 1.1rem;
+}
+
+.loading-sub-message {
+  color: var(--color-gray-600);
+  font-size: 0.9rem;
+  margin-bottom: var(--spacing-lg);
+}
+
+/* Progress Bar */
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  background-color: var(--color-gray-200);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: var(--spacing-lg);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-medical-blue) 100%);
+  border-radius: 2px;
+  animation: progress 3s ease-in-out infinite;
+}
+
+@keyframes progress {
+  0% {
+    width: 0%;
+    transform: translateX(0%);
+  }
+  50% {
+    width: 70%;
+    transform: translateX(0%);
+  }
+  100% {
+    width: 100%;
+    transform: translateX(0%);
+  }
+}
+
+/* Processing Steps */
+.processing-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  text-align: left;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-sm);
+  transition: all 0.3s ease;
+  opacity: 0.5;
+}
+
+.step.active {
+  opacity: 1;
+  background-color: var(--color-primary-light);
+}
+
+.step.completed {
+  opacity: 0.8;
+  background-color: var(--color-success-light);
+}
+
+.step-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--color-gray-300);
+  transition: all 0.3s ease;
+}
+
+.step.active .step-indicator {
+  background-color: var(--color-primary);
+  animation: pulse-step 2s ease-in-out infinite;
+}
+
+.step.completed .step-indicator {
+  background-color: var(--color-success);
+}
+
+@keyframes pulse-step {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+}
+
+.step span {
+  font-size: 0.85rem;
+  color: var(--color-gray-700);
+  font-weight: 500;
+}
+
+.step.active span {
+  color: var(--color-gray-800);
+  font-weight: 600;
+}
+
+/* Size Variants */
+.loading-spinner.small .loading-message {
+  font-size: 0.9rem;
+}
+
+.loading-spinner.small .loading-sub-message {
+  font-size: 0.8rem;
+}
+
+.loading-spinner.large .loading-message {
+  font-size: 1.3rem;
+}
+
+.loading-spinner.large .loading-sub-message {
+  font-size: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .loading-container {
+    padding: var(--spacing-lg);
+  }
+  
+  .processing-steps {
+    font-size: 0.8rem;
+  }
+  
+  .step {
+    padding: var(--spacing-sm);
+  }
+}

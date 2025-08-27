@@ -12,6 +12,17 @@
 // ============================================================================
 
 /**
+ * Consultation context types supported by the backend
+ */
+export type ConsultationContext = 
+  | 'general_practice'
+  | 'emergency_department'
+  | 'specialist'
+  | 'mental_health'
+  | 'telehealth'
+  | 'other';
+
+/**
  * Options for the analysis request
  */
 export interface AnalysisOptions {
@@ -29,6 +40,8 @@ export interface AnalysisOptions {
 export interface AnalysisRequest {
   /** The consultation note text to analyze */
   consultation_note: string;
+  /** Consultation context to help with accurate code selection */
+  context?: ConsultationContext;
   /** Optional configuration for the analysis */
   options?: AnalysisOptions;
 }
@@ -36,6 +49,20 @@ export interface AnalysisRequest {
 // ============================================================================
 // Response Types
 // ============================================================================
+
+/**
+ * Text evidence span that supports a code recommendation
+ */
+export interface EvidenceSpan {
+  /** Start position in consultation text */
+  start: number;
+  /** End position in consultation text */
+  end: number;
+  /** Text content of the evidence */
+  text: string;
+  /** Relevance score for this evidence */
+  relevance?: number;
+}
 
 /**
  * Individual MBS code recommendation
@@ -53,6 +80,8 @@ export interface CodeRecommendation {
   schedule_fee: number;
   /** MBS category (e.g., "1" for Professional Attendances) */
   category?: string;
+  /** Evidence spans from consultation text that support this code */
+  evidence_spans?: EvidenceSpan[];
 }
 
 /**
@@ -222,7 +251,7 @@ export interface LivenessResponse {
 export function isSuccessResponse(
   response: AnalysisResponse
 ): response is AnalysisSuccessResponse {
-  return response.status === 'success';
+  return 'status' in response && response.status === 'success';
 }
 
 /**

@@ -1,0 +1,314 @@
+/**
+ * Processing Metadata Component Styles
+ * 
+ * Technical information display for AI processing pipeline,
+ * performance metrics, and categorization details.
+ */
+
+.processing-metadata {
+  margin-top: var(--spacing-lg);
+  background-color: var(--color-gray-50);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+
+.metadata-header {
+  background: linear-gradient(135deg, var(--color-gray-100) 0%, var(--color-gray-50) 100%);
+  padding: var(--spacing-lg);
+  border-bottom: 1px solid var(--color-gray-200);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.metadata-header h3 {
+  color: var(--color-gray-800);
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.demo-badge {
+  background-color: var(--color-warning);
+  color: white;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* Metadata Grid */
+.metadata-grid {
+  padding: var(--spacing-lg);
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-xl);
+}
+
+.metadata-section {
+  background: white;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  border: 1px solid var(--color-gray-200);
+}
+
+.metadata-section h4 {
+  color: var(--color-gray-800);
+  margin: 0 0 var(--spacing-md) 0;
+  font-size: 1rem;
+  border-bottom: 2px solid var(--color-primary);
+  padding-bottom: var(--spacing-xs);
+}
+
+/* Metric Lists */
+.metric-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.metric-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-sm);
+  background-color: var(--color-gray-50);
+  border-radius: var(--radius-sm);
+}
+
+.metric-label {
+  font-size: 0.85rem;
+  color: var(--color-gray-600);
+  font-weight: 500;
+}
+
+.metric-value {
+  font-size: 0.9rem;
+  color: var(--color-gray-800);
+  font-weight: 600;
+  font-family: 'Monaco', 'Menlo', monospace;
+}
+
+/* Pipeline Flow */
+.pipeline-flow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-lg);
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.pipeline-stage {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  background: white;
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--color-gray-200);
+  flex: 1;
+  min-width: 140px;
+}
+
+.stage-number {
+  width: 28px;
+  height: 28px;
+  background: var(--color-primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.stage-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.stage-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-gray-800);
+  margin-bottom: var(--spacing-xs);
+}
+
+.stage-count {
+  font-size: 0.8rem;
+  color: var(--color-gray-600);
+  font-weight: 500;
+}
+
+.pipeline-arrow {
+  font-size: 1.2rem;
+  color: var(--color-primary);
+  font-weight: bold;
+  padding: 0 var(--spacing-sm);
+}
+
+/* Efficiency Metric */
+.efficiency-metric {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md);
+  background: linear-gradient(135deg, var(--color-success-light) 0%, rgba(5, 150, 105, 0.1) 100%);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-success);
+}
+
+.efficiency-label {
+  font-size: 0.9rem;
+  color: var(--color-gray-700);
+  font-weight: 600;
+}
+
+.efficiency-value {
+  font-size: 1rem;
+  color: var(--color-success);
+  font-weight: 700;
+}
+
+/* Categorization Info */
+.categorization-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-sm);
+}
+
+.category-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-sm);
+  background-color: var(--color-gray-50);
+  border-radius: var(--radius-sm);
+}
+
+.category-label {
+  font-size: 0.85rem;
+  color: var(--color-gray-600);
+  font-weight: 500;
+}
+
+.category-value {
+  font-size: 0.9rem;
+  color: var(--color-gray-800);
+  font-weight: 600;
+  text-align: right;
+}
+
+/* Categorization Confidence */
+.categorization-confidence {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  background-color: var(--color-primary-light);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-primary);
+}
+
+.confidence-label {
+  font-size: 0.85rem;
+  color: var(--color-gray-700);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.confidence-bar {
+  flex: 1;
+  height: 8px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.confidence-fill {
+  height: 100%;
+  background: var(--color-primary);
+  border-radius: 4px;
+  transition: width 0.8s ease-out;
+}
+
+.confidence-percentage {
+  font-size: 0.9rem;
+  color: var(--color-primary);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Technical Information */
+.technical-info {
+  grid-column: 1 / -1;
+  background: white;
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  border: 1px solid var(--color-gray-200);
+}
+
+.technical-info h4 {
+  color: var(--color-gray-800);
+  margin: 0 0 var(--spacing-md) 0;
+  font-size: 1rem;
+  border-bottom: 2px solid var(--color-primary);
+  padding-bottom: var(--spacing-xs);
+}
+
+.tech-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.tech-details p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--color-gray-700);
+  line-height: 1.5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .metadata-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-md);
+  }
+  
+  .pipeline-flow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .pipeline-arrow {
+    transform: rotate(90deg);
+    align-self: center;
+    padding: var(--spacing-xs) 0;
+  }
+  
+  .pipeline-stage {
+    min-width: unset;
+  }
+  
+  .categorization-confidence {
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+  }
+  
+  .confidence-label,
+  .confidence-percentage {
+    font-size: 0.8rem;
+  }
+}

@@ -50,6 +50,49 @@ Video consultation duration: 15 minutes.`,
 };
 
 /**
+ * Generate evidence spans for the standard GP consultation
+ * Currently unused but kept for future dynamic evidence span generation
+ */
+// function generateStandardGPEvidenceSpans(consultationNote: string) {
+//   return {
+//     '23': [
+//       {
+//         start: consultationNote.indexOf('persistent cough lasting 3 weeks'),
+//         end: consultationNote.indexOf('persistent cough lasting 3 weeks') + 'persistent cough lasting 3 weeks'.length,
+//         text: 'persistent cough lasting 3 weeks',
+//         relevance: 0.9
+//       },
+//       {
+//         start: consultationNote.indexOf('Physical examination revealed'),
+//         end: consultationNote.indexOf('Physical examination revealed') + 'Physical examination revealed clear lungs, no wheezing'.length,
+//         text: 'Physical examination revealed clear lungs, no wheezing',
+//         relevance: 0.8
+//       },
+//       {
+//         start: consultationNote.indexOf('Consultation duration: 20 minutes'),
+//         end: consultationNote.indexOf('Consultation duration: 20 minutes') + 'Consultation duration: 20 minutes'.length,
+//         text: 'Consultation duration: 20 minutes',
+//         relevance: 0.95
+//       }
+//     ],
+//     '36': [
+//       {
+//         start: consultationNote.indexOf('Discussed symptom management'),
+//         end: consultationNote.indexOf('Discussed symptom management') + 'Discussed symptom management and prescribed antibiotics'.length,
+//         text: 'Discussed symptom management and prescribed antibiotics',
+//         relevance: 0.7
+//       },
+//       {
+//         start: consultationNote.indexOf('Advised to return if symptoms persist'),
+//         end: consultationNote.indexOf('Advised to return if symptoms persist') + 'Advised to return if symptoms persist beyond one week'.length,
+//         text: 'Advised to return if symptoms persist beyond one week',
+//         relevance: 0.6
+//       }
+//     ]
+//   };
+// }
+
+/**
  * Sample successful API response
  */
 export const SAMPLE_SUCCESS_RESPONSE: AnalysisSuccessResponse = {
@@ -62,6 +105,26 @@ export const SAMPLE_SUCCESS_RESPONSE: AnalysisSuccessResponse = {
       reasoning: 'The consultation involved a 20-minute GP attendance with physical examination, diagnosis, and treatment prescription for respiratory symptoms.',
       schedule_fee: 41.40,
       category: '1',
+      evidence_spans: [
+        {
+          start: 17,
+          end: 50,
+          text: 'persistent cough lasting 3 weeks',
+          relevance: 0.9
+        },
+        {
+          start: 83,
+          end: 136,
+          text: 'Physical examination revealed clear lungs, no wheezing',
+          relevance: 0.8
+        },
+        {
+          start: 240,
+          end: 274,
+          text: 'Consultation duration: 20 minutes',
+          relevance: 0.95
+        }
+      ]
     },
     {
       code: '36',
@@ -70,6 +133,20 @@ export const SAMPLE_SUCCESS_RESPONSE: AnalysisSuccessResponse = {
       reasoning: 'While primarily a physical health consultation, there may be mental health components given the duration and comprehensive nature.',
       schedule_fee: 79.00,
       category: '1',
+      evidence_spans: [
+        {
+          start: 168,
+          end: 216,
+          text: 'Discussed symptom management and prescribed antibiotics',
+          relevance: 0.7
+        },
+        {
+          start: 218,
+          end: 274,
+          text: 'Advised to return if symptoms persist beyond one week',
+          relevance: 0.6
+        }
+      ]
     },
     {
       code: '44',
@@ -78,6 +155,14 @@ export const SAMPLE_SUCCESS_RESPONSE: AnalysisSuccessResponse = {
       reasoning: 'The consultation included multiple issues and comprehensive management planning.',
       schedule_fee: 116.30,
       category: '1',
+      evidence_spans: [
+        {
+          start: 168,
+          end: 274,
+          text: 'Discussed symptom management and prescribed antibiotics. Advised to return if symptoms persist beyond one week',
+          relevance: 0.6
+        }
+      ]
     },
   ],
   metadata: {
@@ -154,7 +239,7 @@ export async function mockAnalyzeConsultation(
   }
 
   if (note.length < 10) {
-    return SAMPLE_VALIDATION_ERROR;
+    throw new Error('Consultation note must be at least 10 characters long');
   }
 
   // Return different responses based on keywords in the note
@@ -166,9 +251,35 @@ export async function mockAnalyzeConsultation(
           code: '501',
           description: 'Emergency department attendance',
           confidence: 0.95,
-          reasoning: 'Emergency department consultation identified',
+          reasoning: 'Emergency department consultation for acute chest pain with ECG findings and elevated troponin levels indicating STEMI.',
           schedule_fee: 150.00,
           category: '3',
+          evidence_spans: [
+            {
+              start: note.indexOf('Emergency Department consultation'),
+              end: note.indexOf('Emergency Department consultation') + 'Emergency Department consultation for acute chest pain'.length,
+              text: 'Emergency Department consultation for acute chest pain',
+              relevance: 0.95
+            },
+            {
+              start: note.indexOf('ECG performed showing ST elevation'),
+              end: note.indexOf('ECG performed showing ST elevation') + 'ECG performed showing ST elevation in leads II, III, aVF'.length,
+              text: 'ECG performed showing ST elevation in leads II, III, aVF',
+              relevance: 0.9
+            },
+            {
+              start: note.indexOf('Troponin levels elevated'),
+              end: note.indexOf('Troponin levels elevated') + 'Troponin levels elevated'.length,
+              text: 'Troponin levels elevated',
+              relevance: 0.85
+            },
+            {
+              start: note.indexOf('Total consultation and initial management: 45 minutes'),
+              end: note.indexOf('Total consultation and initial management: 45 minutes') + 'Total consultation and initial management: 45 minutes'.length,
+              text: 'Total consultation and initial management: 45 minutes',
+              relevance: 0.8
+            }
+          ]
         },
       ],
       metadata: {
