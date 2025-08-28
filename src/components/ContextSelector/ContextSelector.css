@@ -9,7 +9,7 @@
   margin-bottom: 1.5rem;
 }
 
-.context-label {
+.input-label {
   display: block;
   font-weight: 600;
   font-size: 0.875rem;
@@ -81,6 +81,7 @@
 
 /* Responsive Design */
 @media (max-width: 640px) {
+  
   .context-select {
     padding: 10px 40px 10px 14px;
     font-size: 0.9rem;
@@ -108,7 +109,7 @@
 
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
-  .context-label {
+  .input-label {
     color: #f9fafb;
   }
   

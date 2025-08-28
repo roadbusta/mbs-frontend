@@ -15,7 +15,7 @@
  */
 
 import React, { useState } from 'react';
-import { AnalysisSuccessResponse, EvidenceSpan } from '../../types/api.types';
+import { AnalysisSuccessResponse, EvidenceSpan, CodeFeedback, CodeSuggestion } from '../../types/api.types';
 import MBSCodeCard from './MBSCodeCard';
 import ProcessingMetadata from './ProcessingMetadata';
 import HighlightedText from '../TextHighlighting/HighlightedText';
@@ -26,6 +26,12 @@ interface ResultsDisplayProps {
   results: AnalysisSuccessResponse;
   /** Original consultation text for highlighting */
   consultationText: string;
+  /** Handler for feedback submission */
+  onFeedbackSubmit?: (feedback: CodeFeedback) => void;
+  /** Handler for suggestion submission */
+  onSuggestionSubmit?: (suggestion: CodeSuggestion) => void;
+  /** Map of existing feedback by code */
+  feedbackMap?: Map<string, CodeFeedback>;
 }
 
 /**
@@ -36,7 +42,13 @@ type SortOption = 'confidence' | 'fee' | 'code';
 /**
  * Results Display Component
  */
-const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, consultationText }) => {
+const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ 
+  results, 
+  consultationText,
+  onFeedbackSubmit,
+  onSuggestionSubmit,
+  feedbackMap
+}) => {
   const [sortBy, setSortBy] = useState<SortOption>('confidence');
   const [showMetadata, setShowMetadata] = useState(false);
   const [selectedCode, setSelectedCode] = useState<string | null>(null);
@@ -180,10 +192,11 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, consultationTe
                   <span className="level-name">{level.charAt(0).toUpperCase() + level.slice(1)}</span>
                   <span className="level-count">({count})</span>
                 </div>
+                {/* Always render bar-track to ensure consistent structure */}
                 <div className="bar-track">
                   <div 
                     className="bar-fill" 
-                    style={{ width: `${percentage}%` }}
+                    style={{ width: `${Math.max(0, percentage)}%` }}
                   ></div>
                 </div>
               </div>
@@ -202,6 +215,9 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, consultationTe
             confidenceLevel={getConfidenceLevel(recommendation.confidence)}
             isSelected={selectedCode === recommendation.code}
             onCardClick={() => handleCodeCardClick(recommendation.code)}
+            onFeedbackSubmit={onFeedbackSubmit}
+            onSuggestionSubmit={onSuggestionSubmit}
+            existingFeedback={feedbackMap?.get(recommendation.code)}
           />
         ))}
       </div>

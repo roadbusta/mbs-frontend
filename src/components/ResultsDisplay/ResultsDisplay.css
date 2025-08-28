@@ -9,7 +9,9 @@
   background: white;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
-  overflow: hidden;
+  overflow: visible;
+  margin-top: var(--spacing-lg);
+  width: 100%;
 }
 
 /* Results Header */
@@ -141,8 +143,14 @@
 
 /* Confidence Overview */
 .confidence-overview {
-  padding: var(--spacing-lg) var(--spacing-xl);
+  padding: var(--spacing-lg) var(--spacing-xl) var(--spacing-xl) var(--spacing-xl);
   border-bottom: 1px solid var(--color-gray-200);
+  position: relative;
+  z-index: 1;
+  height: auto;
+  min-height: 140px;
+  overflow: visible;
+  display: block;
 }
 
 .confidence-overview h3 {
@@ -154,10 +162,24 @@
 .confidence-bars {
   display: flex;
   gap: var(--spacing-lg);
+  width: 100%;
+  height: auto;
+  min-height: 80px;
+  align-items: flex-start;
+  margin: 0;
+  padding: var(--spacing-md) 0 var(--spacing-lg) 0;
+  overflow: visible;
 }
 
 .confidence-bar {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 50px;
+  margin: 0;
+  padding: 0;
+  gap: var(--spacing-xs);
 }
 
 .bar-label {
@@ -179,28 +201,33 @@
 }
 
 .bar-track {
-  height: 8px;
+  height: 16px;
   background-color: var(--color-gray-200);
   border-radius: 4px;
-  overflow: hidden;
+  overflow: visible;
+  position: relative;
+  flex-shrink: 0;
+  border: 1px solid var(--color-gray-300);
+  width: 100%;
 }
 
 .bar-fill {
   height: 100%;
   border-radius: 4px;
   transition: width 0.5s ease;
+  min-width: 2px;
 }
 
 .confidence-bar.high .bar-fill {
-  background-color: var(--color-confidence-high);
+  background-color: var(--color-confidence-high, #059669);
 }
 
 .confidence-bar.medium .bar-fill {
-  background-color: var(--color-confidence-medium);
+  background-color: var(--color-confidence-medium, #d97706);
 }
 
 .confidence-bar.low .bar-fill {
-  background-color: var(--color-confidence-low);
+  background-color: var(--color-confidence-low, #dc2626);
 }
 
 /* Recommendations Grid */

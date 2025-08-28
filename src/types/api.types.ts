@@ -273,6 +273,44 @@ export function isValidationError(
 }
 
 // ============================================================================
+// Feedback Types
+// ============================================================================
+
+/**
+ * User feedback on MBS code recommendation quality
+ */
+export interface CodeFeedback {
+  /** The MBS code this feedback relates to */
+  code: string;
+  /** User's rating of the recommendation */
+  rating: 'positive' | 'negative' | 'neutral';
+  /** Optional detailed feedback from the user */
+  comment?: string;
+  /** Timestamp when feedback was provided */
+  timestamp: string;
+  /** Whether this code should have been suggested */
+  should_suggest: boolean;
+}
+
+/**
+ * User suggestion for an alternative MBS code
+ */
+export interface CodeSuggestion {
+  /** The suggested MBS code */
+  suggested_code: string;
+  /** User's rationale for suggesting this code */
+  rationale: string;
+  /** Confidence in this suggestion (1-5 scale) */
+  confidence: number;
+  /** Whether to replace an existing recommendation or add new */
+  action: 'replace' | 'add';
+  /** If replacing, which code to replace */
+  replace_code?: string;
+  /** Timestamp when suggestion was made */
+  timestamp: string;
+}
+
+// ============================================================================
 // Constants
 // ============================================================================
 
@@ -306,4 +344,296 @@ export const MBS_ONLINE_URL_TEMPLATE =
  */
 export function getMBSOnlineUrl(code: string): string {
   return MBS_ONLINE_URL_TEMPLATE.replace(/{code}/g, code);
+}
+
+// ============================================================================
+// MBS Code Selection & Conflict Detection Types (Phase 1)
+// ============================================================================
+
+/**
+ * Types of conflicts that can occur between MBS codes
+ */
+export type ConflictReason = 
+  | 'time_overlap'        // Cannot bill both in same consultation
+  | 'category_exclusive'  // Only one from category allowed
+  | 'age_restriction'     // Age-based conflicts
+  | 'frequency_limit'     // Daily/weekly limits
+  | 'prerequisite_missing' // Requires another code first
+  | 'medicare_rule';      // General Medicare billing rules
+
+/**
+ * MBS categories for conflict detection
+ */
+export type MBSCategory = 
+  | 'professional_attendances'
+  | 'diagnostic_procedures'
+  | 'therapeutic_procedures'
+  | 'oral_maxillofacial'
+  | 'diagnostic_imaging'
+  | 'pathology'
+  | 'cleft_palate'
+  | 'chemotherapy'
+  | 'radiotherapy'
+  | 'assistant_surgeon'
+  | 'relative_value_guide'
+  | 'acupuncture';
+
+/**
+ * Conflict rule defining when codes cannot be selected together
+ */
+export interface ConflictRule {
+  /** Codes that conflict with each other */
+  conflictingCodes: string[];
+  /** Type of conflict */
+  reason: ConflictReason;
+  /** Whether this is a hard block or soft warning */
+  severity: 'warning' | 'blocking';
+  /** Human-readable explanation */
+  message: string;
+  /** Optional category this conflict applies to */
+  category?: string;
+  /** Optional conditions when this rule applies */
+  conditions?: string[];
+}
+
+/**
+ * Exclusion rule for codes that cannot be billed together
+ */
+export interface ExclusionRule {
+  /** Codes that are excluded by this rule */
+  excludedCodes: string[];
+  /** Reason for exclusion */
+  reason: string;
+  /** Conditions when exclusion applies */
+  conditions?: string[];
+}
+
+/**
+ * Enhanced code recommendation with conflict detection fields
+ */
+export interface EnhancedCodeRecommendation extends CodeRecommendation {
+  /** Conflict rules that apply to this code */
+  conflicts: ConflictRule[];
+  /** Codes that are compatible with this one */
+  compatibleWith: string[];
+  /** MBS category for conflict resolution */
+  mbsCategory: MBSCategory;
+  /** Time requirement in minutes (for time overlap detection) */
+  timeRequirement?: number;
+  /** Exclusion rules that apply */
+  exclusionRules?: ExclusionRule[];
+}
+
+/**
+ * Current selection state with conflict tracking
+ */
+export interface SelectionState {
+  /** Set of currently selected MBS codes */
+  selectedCodes: Set<string>;
+  /** Map of conflicts for each code */
+  conflicts: Map<string, ConflictRule[]>;
+  /** Total fee for selected codes */
+  totalFee: number;
+  /** Warning messages for the current selection */
+  warnings: string[];
+}
+
+/**
+ * Result of conflict validation
+ */
+export interface ConflictValidation {
+  /** Whether the code can be selected */
+  canSelect: boolean;
+  /** Blocking conflicts preventing selection */
+  conflicts: ConflictRule[];
+  /** Warning-level conflicts */
+  warnings: string[];
+  /** Suggested actions to resolve conflicts */
+  suggestions?: string[];
+}
+
+/**
+ * Summary of current selection
+ */
+export interface SelectionSummary {
+  /** Number of selected codes */
+  selectedCount: number;
+  /** Total fee amount */
+  totalFee: number;
+  /** Number of conflicts detected */
+  conflictCount: number;
+  /** Whether there are any blocking conflicts */
+  hasBlockingConflicts: boolean;
+  /** Warning messages */
+  warnings: string[];
+}
+
+/**
+ * Validation result for entire selection
+ */
+export interface SelectionValidation {
+  /** Whether the entire selection is valid */
+  isValid: boolean;
+  /** Blocking conflicts in the selection */
+  blockingConflicts: ConflictRule[];
+  /** Warning-level issues */
+  warnings: string[];
+  /** Suggested fixes */
+  suggestions: string[];
+}
+
+// ============================================================================
+// Conflict Detection Functions
+// ============================================================================
+
+/**
+ * Detect conflicts when trying to select a new code
+ */
+export function detectConflicts(
+  selectedCodes: Set<string>,
+  newCode: string,
+  allRecommendations: EnhancedCodeRecommendation[]
+): ConflictValidation {
+  const conflicts: ConflictRule[] = [];
+  const warnings: string[] = [];
+  const suggestions: string[] = [];
+  
+  // Find the recommendation for the new code
+  const newRecommendation = allRecommendations.find(rec => rec.code === newCode);
+  if (!newRecommendation) {
+    return { canSelect: false, conflicts: [], warnings: ['Code not found in recommendations'] };
+  }
+  
+  // Check each conflict rule for the new code
+  for (const conflictRule of newRecommendation.conflicts) {
+    const hasConflict = Array.from(selectedCodes).some(selectedCode => 
+      conflictRule.conflictingCodes.includes(selectedCode)
+    );
+    
+    if (hasConflict) {
+      if (conflictRule.severity === 'blocking') {
+        conflicts.push(conflictRule);
+        suggestions.push(`Deselect conflicting codes: ${conflictRule.conflictingCodes.filter(code => selectedCodes.has(code)).join(', ')}`);
+      } else {
+        warnings.push(conflictRule.message);
+      }
+    }
+  }
+  
+  // Check conflicts from selected codes that might affect the new code
+  for (const selectedCode of selectedCodes) {
+    const selectedRecommendation = allRecommendations.find(rec => rec.code === selectedCode);
+    if (selectedRecommendation) {
+      for (const conflictRule of selectedRecommendation.conflicts) {
+        if (conflictRule.conflictingCodes.includes(newCode)) {
+          if (conflictRule.severity === 'blocking') {
+            conflicts.push(conflictRule);
+          } else {
+            warnings.push(conflictRule.message);
+          }
+        }
+      }
+    }
+  }
+  
+  // Deduplicate conflicts based on conflicting codes
+  const uniqueConflicts = conflicts.filter((conflict, index, self) => 
+    index === self.findIndex(c => 
+      JSON.stringify(c.conflictingCodes.sort()) === JSON.stringify(conflict.conflictingCodes.sort()) &&
+      c.reason === conflict.reason
+    )
+  );
+
+  return {
+    canSelect: uniqueConflicts.length === 0,
+    conflicts: uniqueConflicts,
+    warnings: [...new Set(warnings)], // Remove duplicate warnings
+    suggestions: [...new Set(suggestions)] // Remove duplicate suggestions
+  };
+}
+
+/**
+ * Calculate summary for current selection
+ */
+export function calculateSelectionSummary(
+  selectedCodes: Set<string>,
+  allRecommendations: EnhancedCodeRecommendation[]
+): SelectionSummary {
+  let totalFee = 0;
+  let conflictCount = 0;
+  let hasBlockingConflicts = false;
+  const warnings: string[] = [];
+  
+  // Calculate total fee
+  for (const code of selectedCodes) {
+    const recommendation = allRecommendations.find(rec => rec.code === code);
+    if (recommendation) {
+      totalFee += recommendation.schedule_fee;
+    }
+  }
+  
+  // Check for conflicts between selected codes
+  const selectedArray = Array.from(selectedCodes);
+  for (let i = 0; i < selectedArray.length; i++) {
+    for (let j = i + 1; j < selectedArray.length; j++) {
+      const validation = detectConflicts(
+        new Set([selectedArray[i]]), 
+        selectedArray[j], 
+        allRecommendations
+      );
+      
+      if (validation.conflicts.length > 0) {
+        conflictCount += validation.conflicts.length;
+        hasBlockingConflicts = true;
+      }
+      
+      warnings.push(...validation.warnings);
+    }
+  }
+  
+  return {
+    selectedCount: selectedCodes.size,
+    totalFee: Math.round(totalFee * 100) / 100, // Round to 2 decimal places
+    conflictCount,
+    hasBlockingConflicts,
+    warnings: [...new Set(warnings)] // Remove duplicates
+  };
+}
+
+/**
+ * Validate entire selection state
+ */
+export function validateCodeSelection(
+  selectionState: SelectionState,
+  allRecommendations: EnhancedCodeRecommendation[]
+): SelectionValidation {
+  const blockingConflicts: ConflictRule[] = [];
+  const warnings: string[] = [];
+  const suggestions: string[] = [];
+  
+  const selectedArray = Array.from(selectionState.selectedCodes);
+  
+  // Check each pair of selected codes for conflicts
+  for (let i = 0; i < selectedArray.length; i++) {
+    for (let j = i + 1; j < selectedArray.length; j++) {
+      const validation = detectConflicts(
+        new Set([selectedArray[i]]), 
+        selectedArray[j], 
+        allRecommendations
+      );
+      
+      blockingConflicts.push(...validation.conflicts);
+      warnings.push(...validation.warnings);
+      if (validation.suggestions) {
+        suggestions.push(...validation.suggestions);
+      }
+    }
+  }
+  
+  return {
+    isValid: blockingConflicts.length === 0,
+    blockingConflicts,
+    warnings: [...new Set(warnings)],
+    suggestions: [...new Set(suggestions)]
+  };
 }

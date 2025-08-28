@@ -15,7 +15,7 @@
 
 /* Header */
 .input-header {
-  margin-bottom: var(--spacing-xl);
+  margin-bottom: var(--spacing-md);
 }
 
 .input-header h2 {
@@ -145,6 +145,10 @@
   border-color: var(--color-success);
 }
 
+.consultation-textarea.neutral {
+  border-color: var(--color-gray-300);
+}
+
 /* Character Count */
 .character-count {
   position: absolute;
@@ -168,6 +172,10 @@
 }
 
 .character-count.success {
+  color: var(--color-gray-600);
+}
+
+.character-count.neutral {
   color: var(--color-gray-600);
 }
 
@@ -256,12 +264,7 @@
   border: 2px solid transparent;
   border-top: 2px solid currentColor;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  /* Remove spinning animation */
 }
 
 /* Help Text */
