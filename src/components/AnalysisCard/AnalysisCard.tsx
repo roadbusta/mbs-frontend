@@ -52,7 +52,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
   const hasMinimumChars = characterCount >= minCharacters;
 
   return (
-    <div className="analysis-card">
+    <div className="analysis-card h-full flex flex-col">
       {/* Status Header */}
       <div className="analysis-header">
         <div className="analysis-title">

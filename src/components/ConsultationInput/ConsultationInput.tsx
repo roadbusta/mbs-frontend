@@ -127,7 +127,7 @@ const ConsultationInput: React.FC<ConsultationInputProps> = ({
   const validation = getValidationState();
 
   return (
-    <div className="consultation-input">
+    <div className="consultation-input h-full flex flex-col">
       {/* Section Header */}
       <div className="input-header">
         <h2>Consultation Note Analysis</h2>
