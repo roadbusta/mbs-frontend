@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoMBS - AI NextGen Challenge Submission</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.4;
+            color: #1e293b;
+            background: #f8fafc;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .slideshow-container {
+            max-width: 1200px;
+            position: relative;
+            margin: auto;
+            background: white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        
+        .slide {
+            display: none;
+            padding: 20px;
+            height: 70vh;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .slide-number {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: #3b82f6;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #1e293b;
+        }
+        
+        h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+            color: #1e293b;
+        }
+        
+        h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            color: #1e293b;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            color: #1e293b;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+        
+        .hero-slide {
+            text-align: center;
+            background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+            color: white;
+        }
+        
+        .hero-slide h1 {
+            color: white;
+        }
+        
+        .logo {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #3b82f6;
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            color: #64748b;
+            margin-top: 0.3rem;
+        }
+        
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .problem-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .problem-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.8rem;
+        }
+        
+        .problem-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #dc2626;
+            margin-bottom: 0.4rem;
+        }
+        
+        .solution-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .solution-step {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1.2rem;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .step-number {
+            background: #3b82f6;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.8rem;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        
+        .architecture-flow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        
+        .arch-stage {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .arch-stage::after {
+            content: '→';
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: #94a3b8;
+        }
+        
+        .arch-stage:last-child::after {
+            display: none;
+        }
+        
+        .stage-title {
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stage-detail {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+        
+        .navigation {
+            text-align: center;
+            padding: 15px;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .nav-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        .nav-btn:hover {
+            background: #2563eb;
+        }
+        
+        .nav-btn:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+            color: #6b7280;
+        }
+        
+        .slide-counter {
+            margin: 0 20px;
+            font-weight: 600;
+            color: #64748b;
+        }
+        
+        .tech-stack {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .tech-column {
+            text-align: center;
+        }
+        
+        .tech-header {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #3b82f6;
+        }
+        
+        .tech-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .tech-list li {
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            background: #f8fafc;
+            border-radius: 6px;
+            border-left: 4px solid #3b82f6;
+            color: #1e293b;
+        }
+        
+        .roadmap-phase {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .phase-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .phase-badge {
+            background: #3b82f6;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-right: 1rem;
+        }
+        
+        .phase-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        
+        .phase-items {
+            list-style: none;
+            padding-left: 1rem;
+        }
+        
+        .phase-items li {
+            padding: 0.2rem 0;
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+        
+        .phase-items li::before {
+            content: '•';
+            color: #3b82f6;
+            margin-right: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .links-section {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            margin: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .demo-link, .repo-link {
+            display: inline-block;
+            background: #3b82f6;
+            color: white;
+            text-decoration: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 600;
+            margin: 0.4rem;
+            transition: background-color 0.2s;
+            font-size: 0.9rem;
+        }
+        
+        .demo-link:hover, .repo-link:hover {
+            background: #2563eb;
+        }
+        
+        .repo-link {
+            background: #64748b;
+        }
+        
+        .repo-link:hover {
+            background: #4b5563;
+        }
+        
+        .metrics-highlight {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            margin: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .award-badge {
+            background: #fbbf24;
+            color: #1e293b;
+            padding: 0.8rem 1.5rem;
+            border-radius: 20px;
+            font-size: 1rem;
+            font-weight: 700;
+            display: inline-block;
+            margin: 0.8rem 0;
+        }
+        
+        @media (max-width: 768px) {
+            .slide {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            h2 {
+                font-size: 2rem;
+            }
+            
+            .stats-grid, .problem-grid, .tech-stack {
+                grid-template-columns: 1fr;
+            }
+            
+            .architecture-flow {
+                flex-direction: column;
+            }
+            
+            .arch-stage::after {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="slideshow-container">
+    <!-- Slide 1: Title -->
+    <div class="slide active hero-slide">
+        <div class="slide-number">1 / 10</div>
+        <div class="logo">🏥</div>
+        <h1>AutoMBS</h1>
+        <p class="subtitle" style="color: #cbd5e1;">
+            AI-Powered Medicare Benefits Schedule Coding Assistant
+        </p>
+        <p style="margin-top: 1.5rem; font-size: 1.2rem; color: #cbd5e1;">
+            Transforming Healthcare Billing with Intelligent Automation
+        </p>
+    </div>
+
+    <!-- Slide 2: Problem Statement -->
+    <div class="slide">
+        <div class="slide-number">2 / 10</div>
+        <h2>The MBS Coding Challenge</h2>
+        <p class="subtitle">Healthcare providers face significant challenges with Medicare billing code selection</p>
+        
+        <div class="problem-grid">
+            <div class="problem-card">
+                <div class="problem-icon">⏱️</div>
+                <div class="problem-title">Time Consuming</div>
+                <p>Staff spend considerable time researching appropriate codes for each consultation</p>
+            </div>
+            <div class="problem-card">
+                <div class="problem-icon">❌</div>
+                <div class="problem-title">Error Prone</div>
+                <p>Manual selection leads to coding errors, claim rejections, and compliance issues</p>
+            </div>
+            <div class="problem-card">
+                <div class="problem-icon">👨‍⚕️</div>
+                <div class="problem-title">Expertise Required</div>
+                <p>Requires specialized billing knowledge that may not be available in all practices</p>
+            </div>
+            <div class="problem-card">
+                <div class="problem-icon">📚</div>
+                <div class="problem-title">5,964 MBS Codes</div>
+                <p>across multiple categories with complex eligibility rules</p>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 1.5rem; padding: 1.2rem; background: #f1f5f9; border-radius: 8px; border: 1px solid #cbd5e1;">
+            <strong style="color: #dc2626;">Current Process:</strong> <span style="color: #1e293b;">MBS code selection is entirely manual, requiring extensive medical billing knowledge</span>
+        </div>
+    </div>
+
+    <!-- Slide 3: Our Solution -->
+    <div class="slide">
+        <div class="slide-number">3 / 10</div>
+        <h2>AutoMBS Solution</h2>
+        <p class="subtitle">End-to-end AI system for intelligent MBS code recommendations</p>
+        
+        <div class="solution-steps">
+            <div class="solution-step">
+                <div class="step-number">1</div>
+                <h3>Clinical Input</h3>
+                <p>User-friendly web interface for consultation notes (10-10,000 characters)</p>
+            </div>
+            <div class="solution-step">
+                <div class="step-number">2</div>
+                <h3>AI Analysis</h3>
+                <p>5-stage pipeline processes notes using ML and LLM reasoning</p>
+            </div>
+            <div class="solution-step">
+                <div class="step-number">3</div>
+                <h3>Smart Recommendations</h3>
+                <p>Ranked MBS codes with confidence scores and medical reasoning</p>
+            </div>
+            <div class="solution-step">
+                <div class="step-number">4</div>
+                <h3>Compliance Check</h3>
+                <p>Validates against Additional Notes rules and eligibility requirements</p>
+            </div>
+            <div class="solution-step">
+                <div class="step-number">5</div>
+                <h3>Decision Support</h3>
+                <p>Professional review with direct MBS Online integration</p>
+            </div>
+        </div>
+
+        <div class="metrics-highlight">
+            <strong>Proof of Concept Results:</strong> 10-30 second analysis • 80% average confidence • 99% test coverage
+        </div>
+    </div>
+
+    <!-- Slide 4: Technical Innovation (50% of judging criteria) -->
+    <div class="slide">
+        <div class="slide-number">4 / 10</div>
+        <h2>Technical Innovation</h2>
+        <!--<p class="subtitle">50% of Judging Criteria: Technical Feasibility, Novelty, Implementation</p>-->
+        
+        <div class="architecture-flow">
+            <div class="arch-stage">
+                <div class="stage-title">Stage 0: Categorization</div>
+                <div class="stage-detail">LLM context analysis<br>89% code reduction</div>
+            </div>
+            <div class="arch-stage">
+                <div class="stage-title">Stage 1: TF-IDF</div>
+                <div class="stage-detail">Medical term extraction<br>Text similarity</div>
+            </div>
+            <div class="arch-stage">
+                <div class="stage-title">Stage 2: Embeddings</div>
+                <div class="stage-detail">Semantic ranking<br>BioBERT models</div>
+            </div>
+            <div class="arch-stage">
+                <div class="stage-title">Stage 3: LLM</div>
+                <div class="stage-detail">GPT-4o-mini reasoning<br>Medical expertise</div>
+            </div>
+            <div class="arch-stage">
+                <div class="stage-title">Stage 4: Validation</div>
+                <div class="stage-detail">Compliance checking<br>Rule validation</div>
+            </div>
+        </div>
+
+        <div class="tech-stack">
+            <div class="tech-column">
+                <div class="tech-header">Frontend Innovation</div>
+                <ul class="tech-list">
+                    <li>React 18 + TypeScript</li>
+                    <li>Real-time validation</li>
+                    <li>Evidence highlighting</li>
+                    <li>Professional medical UI</li>
+                </ul>
+            </div>
+            <div class="tech-column">
+                <div class="tech-header">AI/ML Innovation</div>
+                <ul class="tech-list">
+                    <li>Hybrid AI pipeline</li>
+                    <li>Medical language models</li>
+                    <li>Ensemble methods</li>
+                    <li>Confidence scoring</li>
+                </ul>
+            </div>
+            <div class="tech-column">
+                <div class="tech-header">Backend Innovation</div>
+                <ul class="tech-list">
+                    <li>FastAPI high-performance</li>
+                    <li>Async processing</li>
+                    <li>Multi-stage caching</li>
+                    <li>Production deployment</li>
+                </ul>
+            </div>
+        </div>
+
+        <div style="text-align: center; padding: 1.5rem; background: #f0f9ff; border-radius: 8px; margin-top: 2rem; border: 1px solid #bae6fd;">
+            <strong style="color: #3b82f6;">Technical Maturity:</strong> <span style="color: #1e293b;">166 comprehensive tests • Production deployment on Google Cloud Run • 99% test coverage</span>
+        </div>
+    </div>
+
+    <!-- Slide 5: Market Potential -->
+    <div class="slide">
+        <div class="slide-number">5 / 10</div>
+        <h2>Market Potential</h2>
+        <!--<p class="subtitle">25% of Judging Criteria: Market Size, Target Market, Business Model</p>-->
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <span class="stat-number">5,964</span>
+                <div class="stat-label">MBS codes processed across all medical categories</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">45,000+</span>
+                <div class="stat-label">GP practices in Australia (target market)</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">5-Stage</span>
+                <div class="stat-label">AI pipeline for comprehensive code analysis</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">10-30s</span>
+                <div class="stat-label">Processing time for consultation analysis</div>
+            </div>
+        </div>
+
+        <h3>Target Markets</h3>
+        <div class="solution-steps">
+            <div class="solution-step">
+                <div class="step-number">1°</div>
+                <h3>Primary: GP Practices</h3>
+                <p>45,000+ practices • High MBS volume • Cost-sensitive • Limited billing expertise</p>
+            </div>
+            <div class="solution-step">
+                <div class="step-number">2°</div>
+                <h3>Secondary: Specialists</h3>
+                <p>Complex coding requirements • Higher fee schedules • Compliance critical</p>
+            </div>
+            <div class="solution-step">
+                <div class="step-number">3°</div>
+                <h3>Enterprise: Health Networks</h3>
+                <p>Multi-site deployments • Volume discounts • Integration requirements</p>
+            </div>
+        </div>
+
+        <div style="background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 1.5rem; text-align: center;">
+            <strong style="color: #3b82f6;">Business Model:</strong> <span style="color: #1e293b;">SaaS subscription model with healthcare provider focus</span>
+        </div>
+    </div>
+
+    <!-- Slide 6: User Experience Design -->
+    <div class="slide">
+        <div class="slide-number">6 / 10</div>
+        <h2>User Experience Design</h2>
+        <!--<p class="subtitle">25% of Judging Criteria: UX, Interaction Design, Usability</p>-->
+        
+        <div class="problem-grid">
+            <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <h3 style="color: #3b82f6; margin-bottom: 1rem;">🎯 Professional Medical UI</h3>
+                <ul style="list-style: none; padding-left: 1rem; color: #1e293b;">
+                    <li>• Clean, medical-grade interface design</li>
+                    <li>• Confidence visualization with color coding</li>
+                    <li>• Evidence highlighting in consultation text</li>
+                    <li>• Direct MBS Online integration links</li>
+                </ul>
+            </div>
+            <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <h3 style="color: #3b82f6; margin-bottom: 1rem;">⚡ Streamlined Workflow</h3>
+                <ul style="list-style: none; padding-left: 1rem; color: #1e293b;">
+                    <li>• 3-step process: Input → Analyze → Review</li>
+                    <li>• Real-time input validation (10-10,000 chars)</li>
+                    <li>• Context-aware categorization</li>
+                    <li>• Copy-to-clipboard functionality</li>
+                </ul>
+            </div>
+            <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <h3 style="color: #3b82f6; margin-bottom: 1rem;">🔍 Transparency & Trust</h3>
+                <ul style="list-style: none; padding-left: 1rem; color: #1e293b;">
+                    <li>• Detailed medical reasoning for each code</li>
+                    <li>• Processing metadata and timing</li>
+                    <li>• Confidence scores with explanations</li>
+                    <li>• Professional disclaimers and guidance</li>
+                </ul>
+            </div>
+            <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.5rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <h3 style="color: #3b82f6; margin-bottom: 1rem;">📱 Accessibility Features</h3>
+                <ul style="list-style: none; padding-left: 1rem; color: #1e293b;">
+                    <li>• Responsive design for desktop/mobile</li>
+                    <li>• ARIA labels for screen readers</li>
+                    <li>• Keyboard navigation support</li>
+                    <li>• Error states with clear guidance</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="links-section">
+            <h3>🚀 Live Demo Available</h3>
+            <p>Experience the user interface and workflow firsthand</p>
+            <a href="https://mbs-frontend-test-prod.vercel.app/" class="demo-link" target="_blank">
+                Try AutoMBS Demo →
+            </a>
+        </div>
+    </div>
+
+    <!-- Slide 7: Prototype Achievements -->
+    <div class="slide">
+        <div class="slide-number">7 / 10</div>
+        <h2>Hackathon Achievements</h2>
+        <p class="subtitle">What we accomplished in the time-constrained challenge</p>
+        
+        <div class="stats-grid">
+            <div class="stat-card" style="background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%); border-color: #10b981;">
+                <span class="stat-number" style="color: #10b981;">✅ 5,964</span>
+                <div class="stat-label">MBS codes parsed and indexed from official XML</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-color: #3b82f6;">
+                <span class="stat-number" style="color: #3b82f6;">✅ 5-Stage</span>
+                <div class="stat-label">AI pipeline with ML, LLM, and rule engines</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-color: #f59e0b;">
+                <span class="stat-number" style="color: #d97706;">✅ Production</span>
+                <div class="stat-label">Deployed system on Google Cloud Run</div>
+            </div>
+            <div class="stat-card" style="background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%); border-color: #ec4899;">
+                <span class="stat-number" style="color: #db2777;">✅ 99%</span>
+                <div class="stat-label">Test coverage with 166 comprehensive tests</div>
+            </div>
+        </div>
+
+        <h3>Core Features Implemented</h3>
+        <div class="solution-steps">
+            <div class="solution-step">
+                <div class="step-number">API</div>
+                <h3>RESTful Backend</h3>
+                <p>FastAPI with OpenAI integration, comprehensive error handling</p>
+            </div>
+            <div class="solution-step">
+                <div class="step-number">UI</div>
+                <h3>React Frontend</h3>
+                <p>Professional medical interface with real-time validation</p>
+            </div>
+            <div class="solution-step">
+                <div class="step-number">AI</div>
+                <h3>Multi-Stage Pipeline</h3>
+                <p>Hybrid approach combining multiple AI techniques</p>
+            </div>
+            <div class="solution-step">
+                <div class="step-number">Data</div>
+                <h3>MBS Knowledge Base</h3>
+                <p>Complete parsing of official Medicare data and rules</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 8: Technical Architecture Deep Dive -->
+    <div class="slide">
+        <div class="slide-number">8 / 10</div>
+        <h2>Architecture & Performance</h2>
+        <p class="subtitle">Production-ready system with comprehensive validation</p>
+        
+        <div class="architecture-flow">
+            <div class="arch-stage" style="background: #fef2f2; border: 2px solid #ef4444;">
+                <div class="stage-title">Categorization</div>
+                <div class="stage-detail">6,000 → 650 codes<br><strong>89% reduction</strong></div>
+            </div>
+            <div class="arch-stage" style="background: #fef3c7; border: 2px solid #f59e0b;">
+                <div class="stage-title">TF-IDF</div>
+                <div class="stage-detail">650 → 50 codes<br><strong>Medical terms</strong></div>
+            </div>
+            <div class="arch-stage" style="background: #f0fdf4; border: 2px solid #10b981;">
+                <div class="stage-title">Embeddings</div>
+                <div class="stage-detail">50 → 20 codes<br><strong>Semantic ML</strong></div>
+            </div>
+            <div class="arch-stage" style="background: #f0f9ff; border: 2px solid #3b82f6;">
+                <div class="stage-title">LLM Reasoning</div>
+                <div class="stage-detail">20 → 5 codes<br><strong>Medical expertise</strong></div>
+            </div>
+            <div class="arch-stage" style="background: #fdf2f8; border: 2px solid #ec4899;">
+                <div class="stage-title">Validation</div>
+                <div class="stage-detail">Final results<br><strong>Compliance</strong></div>
+            </div>
+        </div>
+
+        <h3>Performance Metrics (Prototype Testing)</h3>
+        <div class="problem-grid">
+            <div class="problem-card" style="background: #f0fdf4; border-color: #10b981;">
+                <div class="problem-title" style="color: #059669;">10-30 Seconds</div>
+                <p>Processing time for new consultation analysis</p>
+            </div>
+            <div class="problem-card" style="background: #f0fdf4; border-color: #10b981;">
+                <div class="problem-title" style="color: #059669;">&lt;100ms</div>
+                <p>Cached response time for repeated queries</p>
+            </div>
+            <div class="problem-card" style="background: #f0fdf4; border-color: #10b981;">
+                <div class="problem-title" style="color: #059669;">~80%</div>
+                <p>Average LLM self-assessed confidence scores</p>
+            </div>
+            <div class="problem-card" style="background: #f0fdf4; border-color: #10b981;">
+                <div class="problem-title" style="color: #059669;">5,964</div>
+                <p>Complete MBS code coverage across all categories</p>
+            </div>
+        </div>
+
+        <div style="background: #fef2f2; color: #1e293b; padding: 1.5rem; border-radius: 8px; text-align: center; margin-top: 2rem; border: 1px solid #fecaca;">
+            <strong style="color: #dc2626;">⚠️ Prototype Limitations:</strong> No ground truth validation • Limited real-world testing • Basic compliance checking
+        </div>
+    </div>
+
+    <!-- Slide 9: Next Steps & Roadmap -->
+    <div class="slide">
+        <div class="slide-number">9 / 10</div>
+        <h2>Next Steps & Roadmap</h2>
+        <p class="subtitle">Critical priorities to transition from prototype to production</p>
+        
+        <div class="roadmap-phase">
+            <div class="phase-header">
+                <div class="phase-badge">Phase 1</div>
+                <div class="phase-title">Critical Priorities (1-2 Months)</div>
+            </div>
+            <ul class="phase-items">
+                <li><strong>Ground Truth Validation:</strong> Create expert-validated dataset (100-200 cases) to measure real accuracy</li>
+                <li><strong>Complete MBS Rules:</strong> Finish parsing complex Additional Notes (frequency limits, co-claims, restrictions)</li>
+                <li><strong>Production Infrastructure:</strong> Authentication, monitoring, proper database, security measures</li>
+            </ul>
+        </div>
+
+        <div class="roadmap-phase">
+            <div class="phase-header">
+                <div class="phase-badge">Phase 2</div>
+                <div class="phase-title">Enhanced Features (2-3 Months)</div>
+            </div>
+            <ul class="phase-items">
+                <li><strong>AI Pipeline Optimization:</strong> Improve subcategory filtering, evidence highlighting, processing speed</li>
+                <li><strong>User Experience:</strong> Batch processing, export functionality, consultation templates</li>
+                <li><strong>Basic Integration:</strong> APIs for practice management software, FHIR compatibility</li>
+            </ul>
+        </div>
+
+        <div class="stats-grid" style="margin-top: 2rem;">
+            <div class="stat-card">
+                <span class="stat-number">&gt;90%</span>
+                <div class="stat-label">Target accuracy on ground truth validation</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">Faster</span>
+                <div class="stat-label">Reduce consultation coding time significantly</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">5-10</span>
+                <div class="stat-label">Pilot healthcare practices for validation</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-number">100+</span>
+                <div class="stat-label">Scale to providers within 12 months</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 10: Call to Action -->
+    <div class="slide">
+        <div class="slide-number">10 / 10</div>
+        <div style="text-align: center;">
+            <div class="logo">🏥</div>
+            <h1 style="margin-bottom: 1rem;">AutoMBS</h1>
+            <h2 style="color: #64748b; margin-bottom: 1.5rem; font-size: 2rem;">Ready to Transform Healthcare Billing</h2>
+
+            <div class="links-section">
+                <h3>Experience AutoMBS</h3>
+                <p style="margin-bottom: 2rem;">Try our live demo and explore the codebase</p>
+                
+                <a href="https://mbs-frontend-test-prod.vercel.app/" class="demo-link" target="_blank">
+                    🚀 Live Demo
+                </a>
+                <a href="https://github.com/roadbusta/mbs-frontend" class="repo-link" target="_blank">
+                    📱 Frontend Repo
+                </a>
+                <a href="https://github.com/roadbusta/mbs-rag" class="repo-link" target="_blank">
+                    🤖 AI Backend Repo
+                </a>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin: 2rem 0; max-width: 800px; margin-left: auto; margin-right: auto;">
+                <div style="text-align: center;">
+                    <div style="font-size: 3rem; margin-bottom: 0.5rem;">⚡</div>
+                    <div style="font-weight: 700; color: #1e293b;">Fast Implementation</div>
+                    <div style="color: #64748b; font-size: 0.9rem;">Production-ready prototype</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 3rem; margin-bottom: 0.5rem;">🎯</div>
+                    <div style="font-weight: 700; color: #1e293b;">Proven Innovation</div>
+                    <div style="color: #64748b; font-size: 0.9rem;">5-stage AI pipeline</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 3rem; margin-bottom: 0.5rem;">💡</div>
+                    <div style="font-weight: 700; color: #1e293b;">Market Ready</div>
+                    <div style="color: #64748b; font-size: 0.9rem;">Clear path to scale</div>
+                </div>
+            </div>
+
+            <p style="color: #64748b; font-style: italic; margin-top: 1rem;">
+                "AI solution for Medicare billing automation in Australia"
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="navigation">
+    <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">❮ Previous</button>
+    <span class="slide-counter">
+        <span id="currentSlide">1</span> / <span id="totalSlides">10</span>
+    </span>
+    <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Next ❯</button>
+</div>
+
+<script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const totalSlides = slides.length;
+    
+    function showSlide(n) {
+        slides.forEach(slide => slide.classList.remove('active'));
+        
+        if (n >= totalSlides) currentSlide = 0;
+        if (n < 0) currentSlide = totalSlides - 1;
+        
+        slides[currentSlide].classList.add('active');
+        document.getElementById('currentSlide').textContent = currentSlide + 1;
+        
+        // Update button states
+        document.getElementById('prevBtn').disabled = currentSlide === 0;
+        document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+    }
+    
+    function changeSlide(n) {
+        currentSlide += n;
+        showSlide(currentSlide);
+    }
+    
+    // Keyboard navigation
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'ArrowLeft') changeSlide(-1);
+        if (event.key === 'ArrowRight') changeSlide(1);
+    });
+    
+    // Initialize
+    showSlide(0);
+    document.getElementById('totalSlides').textContent = totalSlides;
+</script>
+
+</body>
+</html>
