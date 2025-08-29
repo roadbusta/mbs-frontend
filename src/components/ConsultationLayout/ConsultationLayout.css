@@ -1,0 +1,154 @@
+/**
+ * Consultation Layout Component Styles
+ * 
+ * Modern side-by-side layout for consultation input and analysis.
+ * Uses CSS Grid for flexible, responsive layout design.
+ */
+
+.consultation-layout {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: var(--spacing-xl);
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--spacing-lg);
+  background: transparent;
+  box-sizing: border-box;
+  align-items: stretch;
+}
+
+/* Input Panel */
+.input-panel {
+  min-width: 0; /* Prevent grid overflow */
+}
+
+.input-panel > * {
+  flex: 1;
+}
+
+/* Analysis Panel */
+.analysis-panel {
+  min-width: 0; /* Prevent grid overflow */
+  display: flex;
+}
+
+.analysis-panel > * {
+  flex: 1;
+}
+
+/* Responsive Breakpoints */
+
+/* Large Desktop (≥1400px) */
+@media (min-width: 1400px) {
+  .consultation-layout {
+    grid-template-columns: 1fr 420px;
+    gap: calc(var(--spacing-xl) * 1.5);
+  }
+}
+
+/* Desktop (1200px - 1399px) */
+@media (max-width: 1399px) and (min-width: 1200px) {
+  .consultation-layout {
+    grid-template-columns: 1fr 380px;
+    gap: var(--spacing-lg);
+  }
+}
+
+/* Large Tablet (1024px - 1199px) */
+@media (max-width: 1199px) and (min-width: 1024px) {
+  .consultation-layout {
+    grid-template-columns: 1fr 350px;
+    gap: var(--spacing-lg);
+    padding: var(--spacing-md);
+  }
+}
+
+/* Tablet (768px - 1023px) */
+@media (max-width: 1023px) and (min-width: 768px) {
+  .consultation-layout {
+    grid-template-columns: 1fr 320px;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+  }
+}
+
+/* Mobile (≤767px) - Stack vertically */
+@media (max-width: 767px) {
+  .consultation-layout {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+    padding: var(--spacing-sm);
+    min-height: auto;
+  }
+  
+  /* On mobile, analysis card comes first for better UX */
+  .analysis-panel {
+    order: 1;
+  }
+  
+  .input-panel {
+    order: 2;
+  }
+}
+
+/* Small Mobile (≤480px) */
+@media (max-width: 480px) {
+  .consultation-layout {
+    padding: var(--spacing-xs);
+    gap: var(--spacing-sm);
+  }
+}
+
+/* Print Styles */
+@media print {
+  .consultation-layout {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+    padding: 0;
+    min-height: auto;
+  }
+  
+  .analysis-panel {
+    display: none; /* Hide interactive elements when printing */
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .consultation-layout {
+    background-color: white;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .consultation-layout * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* Dark mode support (if team implements) */
+@media (prefers-color-scheme: dark) {
+  .consultation-layout {
+    background-color: #1a1a1a;
+  }
+}
+
+/* Focus management for accessibility */
+.consultation-layout:focus-within {
+  /* Ensure proper focus visibility in layout */
+}
+
+/* Container queries (future enhancement) */
+@supports (container-type: inline-size) {
+  .consultation-layout {
+    container-type: inline-size;
+  }
+  
+  @container (max-width: 768px) {
+    .consultation-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+}

@@ -89,7 +89,7 @@ const ContextSelector: React.FC<ContextSelectorProps> = ({
 
   return (
     <div className="context-selector">
-      <label htmlFor="context-select" className="context-label">
+      <label htmlFor="context-select" className="input-label">
         Consultation Context
       </label>
       <div className="context-input-group">

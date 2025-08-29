@@ -12,13 +12,13 @@
  */
 
 import React, { useState } from 'react';
-import ConsultationInput from './components/ConsultationInput/ConsultationInput';
+import ConsultationLayout from './components/ConsultationLayout/ConsultationLayout';
 import ResultsDisplay from './components/ResultsDisplay/ResultsDisplay';
 import Header from './components/Header/Header';
 import LoadingSpinner from './components/LoadingStates/LoadingSpinner';
 import ErrorDisplay from './components/ErrorDisplay/ErrorDisplay';
-import { AnalysisResponse, AnalysisSuccessResponse, ConsultationContext, isSuccessResponse } from './types/api.types';
-import { analyzeConsultation } from './services/apiService';
+import { AnalysisResponse, AnalysisSuccessResponse, ConsultationContext, CodeFeedback, CodeSuggestion, isSuccessResponse } from './types/api.types';
+import { analyseConsultation } from './services/apiService';
 import './styles/App.css';
 
 /**
@@ -35,6 +35,10 @@ interface AppState {
   isLoading: boolean;
   /** Error message if analysis fails */
   error: string | null;
+  /** User feedback on code recommendations */
+  feedback: Map<string, CodeFeedback>;
+  /** User suggestions for alternative codes */
+  suggestions: CodeSuggestion[];
 }
 
 /**
@@ -48,6 +52,8 @@ const App: React.FC = () => {
     results: null,
     isLoading: false,
     error: null,
+    feedback: new Map(),
+    suggestions: [],
   });
 
   /**
@@ -79,7 +85,7 @@ const App: React.FC = () => {
     if (!appState.consultationNote.trim()) {
       setAppState(prev => ({
         ...prev,
-        error: 'Please enter a consultation note before analyzing.',
+        error: 'Please enter a consultation note before analysing.',
       }));
       return;
     }
@@ -94,7 +100,7 @@ const App: React.FC = () => {
 
     try {
       // Call the API service
-      const response: AnalysisResponse = await analyzeConsultation({
+      const response: AnalysisResponse = await analyseConsultation({
         consultation_note: appState.consultationNote,
         context: appState.context,
         options: {
@@ -149,9 +155,39 @@ const App: React.FC = () => {
       consultationNote: '',
       results: null,
       error: null,
+      feedback: new Map(),
+      suggestions: [],
     }));
   };
 
+  /**
+   * Handle feedback submission for MBS code recommendations
+   */
+  const handleFeedbackSubmit = (feedback: CodeFeedback) => {
+    setAppState(prev => ({
+      ...prev,
+      feedback: new Map(prev.feedback).set(feedback.code, feedback)
+    }));
+    
+    console.log('Feedback submitted:', feedback);
+    // Future: Send to analytics/backend
+  };
+
+  /**
+   * Handle code suggestion submission
+   */
+  const handleSuggestionSubmit = (suggestion: CodeSuggestion) => {
+    setAppState(prev => ({
+      ...prev,
+      suggestions: [...prev.suggestions, suggestion]
+    }));
+    
+    console.log('Suggestion submitted:', suggestion);
+    // Future: Send to backend for review
+    
+    // Show success message
+    alert(`Thank you for your suggestion! Code ${suggestion.suggested_code} has been noted for review.`);
+  };
 
   return (
     <div className="app">
@@ -161,9 +197,9 @@ const App: React.FC = () => {
       {/* Main Content */}
       <main className="main-content">
         <div className="container">
-          {/* Input Section */}
+          {/* Input Section - New Layout */}
           <div className="input-section">
-            <ConsultationInput
+            <ConsultationLayout
               value={appState.consultationNote}
               onChange={handleConsultationChange}
               context={appState.context}
@@ -178,7 +214,7 @@ const App: React.FC = () => {
           {appState.isLoading && (
             <div className="loading-section">
               <LoadingSpinner 
-                message="Analyzing consultation note..."
+                message="Analysing consultation note..."
                 subMessage="This may take 6-30 seconds"
               />
             </div>
@@ -201,19 +237,13 @@ const App: React.FC = () => {
               <ResultsDisplay 
                 results={appState.results}
                 consultationText={appState.consultationNote}
+                onFeedbackSubmit={handleFeedbackSubmit}
+                onSuggestionSubmit={handleSuggestionSubmit}
+                feedbackMap={appState.feedback}
               />
             </div>
           )}
 
-          {/* Empty State */}
-          {!appState.results && !appState.isLoading && !appState.error && (
-            <div className="empty-state">
-              <div className="empty-state-content">
-                <h3>Ready to Analyze</h3>
-                <p>Enter a consultation note and select the appropriate context above, then click "Analyze" to get MBS code recommendations.</p>
-              </div>
-            </div>
-          )}
         </div>
       </main>
 

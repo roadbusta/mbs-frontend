@@ -1,0 +1,428 @@
+/**
+ * FeedbackPanel Component Styles
+ * 
+ * Professional medical interface styles for user feedback collection.
+ * Matches the team's design system with consistent spacing, colors, and interactions.
+ */
+
+/* Collapsed State */
+.feedback-panel.collapsed {
+  margin-top: var(--spacing-md);
+}
+
+.feedback-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--color-gray-50);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+  color: var(--color-gray-700);
+}
+
+.feedback-toggle:hover {
+  background: var(--color-gray-100);
+  border-color: var(--color-gray-300);
+}
+
+.feedback-icon {
+  font-size: 1rem;
+}
+
+.feedback-label {
+  flex: 1;
+  text-align: left;
+}
+
+.feedback-status {
+  font-size: 1rem;
+}
+
+.expand-icon {
+  font-size: 0.75rem;
+  transition: transform 0.2s ease;
+}
+
+/* Expanded State */
+.feedback-panel.expanded {
+  margin-top: var(--spacing-md);
+  background: white;
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Panel Header */
+.feedback-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid var(--color-gray-200);
+  background: var(--color-gray-50);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.feedback-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.feedback-text {
+  font-weight: 600;
+  color: var(--color-gray-800);
+}
+
+.feedback-toggle-btn {
+  background: none;
+  border: none;
+  padding: var(--spacing-xs);
+  cursor: pointer;
+  color: var(--color-gray-500);
+  font-size: 1rem;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.feedback-toggle-btn:hover {
+  color: var(--color-gray-700);
+}
+
+/* Content Area */
+.feedback-content {
+  padding: var(--spacing-lg);
+}
+
+/* Section Styling */
+.feedback-section {
+  margin-bottom: var(--spacing-lg);
+}
+
+.feedback-section:last-child {
+  margin-bottom: 0;
+}
+
+.section-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-gray-800);
+  margin-bottom: var(--spacing-sm);
+}
+
+/* Rating Buttons */
+.rating-buttons {
+  display: flex;
+  gap: var(--spacing-sm);
+}
+
+.rating-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-md);
+  background: white;
+  border: 2px solid var(--color-gray-200);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 80px;
+}
+
+.rating-btn:hover {
+  border-color: var(--color-gray-300);
+  background: var(--color-gray-50);
+}
+
+.rating-btn.active {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.rating-btn.positive.active {
+  border-color: var(--color-success);
+  background: var(--color-success-light);
+}
+
+.rating-btn.negative.active {
+  border-color: var(--color-error);
+  background: var(--color-error-light);
+}
+
+.rating-icon {
+  font-size: 1.5rem;
+}
+
+.rating-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-gray-700);
+}
+
+/* Checkbox Styling */
+.suggestion-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: var(--color-gray-700);
+  position: relative;
+}
+
+.suggestion-toggle input[type="checkbox"] {
+  margin: 0;
+  margin-right: var(--spacing-sm);
+}
+
+.checkmark {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border: 2px solid var(--color-gray-300);
+  border-radius: var(--radius-sm);
+  transition: all 0.2s ease;
+}
+
+.suggestion-toggle input:checked + .checkmark {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.suggestion-toggle input:checked + .checkmark::after {
+  content: '✓';
+  position: absolute;
+  color: white;
+  font-size: 0.75rem;
+  top: -2px;
+  left: 2px;
+}
+
+/* Textarea Styling */
+.feedback-textarea,
+.suggestion-textarea {
+  width: 100%;
+  padding: var(--spacing-md);
+  border: 2px solid var(--color-gray-200);
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  resize: vertical;
+  transition: border-color 0.2s ease;
+}
+
+.feedback-textarea:focus,
+.suggestion-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.char-count {
+  font-size: 0.75rem;
+  color: var(--color-gray-500);
+  text-align: right;
+  margin-top: var(--spacing-xs);
+}
+
+/* Action Buttons */
+.feedback-actions,
+.suggestion-actions {
+  display: flex;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-lg);
+}
+
+.submit-feedback-btn,
+.suggest-code-btn,
+.submit-suggestion-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md) var(--spacing-lg);
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.submit-feedback-btn,
+.submit-suggestion-btn {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.submit-feedback-btn:hover,
+.submit-suggestion-btn:hover {
+  background: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+}
+
+.submit-suggestion-btn:disabled {
+  background: var(--color-gray-300);
+  color: var(--color-gray-500);
+  border-color: var(--color-gray-300);
+  cursor: not-allowed;
+}
+
+.suggest-code-btn {
+  background: white;
+  color: var(--color-gray-700);
+  border-color: var(--color-gray-300);
+}
+
+.suggest-code-btn:hover {
+  background: var(--color-gray-50);
+  border-color: var(--color-gray-400);
+}
+
+/* Suggestion Form */
+.suggestion-form {
+  margin-top: var(--spacing-lg);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--color-gray-200);
+}
+
+.suggestion-fields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.field-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-gray-800);
+}
+
+.suggestion-input,
+.suggestion-select {
+  padding: var(--spacing-md);
+  border: 2px solid var(--color-gray-200);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  transition: border-color 0.2s ease;
+}
+
+.suggestion-input:focus,
+.suggestion-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Radio Button Styling */
+.radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: var(--color-gray-700);
+}
+
+.radio-option input[type="radio"] {
+  margin: 0;
+}
+
+/* Button Styling for MBS Code Card Integration */
+.feedback-button {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: white;
+  border: 1px solid var(--color-gray-300);
+  border-radius: var(--radius-md);
+  color: var(--color-gray-700);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.feedback-button:hover {
+  background: var(--color-gray-50);
+  border-color: var(--color-gray-400);
+  transform: translateY(-1px);
+}
+
+.feedback-button.has-feedback {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+  color: var(--color-primary-hover);
+}
+
+.feedback-indicator {
+  margin-left: var(--spacing-xs);
+  font-size: 0.875rem;
+}
+
+.feedback-indicator.positive {
+  color: var(--color-success);
+}
+
+.feedback-indicator.negative {
+  color: var(--color-error);
+}
+
+.feedback-indicator.neutral {
+  color: var(--color-warning);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .rating-buttons {
+    flex-direction: column;
+  }
+  
+  .rating-btn {
+    min-width: auto;
+    flex-direction: row;
+    justify-content: flex-start;
+  }
+  
+  .feedback-actions,
+  .suggestion-actions {
+    flex-direction: column;
+  }
+  
+  .feedback-panel.expanded {
+    border-radius: var(--radius-md);
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .feedback-toggle,
+  .rating-btn,
+  .submit-feedback-btn,
+  .suggest-code-btn,
+  .submit-suggestion-btn,
+  .feedback-button {
+    transition: none;
+  }
+}

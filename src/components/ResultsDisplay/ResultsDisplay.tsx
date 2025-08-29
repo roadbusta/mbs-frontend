@@ -15,7 +15,8 @@
  */
 
 import React, { useState } from 'react';
-import { AnalysisSuccessResponse, EvidenceSpan } from '../../types/api.types';
+import { AnalysisSuccessResponse, EvidenceSpan, CodeFeedback, CodeSuggestion, EnhancedCodeRecommendation } from '../../types/api.types';
+import { useCodeSelection } from '../../hooks/useCodeSelection';
 import MBSCodeCard from './MBSCodeCard';
 import ProcessingMetadata from './ProcessingMetadata';
 import HighlightedText from '../TextHighlighting/HighlightedText';
@@ -26,6 +27,12 @@ interface ResultsDisplayProps {
   results: AnalysisSuccessResponse;
   /** Original consultation text for highlighting */
   consultationText: string;
+  /** Handler for feedback submission */
+  onFeedbackSubmit?: (feedback: CodeFeedback) => void;
+  /** Handler for suggestion submission */
+  onSuggestionSubmit?: (suggestion: CodeSuggestion) => void;
+  /** Map of existing feedback by code */
+  feedbackMap?: Map<string, CodeFeedback>;
 }
 
 /**
@@ -36,15 +43,67 @@ type SortOption = 'confidence' | 'fee' | 'code';
 /**
  * Results Display Component
  */
-const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, consultationText }) => {
+const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ 
+  results, 
+  consultationText,
+  onFeedbackSubmit,
+  onSuggestionSubmit,
+  feedbackMap
+}) => {
   const [sortBy, setSortBy] = useState<SortOption>('confidence');
   const [showMetadata, setShowMetadata] = useState(false);
   const [selectedCode, setSelectedCode] = useState<string | null>(null);
 
+  // Enhanced code selection functionality
+  const enhancedRecommendations: EnhancedCodeRecommendation[] = results.recommendations.map(rec => ({
+    ...rec,
+    // Apply default schedule fee if incoming value is 0
+    schedule_fee: rec.schedule_fee === 0 ? 68.45 : rec.schedule_fee,
+    conflicts: [], // Will be populated by conflict detection in Phase 3
+    compatibleWith: [], // Will be populated by compatibility checking
+    mbsCategory: 'professional_attendances', // Default category
+    timeRequirement: 0, // Default time requirement
+    exclusionRules: []
+  }));
+
+  const {
+    selectionState,
+    toggleCodeSelection,
+    selectionSummary,
+    clearSelection
+  } = useCodeSelection(enhancedRecommendations, {
+    maxCodes: 10,
+    onSelectionChange: (selections) => {
+      console.log('Selection changed:', selections);
+    },
+    onConflictDetected: (conflicts) => {
+      console.log('Conflicts detected:', conflicts);
+    }
+  });
+
+  /**
+   * Get selection state for a specific code
+   */
+  const getSelectionState = (code: string): 'selected' | 'available' | 'compatible' | 'conflict' | 'blocked' => {
+    const isSelected = selectionState.selectedCodes.has(code);
+    if (isSelected) return 'selected';
+    
+    // For Phase 2, all unselected codes are available
+    // Phase 3 will add conflict detection logic here
+    return 'available';
+  };
+
+  /**
+   * Handle code selection toggle
+   */
+  const handleToggleSelection = (code: string, recommendation: EnhancedCodeRecommendation) => {
+    toggleCodeSelection(code, recommendation);
+  };
+
   /**
    * Sort recommendations based on selected criteria
    */
-  const sortedRecommendations = [...results.recommendations].sort((a, b) => {
+  const sortedRecommendations = [...enhancedRecommendations].sort((a, b) => {
     switch (sortBy) {
       case 'confidence':
         return b.confidence - a.confidence; // Highest first
@@ -164,6 +223,44 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, consultationTe
         />
       </div>
 
+      {/* Selection Summary */}
+      {selectionState.selectedCodes.size > 0 && (
+        <div className="selection-summary">
+          <h3>Selected MBS Codes ({selectionState.selectedCodes.size})</h3>
+          <div className="selection-details">
+            <div className="selected-codes">
+              <span className="codes-label">Codes:</span>
+              <span className="codes-list">
+                {Array.from(selectionState.selectedCodes).join(', ')}
+              </span>
+            </div>
+            <div className="selection-total">
+              <span className="total-label">Total Schedule Fee:</span>
+              <span className="total-amount">
+                ${selectionSummary.totalFee.toFixed(2)}
+              </span>
+            </div>
+            <button
+              onClick={clearSelection}
+              className="clear-selections-button"
+              type="button"
+            >
+              Clear All Selections
+            </button>
+          </div>
+          {selectionSummary.warnings.length > 0 && (
+            <div className="selection-conflicts">
+              <h4>⚠️ Selection Warnings</h4>
+              {selectionSummary.warnings.map((warning, index) => (
+                <div key={index} className="conflict-alert">
+                  <span className="conflict-message">{warning}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Confidence Distribution */}
       <div className="confidence-overview">
         <h3>Confidence Distribution</h3>
@@ -180,10 +277,11 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, consultationTe
                   <span className="level-name">{level.charAt(0).toUpperCase() + level.slice(1)}</span>
                   <span className="level-count">({count})</span>
                 </div>
+                {/* Always render bar-track to ensure consistent structure */}
                 <div className="bar-track">
                   <div 
                     className="bar-fill" 
-                    style={{ width: `${percentage}%` }}
+                    style={{ width: `${Math.max(0, percentage)}%` }}
                   ></div>
                 </div>
               </div>
@@ -200,8 +298,17 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({ results, consultationTe
             recommendation={recommendation}
             rank={index + 1}
             confidenceLevel={getConfidenceLevel(recommendation.confidence)}
-            isSelected={selectedCode === recommendation.code}
+            isSelected={selectionState.selectedCodes.has(recommendation.code)}
             onCardClick={() => handleCodeCardClick(recommendation.code)}
+            onFeedbackSubmit={onFeedbackSubmit}
+            onSuggestionSubmit={onSuggestionSubmit}
+            existingFeedback={feedbackMap?.get(recommendation.code)}
+            // Enhanced selection functionality
+            selectionState={getSelectionState(recommendation.code)}
+            onToggleSelection={handleToggleSelection}
+            conflicts={recommendation.conflicts}
+            compatibleCodes={recommendation.compatibleWith}
+            suggestions={[]} // Will be populated in Phase 3
           />
         ))}
       </div>

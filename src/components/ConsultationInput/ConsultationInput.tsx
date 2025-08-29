@@ -8,7 +8,7 @@
  * - Large text area with character counting (10-10,000 chars)
  * - Consultation context selection dropdown
  * - Input validation with visual feedback
- * - Clear and analyze actions
+ * - Clear and analyse actions
  * - Responsive design for various screen sizes
  */
 
@@ -26,12 +26,14 @@ interface ConsultationInputProps {
   context: ConsultationContext;
   /** Handler for context changes */
   onContextChange: (context: ConsultationContext) => void;
-  /** Handler for analyze button click */
-  onAnalyze: () => void;
-  /** Handler for clear button click */
-  onClear: () => void;
   /** Whether analysis is currently in progress */
   isLoading: boolean;
+  /** Whether to show action buttons (for backward compatibility) */
+  showActions?: boolean;
+  /** Handler for analyse button click (optional for layout compatibility) */
+  onAnalyze?: () => void;
+  /** Handler for clear button click (optional for layout compatibility) */
+  onClear?: () => void;
 }
 
 
@@ -52,16 +54,23 @@ const ConsultationInput: React.FC<ConsultationInputProps> = ({
   onChange,
   context,
   onContextChange,
+  isLoading,
+  showActions = true,
   onAnalyze,
   onClear,
-  isLoading,
 }) => {
+  const [hasUserInteracted, setHasUserInteracted] = React.useState(false);
 
   /**
    * Handle text area input
    */
   const handleTextChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = event.target.value;
+    
+    // Mark that user has started interacting
+    if (!hasUserInteracted) {
+      setHasUserInteracted(true);
+    }
     
     // Enforce maximum length
     if (newValue.length <= INPUT_CONSTRAINTS.MAX_LENGTH) {
@@ -75,33 +84,50 @@ const ConsultationInput: React.FC<ConsultationInputProps> = ({
   const getValidationState = () => {
     const length = value.length;
     
+    // Don't show validation errors until user has interacted
+    if (!hasUserInteracted) {
+      return {
+        isValid: true,
+        characterMessage: `${length}/${INPUT_CONSTRAINTS.MAX_LENGTH} characters`,
+        errorMessage: null,
+        type: 'neutral' as const,
+        showError: false,
+      };
+    }
+    
     if (length < INPUT_CONSTRAINTS.MIN_LENGTH) {
       return {
         isValid: false,
-        message: `Minimum ${INPUT_CONSTRAINTS.MIN_LENGTH} characters required`,
+        characterMessage: `${length}/${INPUT_CONSTRAINTS.MAX_LENGTH} characters`,
+        errorMessage: `Minimum ${INPUT_CONSTRAINTS.MIN_LENGTH} characters required`,
         type: 'error' as const,
+        showError: true,
       };
     }
     
     if (length > INPUT_CONSTRAINTS.WARNING_THRESHOLD) {
       return {
         isValid: true,
-        message: `Approaching character limit (${length}/${INPUT_CONSTRAINTS.MAX_LENGTH})`,
+        characterMessage: `Approaching character limit (${length}/${INPUT_CONSTRAINTS.MAX_LENGTH})`,
+        errorMessage: null,
         type: 'warning' as const,
+        showError: false,
       };
     }
     
     return {
       isValid: true,
-      message: `${length}/${INPUT_CONSTRAINTS.MAX_LENGTH} characters`,
+      characterMessage: `${length}/${INPUT_CONSTRAINTS.MAX_LENGTH} characters`,
+      errorMessage: null,
       type: 'success' as const,
+      showError: false,
     };
   };
 
   const validation = getValidationState();
 
   return (
-    <div className="consultation-input">
+    <div className="consultation-input h-full flex flex-col">
       {/* Section Header */}
       <div className="input-header">
         <h2>Consultation Note Analysis</h2>
@@ -129,7 +155,7 @@ const ConsultationInput: React.FC<ConsultationInputProps> = ({
             value={value}
             onChange={handleTextChange}
             placeholder="Enter consultation note here... (e.g., Patient presented with persistent cough lasting 3 weeks...)"
-            className={`consultation-textarea ${validation.type}`}
+            className={`consultation-textarea ${validation.showError ? validation.type : 'neutral'}`}
             disabled={isLoading}
             rows={12}
             aria-describedby="char-count validation-message"
@@ -138,59 +164,61 @@ const ConsultationInput: React.FC<ConsultationInputProps> = ({
           {/* Character Count */}
           <div 
             id="char-count"
-            className={`character-count ${validation.type}`}
+            className={`character-count ${validation.showError ? validation.type : 'neutral'}`}
           >
-            {validation.message}
+            {validation.characterMessage}
           </div>
           
           {/* Validation Message */}
-          {!validation.isValid && (
+          {validation.showError && !validation.isValid && validation.errorMessage && (
             <div 
               id="validation-message"
               className="validation-message error"
               role="alert"
             >
-              {validation.message}
+              {validation.errorMessage}
             </div>
           )}
         </div>
       </div>
 
-      {/* Action Buttons */}
-      <div className="input-actions">
-        <div className="primary-actions">
-          <button
-            onClick={onAnalyze}
-            disabled={!validation.isValid || isLoading || !value.trim()}
-            className="analyze-button"
-          >
-            {isLoading ? (
-              <>
-                <span className="loading-spinner"></span>
-                Analyzing...
-              </>
-            ) : (
-              'Analyze Consultation'
-            )}
-          </button>
+      {/* Action Buttons (optional for backward compatibility) */}
+      {showActions && onAnalyze && onClear && (
+        <div className="input-actions">
+          <div className="primary-actions">
+            <button
+              onClick={onAnalyze}
+              disabled={!validation.isValid || isLoading || !value.trim()}
+              className="analyse-button"
+            >
+              {isLoading ? (
+                <>
+                  <span className="loading-spinner"></span>
+                  Analysing...
+                </>
+              ) : (
+                'Analyse Consultation'
+              )}
+            </button>
+            
+            <button
+              onClick={onClear}
+              disabled={isLoading || !value.trim()}
+              className="clear-button"
+            >
+              Clear
+            </button>
+          </div>
           
-          <button
-            onClick={onClear}
-            disabled={isLoading || !value.trim()}
-            className="clear-button"
-          >
-            Clear
-          </button>
+          {/* Help Text */}
+          <div className="help-text">
+            <p>
+              <strong>Tip:</strong> Include consultation duration, symptoms, examination findings, 
+              and treatment decisions for more accurate MBS code recommendations.
+            </p>
+          </div>
         </div>
-        
-        {/* Help Text */}
-        <div className="help-text">
-          <p>
-            <strong>Tip:</strong> Include consultation duration, symptoms, examination findings, 
-            and treatment decisions for more accurate MBS code recommendations.
-          </p>
-        </div>
-      </div>
+      )}
     </div>
   );
 };

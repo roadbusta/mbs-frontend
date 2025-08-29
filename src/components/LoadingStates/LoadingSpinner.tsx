@@ -11,7 +11,7 @@
  * - Accessibility support
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './LoadingSpinner.css';
 
 interface LoadingSpinnerProps {
@@ -31,47 +31,58 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   subMessage,
   size = 'medium',
 }) => {
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const startTime = Date.now();
+    
+    const timer = setInterval(() => {
+      const elapsed = Math.floor((Date.now() - startTime) / 1000);
+      setElapsedTime(elapsed);
+      
+      // Calculate progress based on elapsed time (estimate 30 seconds max)
+      const progressPercent = Math.min((elapsed / 30) * 100, 95); // Cap at 95% until complete
+      setProgress(progressPercent);
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatTime = (seconds: number): string => {
+    if (seconds < 60) {
+      return `${seconds}s`;
+    }
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}m ${remainingSeconds}s`;
+  };
+
   return (
     <div className="loading-container" role="status" aria-live="polite">
       <div className={`loading-spinner ${size}`}>
-        {/* Animated spinner */}
-        <div className="spinner-ring">
-          <div className="spinner-inner"></div>
-        </div>
-        
         {/* Loading content */}
         <div className="loading-content">
+          <div className="loading-icon">🔍</div>
           <h3 className="loading-message">{message}</h3>
-          {subMessage && (
-            <p className="loading-sub-message">{subMessage}</p>
-          )}
+          <p className="loading-sub-message">
+            Loading time: {formatTime(elapsedTime)}
+            {subMessage && ` • ${subMessage}`}
+          </p>
           
-          {/* Progress indicator */}
+          {/* Time-based Progress Bar */}
           <div className="progress-bar">
-            <div className="progress-fill"></div>
-          </div>
-          
-          {/* Processing steps */}
-          <div className="processing-steps">
-            <div className="step active">
-              <div className="step-indicator"></div>
-              <span>Analyzing consultation</span>
-            </div>
-            <div className="step">
-              <div className="step-indicator"></div>
-              <span>Matching MBS codes</span>
-            </div>
-            <div className="step">
-              <div className="step-indicator"></div>
-              <span>Generating recommendations</span>
-            </div>
+            <div 
+              className="progress-fill" 
+              style={{ width: `${progress}%` }}
+            ></div>
           </div>
         </div>
       </div>
       
       {/* Screen reader text */}
       <span className="sr-only">
-        {message} {subMessage}
+        {message} Loading for {formatTime(elapsedTime)}
       </span>
     </div>
   );

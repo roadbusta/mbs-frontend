@@ -170,7 +170,7 @@ export const SAMPLE_SUCCESS_RESPONSE: AnalysisSuccessResponse = {
     pipeline_stages: {
       tfidf_candidates: 50,
       embedding_candidates: 20,
-      llm_analyzed: 20,
+      llm_analysed: 20,
     },
     model_used: 'gpt-4o-mini',
     timestamp: new Date().toISOString(),
