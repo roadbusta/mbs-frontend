@@ -154,7 +154,7 @@
   margin-bottom: var(--spacing-lg);
 }
 
-.analyze-button,
+.analyse-button,
 .clear-button {
   padding: var(--spacing-md);
   border-radius: var(--radius-md);
@@ -169,17 +169,17 @@
   border: none;
 }
 
-.analyze-button.primary {
+.analyse-button.primary {
   background: var(--color-primary);
   color: white;
 }
 
-.analyze-button.primary:hover:not(:disabled) {
+.analyse-button.primary:hover:not(:disabled) {
   background: var(--color-primary-hover);
   box-shadow: var(--shadow-md);
 }
 
-.analyze-button.primary:disabled {
+.analyse-button.primary:disabled {
   background: var(--color-gray-400);
   cursor: not-allowed;
   box-shadow: none;
@@ -301,7 +301,7 @@
     flex-direction: row;
   }
   
-  .analyze-button,
+  .analyse-button,
   .clear-button {
     flex: 1;
     font-size: 0.85rem;
@@ -320,7 +320,7 @@
     flex-direction: column;
   }
   
-  .analyze-button,
+  .analyse-button,
   .clear-button {
     font-size: 0.9rem;
     padding: var(--spacing-md);
@@ -335,7 +335,7 @@
   
   .progress-fill,
   .requirement-item,
-  .analyze-button,
+  .analyse-button,
   .clear-button {
     transition: none;
   }
@@ -352,7 +352,7 @@
     border-width: 2px;
   }
   
-  .analyze-button.primary:focus,
+  .analyse-button.primary:focus,
   .clear-button.secondary:focus {
     outline: 3px solid var(--color-primary);
     outline-offset: 2px;

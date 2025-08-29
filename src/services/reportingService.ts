@@ -101,7 +101,7 @@ export interface BillingAnalysisReport extends BaseReport {
       codeCount: number;
       codes: string[];
     }>;
-    optimizationSuggestions?: {
+    optimisationSuggestions?: {
       potentialUpgrades: Array<{
         currentCode: string;
         suggestedCode: string;
@@ -350,7 +350,7 @@ export function generateBillingAnalysisReport(
 
   // Optimization suggestions
   if (config.sections.recommendations) {
-    sections.optimizationSuggestions = {
+    sections.optimisationSuggestions = {
       potentialUpgrades: [],
       additionalCodes: [],
       estimatedIncrease: 0

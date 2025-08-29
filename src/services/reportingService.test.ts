@@ -321,7 +321,7 @@ describe('ReportingService', () => {
       expect(report.sections).toHaveProperty('categoryBreakdown');
     });
 
-    it('should analyze fees by category', () => {
+    it('should analyse fees by category', () => {
       const config: ReportConfiguration = {
         type: 'billing_analysis',
         sections: {
@@ -358,7 +358,7 @@ describe('ReportingService', () => {
       expect(diagnosticProcedures!.codeCount).toBe(2);
     });
 
-    it('should provide fee optimization suggestions', () => {
+    it('should provide fee optimisation suggestions', () => {
       const config: ReportConfiguration = {
         type: 'billing_analysis',
         sections: {
@@ -378,10 +378,10 @@ describe('ReportingService', () => {
         config
       );
 
-      expect(report.sections.optimizationSuggestions).toBeDefined();
-      expect(report.sections.optimizationSuggestions.potentialUpgrades).toBeDefined();
-      expect(report.sections.optimizationSuggestions.additionalCodes).toBeDefined();
-      expect(report.sections.optimizationSuggestions.estimatedIncrease).toBeGreaterThanOrEqual(0);
+      expect(report.sections.optimisationSuggestions).toBeDefined();
+      expect(report.sections.optimisationSuggestions.potentialUpgrades).toBeDefined();
+      expect(report.sections.optimisationSuggestions.additionalCodes).toBeDefined();
+      expect(report.sections.optimisationSuggestions.estimatedIncrease).toBeGreaterThanOrEqual(0);
     });
 
     it('should calculate billing statistics', () => {
@@ -632,7 +632,7 @@ describe('ReportingService', () => {
       expect(report.sections.confidenceAssessment.recommendationQuality).toBe('High');
     });
 
-    it('should analyze evidence strength', () => {
+    it('should analyse evidence strength', () => {
       const config: ReportConfiguration = {
         type: 'recommendation_report',
         sections: {

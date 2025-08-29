@@ -1,7 +1,7 @@
 /**
  * Selection Management Hooks - Phase 4 Implementation
  * 
- * Provides preset management, selection comparison, optimization suggestions,
+ * Provides preset management, selection comparison, optimisation suggestions,
  * and selection history for advanced MBS code selection management
  */
 
@@ -254,31 +254,31 @@ function calculateConflictCount(selection: Set<string>, allRecommendations: Enha
 export interface UseSelectionOptimizationReturn {
   generateOptimizationSuggestions: (
     currentSelection: Set<string>, 
-    optimizationType: 'maximize_fee' | 'minimize_conflicts' | 'upgrade_codes' | 'add_compatible'
+    optimisationType: 'maximize_fee' | 'minimize_conflicts' | 'upgrade_codes' | 'add_compatible'
   ) => void;
-  optimizationResults: OptimizationSuggestion[] | null;
+  optimisationResults: OptimizationSuggestion[] | null;
   applyOptimization: (suggestion: OptimizationSuggestion, currentSelection: Set<string>) => void;
   clearOptimization: () => void;
 }
 
 /**
- * Hook for generating optimization suggestions
+ * Hook for generating optimisation suggestions
  */
 export function useSelectionOptimization(
   allRecommendations: EnhancedCodeRecommendation[],
   onSelectionChange?: (selection: Set<string>) => void
 ): UseSelectionOptimizationReturn {
   
-  const [optimizationResults, setOptimizationResults] = useState<OptimizationSuggestion[] | null>(null);
+  const [optimisationResults, setOptimizationResults] = useState<OptimizationSuggestion[] | null>(null);
 
   const generateOptimizationSuggestions = useCallback((
     currentSelection: Set<string>,
-    optimizationType: OptimizationSuggestion['type']
+    optimisationType: OptimizationSuggestion['type']
   ) => {
     const suggestions: OptimizationSuggestion[] = [];
     const currentFee = calculateTotalFee(currentSelection, allRecommendations);
 
-    switch (optimizationType) {
+    switch (optimisationType) {
       case 'maximize_fee':
         suggestions.push(...generateMaximizeFeeeSuggestions(currentSelection, allRecommendations, currentFee));
         break;
@@ -342,13 +342,13 @@ export function useSelectionOptimization(
 
   return {
     generateOptimizationSuggestions,
-    optimizationResults,
+    optimisationResults,
     applyOptimization,
     clearOptimization
   };
 }
 
-// Helper functions for optimization suggestions
+// Helper functions for optimisation suggestions
 function calculateTotalFee(selection: Set<string>, allRecommendations: EnhancedCodeRecommendation[]): number {
   return Array.from(selection).reduce((total, code) => {
     const rec = allRecommendations.find(r => r.code === code);

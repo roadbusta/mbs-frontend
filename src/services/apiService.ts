@@ -77,22 +77,22 @@ apiClient.interceptors.response.use(
 );
 
 /**
- * Analyze consultation note and get MBS code recommendations
+ * Analyse consultation note and get MBS code recommendations
  * 
  * @param request - The analysis request containing consultation note, context, and options
  * @returns Promise resolving to analysis response
  */
-export async function analyzeConsultation(
+export async function analyseConsultation(
   request: AnalysisRequest
 ): Promise<AnalysisResponse> {
 
   try {
     // Production API call
-    console.log('[API] Making request to:', API_ENDPOINTS.analyze, 'with config:', API_CONFIG);
+    console.log('[API] Making request to:', API_ENDPOINTS.analyse, 'with config:', API_CONFIG);
     console.log('[API] Request data:', request);
     
     const response = await apiClient.post<AnalysisResponse>(
-      API_ENDPOINTS.analyze,
+      API_ENDPOINTS.analyse,
       request
     );
 

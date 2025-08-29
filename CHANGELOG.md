@@ -132,12 +132,12 @@ const rules = generateConflictRules(code, category, timeRequirement);
 - **Bulk Operations**: Select all, select by category, select by fee range, select compatible codes, invert selection
 - **Quick Filters**: Real-time filtering by category, fee range, confidence threshold, and compatibility status
 - **Undo/Redo System**: Full undo/redo functionality with 50-entry history management
-- **Keyboard Shortcuts**: Professional shortcuts (Ctrl+A, Ctrl+Z, Ctrl+Y, Delete, Escape) with customizable registration
+- **Keyboard Shortcuts**: Professional shortcuts (Ctrl+A, Ctrl+Z, Ctrl+Y, Delete, Escape) with customisable registration
 
 **Advanced Selection Management**
 - **Selection Presets**: Save, load, update, duplicate, and delete selection configurations with localStorage persistence
 - **Selection Comparison**: Side-by-side comparison of different code selections with fee analysis and conflict differences
-- **Optimization Engine**: AI-powered suggestions for fee maximization, code upgrades, compatible additions, and conflict minimization
+- **Optimisation Engine**: AI-powered suggestions for fee maximisation, code upgrades, compatible additions, and conflict minimisation
 - **Selection History**: Complete audit trail with date filtering, action filtering, and timeline management
 
 **Professional Reporting System**

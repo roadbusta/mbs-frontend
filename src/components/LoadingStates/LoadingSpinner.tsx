@@ -63,6 +63,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
       <div className={`loading-spinner ${size}`}>
         {/* Loading content */}
         <div className="loading-content">
+          <div className="loading-icon">🔍</div>
           <h3 className="loading-message">{message}</h3>
           <p className="loading-sub-message">
             Loading time: {formatTime(elapsedTime)}

@@ -7,7 +7,7 @@
  * Features:
  * - Real-time status indicators for input requirements
  * - Progress feedback during analysis
- * - Action buttons (Analyze, Clear) with proper states
+ * - Action buttons (Analyse, Clear) with proper states
  * - Professional medical-grade UI design
  */
 
@@ -26,11 +26,11 @@ interface AnalysisCardProps {
   /** Whether consultation context is selected */
   contextSelected: boolean;
   /** Whether analysis is currently in progress */
-  isAnalyzing: boolean;
+  isAnalysing: boolean;
   /** Whether input has any content */
   hasContent: boolean;
-  /** Handler for analyze button click */
-  onAnalyze: () => void;
+  /** Handler for analyse button click */
+  onAnalyse: () => void;
   /** Handler for clear button click */
   onClear: () => void;
 }
@@ -44,9 +44,9 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
   minCharacters,
   maxCharacters,
   contextSelected,
-  isAnalyzing,
+  isAnalysing,
   hasContent,
-  onAnalyze,
+  onAnalyse,
   onClear,
 }) => {
   const hasMinimumChars = characterCount >= minCharacters;
@@ -57,10 +57,10 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
       <div className="analysis-header">
         <div className="analysis-title">
           <span className="analysis-icon">📋</span>
-          <h3>Ready to Analyze</h3>
+          <h3>Ready to Analyse</h3>
         </div>
         <div className={`analysis-status ${isReady ? 'ready' : 'waiting'}`}>
-          {isAnalyzing ? 'Analyzing...' : isReady ? 'Ready' : 'Waiting for input...'}
+          {isAnalysing ? 'Analysing...' : isReady ? 'Ready' : 'Waiting for input...'}
         </div>
       </div>
 
@@ -96,25 +96,25 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
       {/* Action Buttons */}
       <div className="analysis-actions">
         <button
-          onClick={onAnalyze}
-          disabled={!isReady || isAnalyzing}
-          className="analyze-button primary"
+          onClick={onAnalyse}
+          disabled={!isReady || isAnalysing}
+          className="analyse-button primary"
         >
-          {isAnalyzing ? (
+          {isAnalysing ? (
             <>
               <span className="loading-spinner"></span>
-              Analyzing...
+              Analysing...
             </>
           ) : (
             <>
-              🔍 Analyze Consultation
+              🔍 Analyse Consultation
             </>
           )}
         </button>
         
         <button
           onClick={onClear}
-          disabled={isAnalyzing || !hasContent}
+          disabled={isAnalysing || !hasContent}
           className="clear-button secondary"
         >
           🗑️ Clear Input
@@ -122,7 +122,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
       </div>
 
       {/* Analysis Progress (shown during analysis) */}
-      {isAnalyzing && (
+      {isAnalysing && (
         <div className="analysis-progress">
           <div className="progress-header">
             <span className="progress-icon">📊</span>
@@ -131,7 +131,7 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
           <div className="progress-steps">
             <div className="progress-step active">
               <span className="step-icon">⏳</span>
-              <span className="step-text">Analyzing consultation</span>
+              <span className="step-text">Analysing consultation</span>
             </div>
             <div className="progress-step">
               <span className="step-icon">🔍</span>

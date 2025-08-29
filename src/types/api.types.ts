@@ -38,7 +38,7 @@ export interface AnalysisOptions {
  * Main analysis request structure
  */
 export interface AnalysisRequest {
-  /** The consultation note text to analyze */
+  /** The consultation note text to analyse */
   consultation_note: string;
   /** Consultation context to help with accurate code selection */
   context?: ConsultationContext;
@@ -112,8 +112,8 @@ export interface PipelineMetrics {
   tfidf_candidates: number;
   /** Number of candidates from embedding stage */
   embedding_candidates: number;
-  /** Number analyzed by LLM */
-  llm_analyzed: number;
+  /** Number analysed by LLM */
+  llm_analysed: number;
 }
 
 /**
@@ -327,7 +327,7 @@ export const DEFAULT_OPTIONS: Required<AnalysisOptions> = {
  * API endpoints
  */
 export const API_ENDPOINTS = {
-  analyze: '/api/v1/analyze',
+  analyse: '/api/v1/analyze',
   health: '/health',
   ready: '/ready',
   live: '/live',
@@ -940,7 +940,7 @@ export interface ExportData {
 }
 
 /**
- * Export options for customizing output
+ * Export options for customising output
  */
 export interface ExportOptions {
   /** Export format */
@@ -997,7 +997,36 @@ export interface SelectionHistoryEntry {
 }
 
 /**
- * Quick filter options
+ * Bulk operation types supported by the enhanced toolbar
+ */
+export type BulkOperationType = 
+  | 'select_all'
+  | 'clear_all'
+  | 'select_by_category'
+  | 'select_compatible'
+  | 'invert_selection'
+  | 'select_by_fee_range';
+
+/**
+ * Quick filter configuration for real-time filtering
+ */
+export interface QuickFilters {
+  /** Filter by MBS category */
+  category: string;
+  /** Minimum fee threshold */
+  minFee: number;
+  /** Maximum fee threshold */
+  maxFee: number;
+  /** Minimum confidence threshold */
+  minConfidence: number;
+  /** Filter by compatibility status */
+  compatibilityStatus?: 'all' | 'compatible' | 'incompatible';
+  /** Filter by conflict status */
+  conflictStatus?: 'all' | 'no_conflicts' | 'has_conflicts';
+}
+
+/**
+ * Quick filter options (legacy interface - keeping for backward compatibility)
  */
 export interface QuickFilterOptions {
   /** Filter by category */
@@ -1017,7 +1046,7 @@ export interface QuickFilterOptions {
  * Optimization suggestion result
  */
 export interface OptimizationSuggestion {
-  /** Type of optimization */
+  /** Type of optimisation */
   type: 'maximize_fee' | 'minimize_conflicts' | 'upgrade_codes' | 'add_compatible';
   /** Current total fee */
   currentFee: number;
