@@ -26,7 +26,7 @@ interface ConsultationLayoutProps {
   context: ConsultationContext;
   /** Handler for context changes */
   onContextChange: (context: ConsultationContext) => void;
-  /** Handler for analyze button click */
+  /** Handler for analyse button click */
   onAnalyze: () => void;
   /** Handler for clear button click */
   onClear: () => void;
@@ -83,9 +83,9 @@ const ConsultationLayout: React.FC<ConsultationLayoutProps> = ({
           minCharacters={INPUT_CONSTRAINTS.MIN_LENGTH}
           maxCharacters={INPUT_CONSTRAINTS.MAX_LENGTH}
           contextSelected={contextSelected}
-          isAnalyzing={isLoading}
+          isAnalysing={isLoading}
           hasContent={hasContent}
-          onAnalyze={onAnalyze}
+          onAnalyse={onAnalyze}
           onClear={onClear}
         />
       </div>

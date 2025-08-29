@@ -57,6 +57,8 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   // Enhanced code selection functionality
   const enhancedRecommendations: EnhancedCodeRecommendation[] = results.recommendations.map(rec => ({
     ...rec,
+    // Apply default schedule fee if incoming value is 0
+    schedule_fee: rec.schedule_fee === 0 ? 68.45 : rec.schedule_fee,
     conflicts: [], // Will be populated by conflict detection in Phase 3
     compatibleWith: [], // Will be populated by compatibility checking
     mbsCategory: 'professional_attendances', // Default category

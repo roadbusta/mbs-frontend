@@ -113,7 +113,7 @@ npm test -- --watch
 
 The frontend connects to a FastAPI backend that provides:
 
-- **POST /api/v1/analyze**: Analyze consultation notes
+- **POST /api/v1/analyze**: Analyse consultation notes
 - **GET /health**: Service health check
 - **GET /ready**: Readiness check
 - **GET /live**: Liveness check

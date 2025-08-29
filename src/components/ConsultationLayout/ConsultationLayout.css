@@ -14,6 +14,7 @@
   padding: var(--spacing-lg);
   background: transparent;
   box-sizing: border-box;
+  align-items: stretch;
 }
 
 /* Input Panel */
@@ -21,9 +22,18 @@
   min-width: 0; /* Prevent grid overflow */
 }
 
+.input-panel > * {
+  flex: 1;
+}
+
 /* Analysis Panel */
 .analysis-panel {
   min-width: 0; /* Prevent grid overflow */
+  display: flex;
+}
+
+.analysis-panel > * {
+  flex: 1;
 }
 
 /* Responsive Breakpoints */

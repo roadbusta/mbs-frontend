@@ -1,7 +1,7 @@
 /**
  * Test suite for Selection Management Tools - Phase 4 TDD Implementation
  * 
- * Tests for save/load presets, comparison, optimization, and history management
+ * Tests for save/load presets, comparison, optimisation, and history management
  * Following TDD: Write failing tests first, then implement to make them pass
  */
 
@@ -424,11 +424,11 @@ describe('useSelectionOptimization', () => {
     ];
   });
 
-  it('should provide optimization functionality', () => {
+  it('should provide optimisation functionality', () => {
     const { result } = renderHook(() => useSelectionOptimization(mockRecommendations));
 
     expect(result.current).toHaveProperty('generateOptimizationSuggestions');
-    expect(result.current).toHaveProperty('optimizationResults');
+    expect(result.current).toHaveProperty('optimisationResults');
     expect(result.current).toHaveProperty('applyOptimization');
     expect(result.current).toHaveProperty('clearOptimization');
   });
@@ -442,7 +442,7 @@ describe('useSelectionOptimization', () => {
       result.current.generateOptimizationSuggestions(currentSelection, 'maximize_fee');
     });
 
-    const suggestions = result.current.optimizationResults;
+    const suggestions = result.current.optimisationResults;
     expect(suggestions).not.toBeNull();
     expect(suggestions!.some(s => s.type === 'maximize_fee')).toBe(true);
     
@@ -459,7 +459,7 @@ describe('useSelectionOptimization', () => {
       result.current.generateOptimizationSuggestions(currentSelection, 'upgrade_codes');
     });
 
-    const suggestions = result.current.optimizationResults;
+    const suggestions = result.current.optimisationResults;
     const upgradeSuggestion = suggestions!.find(s => s.type === 'upgrade_codes');
     
     expect(upgradeSuggestion).toBeDefined();
@@ -477,7 +477,7 @@ describe('useSelectionOptimization', () => {
       result.current.generateOptimizationSuggestions(currentSelection, 'add_compatible');
     });
 
-    const suggestions = result.current.optimizationResults;
+    const suggestions = result.current.optimisationResults;
     const addCompatibleSuggestion = suggestions!.find(s => s.type === 'add_compatible');
     
     expect(addCompatibleSuggestion).toBeDefined();
@@ -517,7 +517,7 @@ describe('useSelectionOptimization', () => {
       result.current.generateOptimizationSuggestions(conflictedSelection, 'minimize_conflicts');
     });
 
-    const suggestions = result.current.optimizationResults;
+    const suggestions = result.current.optimisationResults;
     const conflictSuggestion = suggestions!.find(s => s.type === 'minimize_conflicts');
     
     expect(conflictSuggestion).toBeDefined();
@@ -526,7 +526,7 @@ describe('useSelectionOptimization', () => {
     )).toBe(true);
   });
 
-  it('should apply optimization suggestions', () => {
+  it('should apply optimisation suggestions', () => {
     const mockOnSelectionChange = vi.fn();
     const { result } = renderHook(() => 
       useSelectionOptimization(mockRecommendations, mockOnSelectionChange)
@@ -557,7 +557,7 @@ describe('useSelectionOptimization', () => {
     expect(mockOnSelectionChange).toHaveBeenCalledWith(new Set(['36', '110']));
   });
 
-  it('should clear optimization results', () => {
+  it('should clear optimisation results', () => {
     const { result } = renderHook(() => useSelectionOptimization(mockRecommendations));
 
     const currentSelection = new Set(['23']);
@@ -566,13 +566,13 @@ describe('useSelectionOptimization', () => {
       result.current.generateOptimizationSuggestions(currentSelection, 'maximize_fee');
     });
 
-    expect(result.current.optimizationResults).not.toBeNull();
+    expect(result.current.optimisationResults).not.toBeNull();
 
     act(() => {
       result.current.clearOptimization();
     });
 
-    expect(result.current.optimizationResults).toBeNull();
+    expect(result.current.optimisationResults).toBeNull();
   });
 });
 
@@ -650,9 +650,9 @@ describe('useSelectionHistory', () => {
     const { result } = renderHook(() => useSelectionHistory());
 
     const today = new Date();
-    const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+    const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
 
-    // Add entries
+    // Add an entry (it will have today's timestamp)
     act(() => {
       result.current.addEntry({
         action: 'select',
@@ -661,28 +661,19 @@ describe('useSelectionHistory', () => {
       });
     });
 
-    // Manually set timestamp to yesterday for testing
-    const historyWithOldEntry = [
-      {
-        ...result.current.history[0],
-        timestamp: yesterday.toISOString()
-      }
-    ];
-
-    // Mock the history to include old entry
-    result.current.history = historyWithOldEntry as any;
-
+    // Test filtering for today's range
     const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate());
     const todayEnd = new Date(todayStart.getTime() + 24 * 60 * 60 * 1000);
 
     const todayEntries = result.current.getHistoryByDate(todayStart, todayEnd);
-    expect(todayEntries).toHaveLength(0);
+    expect(todayEntries).toHaveLength(1);
 
-    const yesterdayStart = new Date(yesterday.getFullYear(), yesterday.getMonth(), yesterday.getDate());
-    const yesterdayEnd = new Date(yesterdayStart.getTime() + 24 * 60 * 60 * 1000);
+    // Test filtering for tomorrow's range (should be empty)
+    const tomorrowStart = new Date(tomorrow.getFullYear(), tomorrow.getMonth(), tomorrow.getDate());
+    const tomorrowEnd = new Date(tomorrowStart.getTime() + 24 * 60 * 60 * 1000);
 
-    const yesterdayEntries = result.current.getHistoryByDate(yesterdayStart, yesterdayEnd);
-    expect(yesterdayEntries).toHaveLength(1);
+    const tomorrowEntries = result.current.getHistoryByDate(tomorrowStart, tomorrowEnd);
+    expect(tomorrowEntries).toHaveLength(0);
   });
 
   it('should filter history by action type', () => {

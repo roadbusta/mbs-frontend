@@ -11,6 +11,9 @@
   padding: var(--spacing-xl);
   box-shadow: var(--shadow-md);
   margin-bottom: var(--spacing-lg);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 /* Header */
@@ -119,6 +122,25 @@
   resize: vertical;
   min-height: 200px;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  color: #1f2937 !important;
+  caret-color: #1f2937 !important;
+  background-color: #ffffff !important;
+  -webkit-text-fill-color: #1f2937 !important;
+  -webkit-appearance: none !important;
+}
+
+.consultation-textarea:focus {
+  caret-color: #1f2937 !important;
+}
+
+.consultation-textarea::placeholder {
+  color: #9ca3af !important;
+  -webkit-text-fill-color: #9ca3af !important;
+}
+
+.consultation-textarea::selection {
+  background-color: #3b82f6 !important;
+  color: white !important;
 }
 
 .consultation-textarea:focus {
@@ -207,7 +229,7 @@
 }
 
 /* Analyze Button */
-.analyze-button {
+.analyse-button {
   background: var(--color-primary);
   color: white;
   border: none;
@@ -222,13 +244,13 @@
   gap: var(--spacing-sm);
 }
 
-.analyze-button:hover:not(:disabled) {
+.analyse-button:hover:not(:disabled) {
   background: var(--color-primary-hover);
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
 
-.analyze-button:disabled {
+.analyse-button:disabled {
   background: var(--color-gray-400);
   cursor: not-allowed;
   transform: none;
@@ -272,7 +294,6 @@
   padding: var(--spacing-md);
   background-color: var(--color-primary-light);
   border-radius: var(--radius-md);
-  border-left: 4px solid var(--color-primary);
 }
 
 .help-text p {
@@ -296,7 +317,7 @@
     align-items: stretch;
   }
   
-  .analyze-button,
+  .analyse-button,
   .clear-button {
     justify-content: center;
   }

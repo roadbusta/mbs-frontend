@@ -8,7 +8,7 @@
  * - Large text area with character counting (10-10,000 chars)
  * - Consultation context selection dropdown
  * - Input validation with visual feedback
- * - Clear and analyze actions
+ * - Clear and analyse actions
  * - Responsive design for various screen sizes
  */
 
@@ -30,7 +30,7 @@ interface ConsultationInputProps {
   isLoading: boolean;
   /** Whether to show action buttons (for backward compatibility) */
   showActions?: boolean;
-  /** Handler for analyze button click (optional for layout compatibility) */
+  /** Handler for analyse button click (optional for layout compatibility) */
   onAnalyze?: () => void;
   /** Handler for clear button click (optional for layout compatibility) */
   onClear?: () => void;
@@ -127,7 +127,7 @@ const ConsultationInput: React.FC<ConsultationInputProps> = ({
   const validation = getValidationState();
 
   return (
-    <div className="consultation-input">
+    <div className="consultation-input h-full flex flex-col">
       {/* Section Header */}
       <div className="input-header">
         <h2>Consultation Note Analysis</h2>
@@ -189,15 +189,15 @@ const ConsultationInput: React.FC<ConsultationInputProps> = ({
             <button
               onClick={onAnalyze}
               disabled={!validation.isValid || isLoading || !value.trim()}
-              className="analyze-button"
+              className="analyse-button"
             >
               {isLoading ? (
                 <>
                   <span className="loading-spinner"></span>
-                  Analyzing...
+                  Analysing...
                 </>
               ) : (
-                'Analyze Consultation'
+                'Analyse Consultation'
               )}
             </button>
             

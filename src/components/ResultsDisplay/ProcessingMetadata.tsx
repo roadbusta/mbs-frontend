@@ -111,7 +111,7 @@ const ProcessingMetadata: React.FC<ProcessingMetadataProps> = ({ metadata }) => 
                 <div className="stage-number">3</div>
                 <div className="stage-content">
                   <span className="stage-name">LLM Analysis</span>
-                  <span className="stage-count">{metadata.pipeline_stages.llm_analyzed} analyzed</span>
+                  <span className="stage-count">{metadata.pipeline_stages.llm_analysed} analysed</span>
                 </div>
               </div>
             </div>

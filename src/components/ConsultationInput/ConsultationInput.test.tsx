@@ -50,11 +50,11 @@ describe('ConsultationInput', () => {
       expect(textarea).not.toHaveClass('error');
     });
 
-    test('should have analyze button disabled initially', () => {
+    test('should have analyse button disabled initially', () => {
       render(<ConsultationInput {...mockProps} value="" />);
       
-      const analyzeButton = screen.getByRole('button', { name: /analyze consultation/i });
-      expect(analyzeButton).toBeDisabled();
+      const analyseButton = screen.getByRole('button', { name: /analyse consultation/i });
+      expect(analyseButton).toBeDisabled();
     });
   });
 
@@ -168,7 +168,7 @@ describe('ConsultationInput', () => {
   });
 
   describe('User Interaction Flow', () => {
-    test('should enable analyze button only after valid input is entered', async () => {
+    test('should enable analyse button only after valid input is entered', async () => {
       const user = userEvent.setup();
       
       // Use a wrapper component that actually manages state
@@ -186,17 +186,17 @@ describe('ConsultationInput', () => {
       render(<TestWrapper />);
       
       const textarea = screen.getByRole('textbox', { name: /consultation note/i });
-      const analyzeButton = screen.getByRole('button', { name: /analyze consultation/i });
+      const analyseButton = screen.getByRole('button', { name: /analyse consultation/i });
       
       // Initially disabled
-      expect(analyzeButton).toBeDisabled();
+      expect(analyseButton).toBeDisabled();
       
       // Type valid text
       await user.type(textarea, 'Patient presents with chest pain lasting 2 hours');
       
       // Should be enabled after valid text
       await waitFor(() => {
-        expect(analyzeButton).not.toBeDisabled();
+        expect(analyseButton).not.toBeDisabled();
       });
     });
 

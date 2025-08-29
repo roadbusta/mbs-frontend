@@ -18,7 +18,7 @@ import Header from './components/Header/Header';
 import LoadingSpinner from './components/LoadingStates/LoadingSpinner';
 import ErrorDisplay from './components/ErrorDisplay/ErrorDisplay';
 import { AnalysisResponse, AnalysisSuccessResponse, ConsultationContext, CodeFeedback, CodeSuggestion, isSuccessResponse } from './types/api.types';
-import { analyzeConsultation } from './services/apiService';
+import { analyseConsultation } from './services/apiService';
 import './styles/App.css';
 
 /**
@@ -85,7 +85,7 @@ const App: React.FC = () => {
     if (!appState.consultationNote.trim()) {
       setAppState(prev => ({
         ...prev,
-        error: 'Please enter a consultation note before analyzing.',
+        error: 'Please enter a consultation note before analysing.',
       }));
       return;
     }
@@ -100,7 +100,7 @@ const App: React.FC = () => {
 
     try {
       // Call the API service
-      const response: AnalysisResponse = await analyzeConsultation({
+      const response: AnalysisResponse = await analyseConsultation({
         consultation_note: appState.consultationNote,
         context: appState.context,
         options: {
@@ -214,7 +214,7 @@ const App: React.FC = () => {
           {appState.isLoading && (
             <div className="loading-section">
               <LoadingSpinner 
-                message="Analyzing consultation note..."
+                message="Analysing consultation note..."
                 subMessage="This may take 6-30 seconds"
               />
             </div>

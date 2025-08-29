@@ -26,9 +26,9 @@ To add your domain, please submit a request to the development team.
 
 ## Endpoints
 
-### 1. Analyze Consultation Note
+### 1. Analyse Consultation Note
 
-Analyzes medical consultation notes and returns relevant MBS billing code recommendations with medical reasoning.
+Analyses medical consultation notes and returns relevant MBS billing code recommendations with medical reasoning.
 
 **Endpoint**: `POST /api/v1/analyze`  
 **Content-Type**: `application/json`  
@@ -53,7 +53,7 @@ Analyzes medical consultation notes and returns relevant MBS billing code recomm
 
 | Field | Type | Required | Description | Constraints |
 |-------|------|----------|-------------|-------------|
-| `consultation_note` | string | Yes | The medical consultation text to analyze | Min: 10 chars, Max: 10,000 chars |
+| `consultation_note` | string | Yes | The medical consultation text to analyse | Min: 10 chars, Max: 10,000 chars |
 | `options` | object | No | Configuration options for analysis | See options table below |
 
 #### Options Object
@@ -92,7 +92,7 @@ Analyzes medical consultation notes and returns relevant MBS billing code recomm
     "pipeline_stages": {
       "tfidf_candidates": 50,
       "embedding_candidates": 20,
-      "llm_analyzed": 20
+      "llm_analysed": 20
     },
     "model_used": "gpt-4o-mini",
     "timestamp": "2025-08-27T10:30:45Z",
@@ -384,10 +384,10 @@ API_BASE_URL = "https://mbs-rag-api-736900516853.australia-southeast1.run.app"
 
 def analyze_consultation(consultation_note, max_codes=5, min_confidence=0.6):
     """
-    Analyze a consultation note and get MBS code recommendations.
+    Analyse a consultation note and get MBS code recommendations.
     
     Args:
-        consultation_note (str): The consultation text to analyze
+        consultation_note (str): The consultation text to analyse
         max_codes (int): Maximum number of codes to return (1-10)
         min_confidence (float): Minimum confidence threshold (0.0-1.0)
     
