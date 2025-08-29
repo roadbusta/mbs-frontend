@@ -9,23 +9,25 @@ export default defineConfig({
     // Proxy API requests to the backend
     proxy: {
       '/api': {
-        // For local development against local backend
-        target: 'http://localhost:8000',
+        // Use production backend by default, or local if specified in .env
+        target: process.env.VITE_API_BASE_URL || 'https://mbs-rag-api-736900516853.australia-southeast1.run.app',
         changeOrigin: true,
-        // Uncomment below to use production backend instead
-        // target: 'https://mbs-rag-api-736900516853.australia-southeast1.run.app',
+        secure: true,
       },
       '/health': {
-        target: 'http://localhost:8000',
+        target: process.env.VITE_API_BASE_URL || 'https://mbs-rag-api-736900516853.australia-southeast1.run.app',
         changeOrigin: true,
+        secure: true,
       },
       '/ready': {
-        target: 'http://localhost:8000',
+        target: process.env.VITE_API_BASE_URL || 'https://mbs-rag-api-736900516853.australia-southeast1.run.app',
         changeOrigin: true,
+        secure: true,
       },
       '/live': {
-        target: 'http://localhost:8000',
+        target: process.env.VITE_API_BASE_URL || 'https://mbs-rag-api-736900516853.australia-southeast1.run.app',
         changeOrigin: true,
+        secure: true,
       },
     },
   },
