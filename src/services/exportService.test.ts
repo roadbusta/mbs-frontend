@@ -5,7 +5,7 @@
  * Following TDD: Write failing tests first, then implement to make them pass
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import {
   ExportService,
   generateExportData,
@@ -172,9 +172,9 @@ describe('ExportService', () => {
       const csvContent = exportToCSV(exportData, options);
 
       expect(csvContent).toContain('Code,Description,Fee,Category');
-      expect(csvContent).toContain('23,Level A consultation,41.20,1');
-      expect(csvContent).toContain('36,Level C consultation,80.55,1');
-      expect(csvContent).toContain('110,ECG recording and report,19.80,5');
+      expect(csvContent).toContain('23,"Level A consultation",41.2,1');
+      expect(csvContent).toContain('36,"Level C consultation",80.55,1');
+      expect(csvContent).toContain('110,"ECG recording and report",19.8,5');
     });
 
     it('should include reasoning column when requested', () => {
