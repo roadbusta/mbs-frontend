@@ -380,6 +380,7 @@ export type MBSCategory =
   | 'radiotherapy'
   | 'assistant_surgeon'
   | 'mental_health_services'
+  | 'mental_health'
   | 'relative_value_guide'
   | 'acupuncture';
 
@@ -955,7 +956,7 @@ export interface ExportOptions {
   /** Custom filename (optional) */
   filename?: string;
   /** Template style (for PDF/HTML) */
-  template?: 'standard' | 'detailed' | 'compact';
+  template?: 'standard' | 'detailed' | 'compact' | 'professional' | 'simple' | 'medical';
 }
 
 /**
@@ -1055,6 +1056,6 @@ export interface ReportConfiguration {
     logo?: string;
     headerText?: string;
     footerText?: string;
-    template: 'professional' | 'medical' | 'simple';
+    template: 'professional' | 'medical' | 'simple' | 'detailed';
   };
 }
