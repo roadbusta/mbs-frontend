@@ -1,0 +1,75 @@
+/**
+ * Consultation Analysis Page - Dashboard Integration Styles
+ * 
+ * Styles for the consultation analysis page within the dashboard layout.
+ * Maintains existing functionality while integrating with new navigation.
+ */
+
+.consultation-analysis-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+/* Section Spacing */
+.input-section {
+  margin-bottom: 24px;
+}
+
+.loading-section {
+  margin: 40px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.error-section {
+  margin: 24px 0;
+}
+
+.results-section {
+  margin-top: 24px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .consultation-analysis-page {
+    padding: 0;
+  }
+  
+  .input-section {
+    margin-bottom: 20px;
+  }
+  
+  .loading-section {
+    margin: 32px 0;
+  }
+  
+  .error-section {
+    margin: 20px 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .input-section {
+    margin-bottom: 16px;
+  }
+  
+  .loading-section {
+    margin: 24px 0;
+  }
+  
+  .error-section {
+    margin: 16px 0;
+  }
+  
+  .results-section {
+    margin-top: 20px;
+  }
+}
+
+/* Integration with Dashboard Layout */
+@media (max-width: 480px) {
+  .consultation-analysis-page {
+    padding: 0;
+  }
+}

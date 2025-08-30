@@ -101,10 +101,13 @@ const AnalysisCard: React.FC<AnalysisCardProps> = ({
           className="analyse-button primary"
         >
           {isAnalysing ? (
-            <>
-              <span className="loading-spinner"></span>
-              Analysing...
-            </>
+            <div className="button-loading-content">
+              <span className="button-loading-icon">⏳</span>
+              <span>Analysing...</span>
+              <div className="button-progress-bar">
+                <div className="button-progress-fill"></div>
+              </div>
+            </div>
           ) : (
             <>
               🔍 Analyse Consultation

@@ -1,0 +1,292 @@
+/**
+ * Line Chart Component Styles
+ * 
+ * SVG-based line chart styling with smooth animations and interactions.
+ */
+
+/* Line Chart Container */
+.line-chart-container {
+  position: relative;
+}
+
+.line-chart-wrapper {
+  position: relative;
+  overflow: visible;
+  width: 100%;
+  height: 100%;
+}
+
+.line-chart-svg {
+  width: 100%;
+  height: auto;
+  font-family: inherit;
+}
+
+/* Chart Elements */
+.line-chart-path {
+  transition: stroke-width 0.2s ease;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.line-chart-path:hover {
+  stroke-width: 3px;
+}
+
+.line-chart-area {
+  transition: opacity 0.2s ease;
+}
+
+.line-chart-point {
+  transition: all 0.2s ease;
+  cursor: pointer;
+  stroke: #ffffff;
+  stroke-width: 2;
+}
+
+.line-chart-point:hover {
+  r: 6;
+  stroke-width: 3;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+/* Grid */
+.grid-line {
+  stroke: #e8eaed;
+  stroke-width: 1;
+  stroke-dasharray: 2, 2;
+}
+
+.grid-label {
+  font-size: 11px;
+  fill: #5f6368;
+  font-weight: 500;
+}
+
+/* Axis Labels */
+.axis-label {
+  font-size: 12px;
+  fill: #5f6368;
+  font-weight: 600;
+}
+
+/* Tooltip */
+.line-chart-tooltip {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 1.4;
+  pointer-events: none;
+  z-index: 1000;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  transform: translateX(-50%) translateY(-100%);
+  white-space: nowrap;
+  max-width: 200px;
+}
+
+.line-chart-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: rgba(0, 0, 0, 0.9);
+}
+
+/* Color Variants */
+.line-chart-container--blue .line-chart-path {
+  stroke: #4285f4;
+}
+
+.line-chart-container--blue .line-chart-point {
+  fill: #4285f4;
+}
+
+.line-chart-container--green .line-chart-path {
+  stroke: #34a853;
+}
+
+.line-chart-container--green .line-chart-point {
+  fill: #34a853;
+}
+
+.line-chart-container--orange .line-chart-path {
+  stroke: #ff9800;
+}
+
+.line-chart-container--orange .line-chart-point {
+  fill: #ff9800;
+}
+
+.line-chart-container--red .line-chart-path {
+  stroke: #ea4335;
+}
+
+.line-chart-container--red .line-chart-point {
+  fill: #ea4335;
+}
+
+.line-chart-container--purple .line-chart-path {
+  stroke: #9c27b0;
+}
+
+.line-chart-container--purple .line-chart-point {
+  fill: #9c27b0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .line-chart-svg {
+    font-size: 10px;
+  }
+  
+  .grid-label {
+    font-size: 10px;
+  }
+  
+  .axis-label {
+    font-size: 11px;
+  }
+  
+  .line-chart-tooltip {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+  
+  .line-chart-point {
+    r: 3;
+  }
+  
+  .line-chart-point:hover {
+    r: 5;
+  }
+}
+
+@media (max-width: 480px) {
+  .line-chart-svg {
+    font-size: 9px;
+  }
+  
+  .grid-label {
+    font-size: 9px;
+  }
+  
+  .axis-label {
+    font-size: 10px;
+  }
+  
+  .line-chart-path {
+    stroke-width: 1.5;
+  }
+  
+  .line-chart-point {
+    r: 2.5;
+    stroke-width: 1.5;
+  }
+  
+  .line-chart-point:hover {
+    r: 4;
+    stroke-width: 2;
+  }
+}
+
+/* Animation for line drawing */
+@keyframes drawLine {
+  0% {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+  }
+  100% {
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 0;
+  }
+}
+
+.line-chart-path--animated {
+  animation: drawLine 1.5s ease-out;
+}
+
+/* Data point entrance animation */
+@keyframes pointEntrance {
+  0% {
+    r: 0;
+    opacity: 0;
+  }
+  50% {
+    r: 6;
+    opacity: 1;
+  }
+  100% {
+    r: 4;
+    opacity: 1;
+  }
+}
+
+.line-chart-point--animated {
+  animation: pointEntrance 0.6s ease-out;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .grid-line {
+    stroke: #666;
+    stroke-width: 1.5;
+  }
+  
+  .grid-label,
+  .axis-label {
+    fill: #000;
+    font-weight: 600;
+  }
+  
+  .line-chart-path {
+    stroke-width: 3;
+  }
+  
+  .line-chart-point {
+    stroke-width: 3;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .line-chart-path,
+  .line-chart-point,
+  .line-chart-area {
+    transition: none;
+  }
+  
+  .line-chart-path--animated,
+  .line-chart-point--animated {
+    animation: none;
+  }
+}
+
+/* Print styles */
+@media print {
+  .line-chart-tooltip {
+    display: none;
+  }
+  
+  .line-chart-path {
+    stroke-width: 2px;
+  }
+  
+  .line-chart-point {
+    fill: #000;
+    stroke: #fff;
+  }
+  
+  .grid-line {
+    stroke: #ccc;
+  }
+  
+  .grid-label,
+  .axis-label {
+    fill: #000;
+  }
+}

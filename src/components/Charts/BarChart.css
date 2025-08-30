@@ -1,0 +1,319 @@
+/**
+ * Bar Chart Component Styles
+ * 
+ * SVG-based bar chart styling with hover effects and animations.
+ */
+
+/* Bar Chart Container */
+.bar-chart-container {
+  position: relative;
+}
+
+.bar-chart-wrapper {
+  position: relative;
+  overflow: visible;
+  width: 100%;
+  height: 100%;
+}
+
+.bar-chart-svg {
+  width: 100%;
+  height: auto;
+  font-family: inherit;
+}
+
+/* Chart Elements */
+.axis-line {
+  stroke: #5f6368;
+  stroke-width: 1;
+}
+
+.axis-tick {
+  stroke: #5f6368;
+  stroke-width: 1;
+}
+
+.axis-label-text {
+  font-size: 11px;
+  fill: #5f6368;
+  font-weight: 500;
+}
+
+.axis-title {
+  font-size: 12px;
+  fill: #5f6368;
+  font-weight: 600;
+}
+
+.grid-line {
+  stroke: #e8eaed;
+  stroke-width: 1;
+  stroke-dasharray: 2, 2;
+}
+
+/* Bars */
+.bar-rect {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0.8;
+}
+
+.bar-rect:hover {
+  opacity: 1;
+  filter: brightness(1.1) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  stroke: rgba(255, 255, 255, 0.5);
+  stroke-width: 1;
+}
+
+.bar-value {
+  font-size: 11px;
+  fill: #202124;
+  font-weight: 600;
+  pointer-events: none;
+}
+
+/* Tooltip */
+.bar-chart-tooltip {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 1.4;
+  pointer-events: none;
+  z-index: 1000;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  transform: translateX(-50%) translateY(-100%);
+  white-space: nowrap;
+}
+
+.bar-chart-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: rgba(0, 0, 0, 0.9);
+}
+
+/* Horizontal Layout */
+.bar-chart-container--horizontal .axis-label-text {
+  font-size: 10px;
+}
+
+.bar-chart-container--horizontal .bar-value {
+  font-size: 10px;
+}
+
+/* Color Variants */
+.bar-chart-container--blue .bar-rect {
+  fill: #4285f4;
+}
+
+.bar-chart-container--green .bar-rect {
+  fill: #34a853;
+}
+
+.bar-chart-container--orange .bar-rect {
+  fill: #ff9800;
+}
+
+.bar-chart-container--red .bar-rect {
+  fill: #ea4335;
+}
+
+.bar-chart-container--purple .bar-rect {
+  fill: #9c27b0;
+}
+
+/* Animation */
+@keyframes barGrow {
+  0% {
+    height: 0;
+    y: 100%;
+  }
+  100% {
+    height: var(--final-height);
+    y: var(--final-y);
+  }
+}
+
+@keyframes barGrowHorizontal {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: var(--final-width);
+  }
+}
+
+.bar-rect--animated {
+  animation: barGrow 0.8s ease-out;
+}
+
+.bar-chart-container--horizontal .bar-rect--animated {
+  animation: barGrowHorizontal 0.8s ease-out;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .bar-chart-svg {
+    font-size: 10px;
+  }
+  
+  .axis-label-text {
+    font-size: 10px;
+  }
+  
+  .axis-title {
+    font-size: 11px;
+  }
+  
+  .bar-value {
+    font-size: 10px;
+  }
+  
+  .bar-chart-tooltip {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bar-chart-svg {
+    font-size: 9px;
+  }
+  
+  .axis-label-text {
+    font-size: 9px;
+  }
+  
+  .axis-title {
+    font-size: 10px;
+  }
+  
+  .bar-value {
+    font-size: 9px;
+  }
+  
+  /* Hide values on very small screens */
+  .bar-value {
+    display: none;
+  }
+}
+
+/* Stacked bars variant */
+.bar-chart-container--stacked .bar-rect {
+  stroke: white;
+  stroke-width: 1;
+}
+
+.bar-chart-container--stacked .bar-rect:hover {
+  stroke: white;
+  stroke-width: 2;
+}
+
+/* Pattern fills for accessibility */
+.bar-rect--pattern-1 {
+  fill: url(#pattern1);
+}
+
+.bar-rect--pattern-2 {
+  fill: url(#pattern2);
+}
+
+.bar-rect--pattern-3 {
+  fill: url(#pattern3);
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .axis-line,
+  .axis-tick {
+    stroke: #000;
+    stroke-width: 2;
+  }
+  
+  .grid-line {
+    stroke: #666;
+    stroke-width: 1.5;
+  }
+  
+  .axis-label-text,
+  .axis-title,
+  .bar-value {
+    fill: #000;
+    font-weight: 600;
+  }
+  
+  .bar-rect {
+    stroke: #000;
+    stroke-width: 1;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .bar-rect {
+    transition: none;
+  }
+  
+  .bar-rect--animated {
+    animation: none;
+  }
+}
+
+/* Print styles */
+@media print {
+  .bar-chart-tooltip {
+    display: none;
+  }
+  
+  .bar-rect {
+    opacity: 1;
+    filter: none;
+  }
+  
+  .axis-line,
+  .axis-tick,
+  .grid-line {
+    stroke: #000;
+  }
+  
+  .axis-label-text,
+  .axis-title,
+  .bar-value {
+    fill: #000;
+  }
+}
+
+/* Zero line emphasis */
+.zero-line {
+  stroke: #202124;
+  stroke-width: 2;
+}
+
+/* Negative value styling */
+.bar-rect--negative {
+  fill: #ea4335;
+  opacity: 0.7;
+}
+
+.bar-rect--negative:hover {
+  opacity: 1;
+}
+
+/* Data label positioning */
+.bar-label-outside {
+  font-size: 10px;
+  fill: #5f6368;
+  font-weight: 500;
+}
+
+.bar-label-inside {
+  font-size: 10px;
+  fill: white;
+  font-weight: 600;
+}

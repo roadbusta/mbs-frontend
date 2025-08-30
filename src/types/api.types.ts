@@ -1088,3 +1088,147 @@ export interface ReportConfiguration {
     template: 'professional' | 'medical' | 'simple' | 'detailed';
   };
 }
+
+// ============================================================================
+// Audit Trail Types
+// ============================================================================
+
+/**
+ * Types of actions that can be audited
+ */
+export type AuditActionType = 
+  | 'code_select'
+  | 'code_deselect'
+  | 'bulk_select_all'
+  | 'bulk_clear_all'
+  | 'bulk_select_category'
+  | 'bulk_select_compatible'
+  | 'bulk_invert_selection'
+  | 'analysis_start'
+  | 'analysis_complete'
+  | 'analysis_error'
+  | 'export_data'
+  | 'filter_apply'
+  | 'preset_save'
+  | 'preset_load'
+  | 'session_start'
+  | 'session_end';
+
+/**
+ * Audit log entry structure
+ */
+export interface AuditLogEntry {
+  /** Unique identifier for this entry */
+  id: string;
+  /** Type of action performed */
+  action: AuditActionType;
+  /** Human-readable description of the action */
+  description: string;
+  /** Timestamp when action occurred */
+  timestamp: string;
+  /** User identifier (if available) */
+  userId?: string;
+  /** Session identifier */
+  sessionId: string;
+  /** Additional data specific to the action */
+  metadata: {
+    /** MBS code affected (if applicable) */
+    code?: string;
+    /** Codes affected (for bulk operations) */
+    codes?: string[];
+    /** Selection state before action */
+    previousState?: {
+      selectedCodes: string[];
+      totalFee: number;
+    };
+    /** Selection state after action */
+    newState?: {
+      selectedCodes: string[];
+      totalFee: number;
+    };
+    /** Error details (if applicable) */
+    error?: {
+      message: string;
+      code?: string;
+    };
+    /** Export details (if applicable) */
+    export?: {
+      format: ExportFormat;
+      codeCount: number;
+      filename?: string;
+    };
+    /** Filter details (if applicable) */
+    filters?: QuickFilters;
+    /** Analysis details (if applicable) */
+    analysis?: {
+      consultationLength: number;
+      context?: ConsultationContext;
+      processingTimeMs?: number;
+      recommendationCount?: number;
+    };
+    /** Additional contextual data */
+    [key: string]: any;
+  };
+}
+
+/**
+ * Audit trail summary statistics
+ */
+export interface AuditTrailSummary {
+  /** Total number of actions */
+  totalActions: number;
+  /** Session duration in seconds */
+  sessionDurationSeconds: number;
+  /** Most frequent action type */
+  mostFrequentAction: AuditActionType;
+  /** Number of codes analyzed */
+  codesAnalyzed: number;
+  /** Number of selections made */
+  selectionsCount: number;
+  /** Number of deselections made */
+  deselectionsCount: number;
+  /** Number of exports performed */
+  exportsCount: number;
+  /** Session start time */
+  sessionStartTime: string;
+  /** Last activity time */
+  lastActivityTime: string;
+}
+
+/**
+ * Audit trail filter options
+ */
+export interface AuditTrailFilters {
+  /** Filter by action type */
+  actionTypes?: AuditActionType[];
+  /** Filter by time range */
+  timeRange?: {
+    start: string;
+    end: string;
+  };
+  /** Filter by code */
+  code?: string;
+  /** Filter by user */
+  userId?: string;
+  /** Text search in descriptions */
+  searchText?: string;
+}
+
+/**
+ * Audit trail export configuration
+ */
+export interface AuditTrailExportConfig {
+  /** Export format */
+  format: 'csv' | 'json' | 'html';
+  /** Include metadata */
+  includeMetadata: boolean;
+  /** Include summary statistics */
+  includeSummary: boolean;
+  /** Time range for export */
+  timeRange?: {
+    start: string;
+    end: string;
+  };
+  /** Actions to include */
+  actionTypes?: AuditActionType[];
+}

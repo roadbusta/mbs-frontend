@@ -625,3 +625,96 @@ export function useSelectionHistory(
     getHistoryByAction
   };
 }
+
+// ============================================================================
+// Combined Selection Management Hook
+// ============================================================================
+
+export interface UseSelectionManagementConfig {
+  onPresetChange?: (presetId: string, preset: SelectionPreset) => void;
+  onOptimizationApply?: (suggestion: OptimizationSuggestion) => void;
+  maxHistorySize?: number;
+}
+
+export interface UseSelectionManagementReturn {
+  // Presets
+  presets: SelectionPreset[];
+  presetOperations: {
+    save: (preset: Omit<SelectionPreset, 'id' | 'createdAt' | 'modifiedAt'>) => void;
+    load: (presetId: string) => void;
+    delete: (presetId: string) => void;
+  };
+  
+  // Optimization
+  optimizationSuggestions: OptimizationSuggestion[];
+  optimizationActions: {
+    apply: (suggestion: OptimizationSuggestion) => void;
+  };
+  
+  // History
+  selectionHistory: SelectionHistoryEntry[];
+  
+  // Comparison
+  selectionComparison: {
+    start: () => void;
+    isActive: boolean;
+    comparisonState: any;
+  };
+}
+
+/**
+ * Main selection management hook that combines all selection management functionality
+ */
+export function useSelectionManagement(
+  selectionState: any, // SelectionState type
+  allRecommendations: EnhancedCodeRecommendation[],
+  config: UseSelectionManagementConfig = {}
+): UseSelectionManagementReturn {
+  
+  // Initialize individual hooks
+  const presetHook = useSelectionPresets(config.onPresetChange);
+  const optimizationHook = useSelectionOptimization(allRecommendations, config.onOptimizationApply);
+  const historyHook = useSelectionHistory(config.maxHistorySize);
+  const comparisonHook = useSelectionComparison(allRecommendations);
+  
+  // Generate optimization suggestions when selection changes
+  const [optimizationSuggestions, setOptimizationSuggestions] = useState<OptimizationSuggestion[]>([]);
+ 
+  // Effect A: trigger generation when selection changes
+  useEffect(() => {
+    if (selectionState?.selectedCodes?.size > 0) {
+      optimizationHook.generateOptimizationSuggestions(selectionState.selectedCodes, 'maximize_fee');
+    } else {
+      setOptimizationSuggestions([]);
+    }
+  }, [selectionState?.selectedCodes]);
+ 
+  // Effect B: mirror latest optimisation results into local state
+  useEffect(() => {
+    setOptimizationSuggestions(optimizationHook.optimisationResults || []);
+  }, [optimizationHook.optimisationResults]);
+  
+  return {
+    presets: presetHook.presets,
+    presetOperations: {
+      save: presetHook.savePreset,
+      load: presetHook.loadPreset,
+      delete: presetHook.deletePreset,
+    },
+    optimizationSuggestions,
+    optimizationActions: {
+      apply: (suggestion: OptimizationSuggestion) => {
+        optimizationHook.applyOptimization(suggestion, selectionState?.selectedCodes || new Set());
+        config.onOptimizationApply?.(suggestion);
+      },
+    },
+    selectionHistory: historyHook.history,
+    selectionComparison: {
+      start: () => {
+        // Implementation for comparison start
+      },
+      isActive: false,
+      comparisonState: null,
+    },
+  };
+}

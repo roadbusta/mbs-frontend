@@ -1,0 +1,375 @@
+/**
+ * Performance Analytics Page Styles
+ * 
+ * Professional healthcare analytics dashboard styling with responsive design.
+ */
+
+/* Main Container */
+.performance-analytics {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+/* Header Section */
+.analytics-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+  padding: 24px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e8eaed;
+}
+
+.header-content h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #202124;
+  margin: 0 0 8px 0;
+  line-height: 1.2;
+}
+
+.header-content p {
+  font-size: 16px;
+  color: #5f6368;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Time Range Selector */
+.time-range-selector {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.time-range-selector label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #5f6368;
+  white-space: nowrap;
+}
+
+.time-range-select {
+  padding: 8px 12px;
+  border: 1px solid #dadce0;
+  border-radius: 6px;
+  font-size: 14px;
+  background: #ffffff;
+  color: #202124;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  min-width: 140px;
+}
+
+.time-range-select:focus {
+  outline: none;
+  border-color: #4285f4;
+  box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+}
+
+/* Analytics Sections */
+.analytics-section {
+  margin-bottom: 40px;
+}
+
+.analytics-section h2 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #202124;
+  margin: 0 0 20px 0;
+  padding-left: 4px;
+}
+
+/* KPI Grid */
+.analytics-kpi-grid {
+  margin-bottom: 8px;
+}
+
+/* Charts Grid */
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.chart-item {
+  min-height: 350px;
+  width: 100%;
+}
+
+/* Chart Variants */
+.trend-chart {
+  background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+}
+
+.volume-chart {
+  background: linear-gradient(135deg, #f0f8ff 0%, #ffffff 100%);
+}
+
+.distribution-chart {
+  background: linear-gradient(135deg, #fff8f0 0%, #ffffff 100%);
+}
+
+.error-chart {
+  background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%);
+}
+
+.satisfaction-chart {
+  background: linear-gradient(135deg, #f8f0ff 0%, #ffffff 100%);
+}
+
+/* Loading and Error States */
+.loading-state,
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  text-align: center;
+  padding: 40px;
+}
+
+.loading-spinner-large {
+  width: 48px;
+  height: 48px;
+  border: 4px solid #e8eaed;
+  border-top: 4px solid #4285f4;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loading-state p {
+  font-size: 16px;
+  color: #5f6368;
+  margin: 0;
+}
+
+.error-state h2 {
+  font-size: 24px;
+  font-weight: 600;
+  color: #ea4335;
+  margin: 0 0 12px 0;
+}
+
+.error-state p {
+  font-size: 16px;
+  color: #5f6368;
+  margin: 0 0 24px 0;
+  line-height: 1.4;
+}
+
+.retry-button {
+  background: #4285f4;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.retry-button:hover {
+  background: #3367d6;
+}
+
+.retry-button:focus {
+  outline: 2px solid #4285f4;
+  outline-offset: 2px;
+}
+
+/* Single column chart layout for specific sections */
+.analytics-section--single-column .charts-grid {
+  grid-template-columns: 1fr;
+}
+
+.analytics-section--single-column .chart-item {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .charts-grid {
+    gap: 20px;
+  }
+  
+  .analytics-header {
+    padding: 20px;
+  }
+  
+  .header-content h1 {
+    font-size: 24px;
+  }
+  
+  .header-content p {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .analytics-header {
+    flex-direction: column;
+    gap: 20px;
+    align-items: stretch;
+  }
+  
+  .time-range-selector {
+    align-self: flex-end;
+  }
+  
+  .charts-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  
+  .chart-item {
+    min-height: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .performance-analytics {
+    padding: 0;
+  }
+  
+  .analytics-header {
+    margin-bottom: 24px;
+    padding: 16px;
+    border-radius: 8px;
+  }
+  
+  .header-content h1 {
+    font-size: 22px;
+  }
+  
+  .analytics-section {
+    margin-bottom: 32px;
+  }
+  
+  .analytics-section h2 {
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+  
+  .time-range-selector {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  
+  .time-range-select {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .analytics-header {
+    padding: 12px;
+  }
+  
+  .header-content h1 {
+    font-size: 20px;
+  }
+  
+  .header-content p {
+    font-size: 13px;
+  }
+  
+  .analytics-section h2 {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+  
+  .charts-grid {
+    gap: 12px;
+  }
+  
+  .chart-item {
+    min-height: 250px;
+  }
+  
+  .loading-state,
+  .error-state {
+    min-height: 300px;
+    padding: 20px;
+  }
+  
+  .loading-spinner-large {
+    width: 40px;
+    height: 40px;
+    border-width: 3px;
+  }
+}
+
+/* Focus and Accessibility */
+.performance-analytics *:focus {
+  outline: 2px solid #4285f4;
+  outline-offset: 2px;
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .analytics-header,
+  .chart-item {
+    border-width: 2px;
+  }
+  
+  .header-content h1,
+  .analytics-section h2 {
+    font-weight: 700;
+  }
+  
+  .time-range-select {
+    border-width: 2px;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .loading-spinner-large,
+  .time-range-select,
+  .retry-button {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .performance-analytics {
+    background: white;
+  }
+  
+  .time-range-selector {
+    display: none;
+  }
+  
+  .loading-state,
+  .error-state {
+    display: none;
+  }
+  
+  .charts-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    break-inside: avoid;
+  }
+  
+  .chart-item {
+    break-inside: avoid;
+    margin-bottom: 20px;
+  }
+}

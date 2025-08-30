@@ -15,8 +15,12 @@
  */
 
 import React, { useState } from 'react';
-import { AnalysisSuccessResponse, EvidenceSpan, CodeFeedback, CodeSuggestion, EnhancedCodeRecommendation } from '../../types/api.types';
+import { AnalysisSuccessResponse, EvidenceSpan, CodeFeedback, CodeSuggestion, EnhancedCodeRecommendation, BulkOperationType } from '../../types/api.types';
 import { useCodeSelection } from '../../hooks/useCodeSelection';
+import { useEnhancedUX } from '../../hooks/useEnhancedUX';
+import { useSelectionManagement } from '../../hooks/useSelectionManagement';
+import EnhancedToolbar from '../EnhancedToolbar/EnhancedToolbar';
+import SelectionPanel from '../SelectionPanel/SelectionPanel';
 import MBSCodeCard from './MBSCodeCard';
 import ProcessingMetadata from './ProcessingMetadata';
 import HighlightedText from '../TextHighlighting/HighlightedText';
@@ -70,7 +74,9 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     selectionState,
     toggleCodeSelection,
     selectionSummary,
-    clearSelection
+    clearSelection,
+    selectCode,
+    deselectCode
   } = useCodeSelection(enhancedRecommendations, {
     maxCodes: 10,
     onSelectionChange: (selections) => {
@@ -78,6 +84,51 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
     },
     onConflictDetected: (conflicts) => {
       console.log('Conflicts detected:', conflicts);
+    }
+  });
+
+  // Enhanced UX functionality for toolbar
+  const handleSelectionSetChange = (newSelection: Set<string>) => {
+    const current = selectionState.selectedCodes;
+    // Deselect codes not in the new selection
+    Array.from(current)
+      .filter(code => !newSelection.has(code))
+      .forEach(code => deselectCode(code));
+    // Select codes that are new
+    Array.from(newSelection)
+      .filter(code => !current.has(code))
+      .forEach(code => {
+        const rec = enhancedRecommendations.find(r => r.code === code);
+        if (rec) {
+          selectCode(code, rec);
+        }
+      });
+  };
+
+  const {
+    bulkOperations,
+    quickFilters,
+    undoRedo
+  } = useEnhancedUX(
+    enhancedRecommendations,
+    selectionState.selectedCodes,
+    handleSelectionSetChange
+  );
+
+  // Selection management functionality for panel
+  const {
+    presets,
+    optimizationSuggestions,
+    selectionHistory,
+    presetOperations,
+    optimizationActions,
+    selectionComparison
+  } = useSelectionManagement(selectionState, enhancedRecommendations, {
+    onPresetChange: (presetId, preset) => {
+      console.log('Preset change:', presetId, preset);
+    },
+    onOptimizationApply: (suggestion) => {
+      console.log('Optimization apply:', suggestion);
     }
   });
 
@@ -101,9 +152,9 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
   };
 
   /**
-   * Sort recommendations based on selected criteria
+   * Sort recommendations based on selected criteria (use filtered recommendations)
    */
-  const sortedRecommendations = [...enhancedRecommendations].sort((a, b) => {
+  const sortedRecommendations = [...(quickFilters.filteredRecommendations || enhancedRecommendations)].sort((a, b) => {
     switch (sortBy) {
       case 'confidence':
         return b.confidence - a.confidence; // Highest first
@@ -150,14 +201,95 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
 
   return (
     <div className="results-display">
-      {/* Results Header */}
-      <div className="results-header">
-        <div className="results-title">
-          <h2>MBS Code Recommendations</h2>
-          <p className="results-summary">
-            Found {results.recommendations.length} recommendation{results.recommendations.length !== 1 ? 's' : ''}
-          </p>
+      {/* Enhanced Toolbar */}
+      <EnhancedToolbar
+        selectedCodes={Array.from(selectionState.selectedCodes)}
+        recommendations={enhancedRecommendations}
+        onBulkOperation={(operation: BulkOperationType, data?: string) => {
+          switch (operation) {
+            case 'select_all':
+              bulkOperations.selectAll();
+              break;
+            case 'clear_all':
+              bulkOperations.selectNone();
+              break;
+            case 'select_by_category':
+              if (data) bulkOperations.selectByCategory(data as any);
+              break;
+            case 'select_compatible':
+              bulkOperations.selectCompatibleWith(selectionState.selectedCodes);
+              break;
+            case 'invert_selection':
+              bulkOperations.invertSelection(selectionState.selectedCodes);
+              break;
+            case 'select_by_fee_range':
+              if (data) {
+                const [minStr, maxStr] = data.split(',');
+                const min = Number(minStr);
+                const max = Number(maxStr);
+                if (!Number.isNaN(min) && !Number.isNaN(max)) {
+                  bulkOperations.selectByFeeRange(min, max);
+                }
+              }
+              break;
+          }
+        }}
+        onFilterChange={(filters) => {
+          // Map toolbar filters into quick filter hook (legacy options)
+          quickFilters.applyFilter({
+            feeRange: { min: filters.minFee, max: filters.maxFee },
+            minConfidence: filters.minConfidence,
+          });
+        }}
+        onExport={(format) => {
+          console.log('Export:', format);
+        }}
+        onUndo={() => undoRedo.undo()}
+        onRedo={() => undoRedo.redo()}
+        canUndo={undoRedo.canUndo}
+        canRedo={undoRedo.canRedo}
+        totalSelectedFee={selectionSummary.totalFee}
+        conflictCount={Array.from(selectionState?.conflicts?.values() || []).reduce((sum, rules) => sum + (rules?.length || 0), 0)}
+        isLoading={false}
+      />
+
+      {/* Main Content Layout */}
+      <div className="results-content">
+        {/* Selection Panel */}
+        <div className="results-sidebar">
+          <SelectionPanel
+            selectionState={selectionState}
+            presets={presets}
+            optimizationSuggestions={optimizationSuggestions}
+            selectionHistory={selectionHistory}
+            onPresetSave={(preset) => presetOperations.save({
+              name: preset.name,
+              description: preset.description,
+              selectedCodes: Array.from(selectionState.selectedCodes),
+            })}
+            onPresetLoad={presetOperations.load}
+            onPresetDelete={presetOperations.delete}
+            onOptimizationApply={optimizationActions.apply}
+            onSelectionRevert={(historyId: string) => {
+              console.log('Revert to history:', historyId);
+            }}
+            onComparisonStart={selectionComparison.start}
+            isComparisonMode={selectionComparison.isActive}
+            comparisonSelection={selectionComparison.comparisonState}
+            isLoading={false}
+          />
         </div>
+
+        {/* Main Results Area */}
+        <div className="results-main">
+          {/* Results Header */}
+          <div className="results-header">
+            <div className="results-title">
+              <h2>MBS Code Recommendations</h2>
+              <p className="results-summary">
+                Found {sortedRecommendations.length} of {results.recommendations.length} recommendation{results.recommendations.length !== 1 ? 's' : ''}
+              </p>
+            </div>
 
         {/* Sort and Filter Controls */}
         <div className="results-controls">
@@ -290,64 +422,66 @@ const ResultsDisplay: React.FC<ResultsDisplayProps> = ({
         </div>
       </div>
 
-      {/* MBS Code Cards */}
-      <div className="recommendations-grid">
-        {sortedRecommendations.map((recommendation, index) => (
-          <MBSCodeCard
-            key={`${recommendation.code}-${index}`}
-            recommendation={recommendation}
-            rank={index + 1}
-            confidenceLevel={getConfidenceLevel(recommendation.confidence)}
-            isSelected={selectionState.selectedCodes.has(recommendation.code)}
-            onCardClick={() => handleCodeCardClick(recommendation.code)}
-            onFeedbackSubmit={onFeedbackSubmit}
-            onSuggestionSubmit={onSuggestionSubmit}
-            existingFeedback={feedbackMap?.get(recommendation.code)}
-            // Enhanced selection functionality
-            selectionState={getSelectionState(recommendation.code)}
-            onToggleSelection={handleToggleSelection}
-            conflicts={recommendation.conflicts}
-            compatibleCodes={recommendation.compatibleWith}
-            suggestions={[]} // Will be populated in Phase 3
-          />
-        ))}
-      </div>
+          {/* MBS Code Cards */}
+          <div className="recommendations-grid">
+            {sortedRecommendations.map((recommendation, index) => (
+              <MBSCodeCard
+                key={`${recommendation.code}-${index}`}
+                recommendation={recommendation}
+                rank={index + 1}
+                confidenceLevel={getConfidenceLevel(recommendation.confidence)}
+                isSelected={selectionState.selectedCodes.has(recommendation.code)}
+                onCardClick={() => handleCodeCardClick(recommendation.code)}
+                onFeedbackSubmit={onFeedbackSubmit}
+                onSuggestionSubmit={onSuggestionSubmit}
+                existingFeedback={feedbackMap?.get(recommendation.code)}
+                // Enhanced selection functionality
+                selectionState={getSelectionState(recommendation.code)}
+                onToggleSelection={handleToggleSelection}
+                conflicts={recommendation.conflicts}
+                compatibleCodes={recommendation.compatibleWith}
+                suggestions={[]} // Will be populated in Phase 3
+              />
+            ))}
+          </div>
 
-      {/* Processing Metadata */}
-      {showMetadata && (
-        <ProcessingMetadata 
-          metadata={results.metadata}
-        />
-      )}
+          {/* Processing Metadata */}
+          {showMetadata && (
+            <ProcessingMetadata 
+              metadata={results.metadata}
+            />
+          )}
 
-      {/* Results Footer */}
-      <div className="results-footer">
-        <div className="disclaimer">
-          <h4>Important Notice</h4>
-          <p>
-            These are AI-generated recommendations for reference only. 
-            Always verify MBS codes against official guidelines and consult 
-            with qualified medical coding professionals for billing decisions.
-          </p>
-        </div>
-        
-        <div className="help-links">
-          <a 
-            href="https://www9.health.gov.au/mbs/" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="help-link"
-          >
-            MBS Online Official Site
-          </a>
-          <a 
-            href="https://www9.health.gov.au/mbs/search.cfm" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="help-link"
-          >
-            MBS Code Search
-          </a>
+          {/* Results Footer */}
+          <div className="results-footer">
+            <div className="disclaimer">
+              <h4>Important Notice</h4>
+              <p>
+                These are AI-generated recommendations for reference only. 
+                Always verify MBS codes against official guidelines and consult 
+                with qualified medical coding professionals for billing decisions.
+              </p>
+            </div>
+            
+            <div className="help-links">
+              <a 
+                href="https://www9.health.gov.au/mbs/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="help-link"
+              >
+                MBS Online Official Site
+              </a>
+              <a 
+                href="https://www9.health.gov.au/mbs/search.cfm" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="help-link"
+              >
+                MBS Code Search
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </div>

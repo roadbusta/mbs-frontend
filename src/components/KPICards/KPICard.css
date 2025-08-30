@@ -1,0 +1,352 @@
+/**
+ * KPI Card Component Styles
+ * 
+ * Professional healthcare UI design with hover effects, animations,
+ * and accessibility features for key performance indicator cards.
+ */
+
+/* Base Card Styles */
+.kpi-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e8eaed;
+  padding: 20px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.kpi-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+}
+
+.kpi-card--clickable {
+  cursor: pointer;
+}
+
+.kpi-card--clickable:hover {
+  border-color: #4285f4;
+}
+
+.kpi-card--clickable:focus {
+  outline: 2px solid #4285f4;
+  outline-offset: 2px;
+}
+
+/* Size Variants */
+.kpi-card--small {
+  padding: 16px;
+}
+
+.kpi-card--large {
+  padding: 24px;
+}
+
+/* Color Variants */
+.kpi-card--blue {
+  border-left: 4px solid #4285f4;
+}
+
+.kpi-card--green {
+  border-left: 4px solid #34a853;
+}
+
+.kpi-card--orange {
+  border-left: 4px solid #ff9800;
+}
+
+.kpi-card--purple {
+  border-left: 4px solid #9c27b0;
+}
+
+.kpi-card--red {
+  border-left: 4px solid #ea4335;
+}
+
+/* Header Section */
+.kpi-card__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.kpi-card__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.kpi-card--blue .kpi-card__icon {
+  background: rgba(66, 133, 244, 0.1);
+  color: #4285f4;
+}
+
+.kpi-card--green .kpi-card__icon {
+  background: rgba(52, 168, 83, 0.1);
+  color: #34a853;
+}
+
+.kpi-card--orange .kpi-card__icon {
+  background: rgba(255, 152, 0, 0.1);
+  color: #ff9800;
+}
+
+.kpi-card--purple .kpi-card__icon {
+  background: rgba(156, 39, 176, 0.1);
+  color: #9c27b0;
+}
+
+.kpi-card--red .kpi-card__icon {
+  background: rgba(234, 67, 53, 0.1);
+  color: #ea4335;
+}
+
+.kpi-card__title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #5f6368;
+  line-height: 1.4;
+  flex: 1;
+}
+
+/* Content Section */
+.kpi-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.kpi-card__value {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.kpi-card__value .value {
+  font-size: 32px;
+  font-weight: 600;
+  color: #202124;
+  line-height: 1;
+}
+
+.kpi-card--small .kpi-card__value .value {
+  font-size: 24px;
+}
+
+.kpi-card--large .kpi-card__value .value {
+  font-size: 40px;
+}
+
+.kpi-card__value .unit {
+  font-size: 14px;
+  font-weight: 500;
+  color: #5f6368;
+  margin-left: 2px;
+}
+
+/* Change Indicator */
+.kpi-card__change {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.kpi-change-increase {
+  color: #34a853;
+}
+
+.kpi-change-decrease {
+  color: #ea4335;
+}
+
+.kpi-change-neutral {
+  color: #5f6368;
+}
+
+.kpi-card__change .change-icon {
+  font-size: 14px;
+}
+
+.kpi-card__change .change-period {
+  color: #5f6368;
+  margin-left: 4px;
+}
+
+/* Progress Bar */
+.kpi-card__progress {
+  margin-top: 8px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  background: #e8eaed;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4285f4, #34a853);
+  border-radius: 2px;
+  transition: width 0.5s ease;
+}
+
+.kpi-card--green .progress-fill {
+  background: #34a853;
+}
+
+.kpi-card--orange .progress-fill {
+  background: #ff9800;
+}
+
+.kpi-card--purple .progress-fill {
+  background: #9c27b0;
+}
+
+.kpi-card--red .progress-fill {
+  background: #ea4335;
+}
+
+.progress-text {
+  font-size: 11px;
+  color: #5f6368;
+  font-weight: 500;
+}
+
+/* Footer Section */
+.kpi-card__footer {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #e8eaed;
+}
+
+.kpi-card__action {
+  font-size: 12px;
+  color: #4285f4;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.kpi-card--clickable:hover .kpi-card__action {
+  color: #1a73e8;
+}
+
+/* Loading State */
+.kpi-card--loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.kpi-card--loading::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.8), transparent);
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Error State */
+.kpi-card--error {
+  border-left-color: #ea4335;
+  background: #fef7f0;
+}
+
+.kpi-card--error .kpi-card__value .value {
+  color: #ea4335;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .kpi-card {
+    padding: 16px;
+  }
+  
+  .kpi-card__value .value {
+    font-size: 28px;
+  }
+  
+  .kpi-card--small .kpi-card__value .value {
+    font-size: 20px;
+  }
+  
+  .kpi-card--large .kpi-card__value .value {
+    font-size: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .kpi-card {
+    padding: 12px;
+  }
+  
+  .kpi-card__header {
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  
+  .kpi-card__icon {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+  
+  .kpi-card__value .value {
+    font-size: 24px;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .kpi-card {
+    border-width: 2px;
+  }
+  
+  .kpi-card__change {
+    font-weight: 600;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .kpi-card {
+    transition: none;
+  }
+  
+  .kpi-card:hover {
+    transform: none;
+  }
+  
+  .progress-fill {
+    transition: none;
+  }
+  
+  .kpi-card--loading::after {
+    animation: none;
+  }
+}

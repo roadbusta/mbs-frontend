@@ -227,6 +227,8 @@ const request: AnalysisRequest = {
 
 ## 📚 Documentation
 
+- [Developer Guide](./docs/DEVELOPER_GUIDE.md) - Setup, usage, testing, and improvements
+- [Docs Index](./docs/INDEX.md) - Entry point to all project docs
 - [API Documentation](./API_DOCS.md) - Complete API reference
 - [Frontend Plan](./PRPs/planning/low-level-plans/frontend-implementation-plan.md) - Implementation roadmap
 - [Frontend Requirements](./PRPs/feature-files/frontend-requirements.md) - Detailed requirements

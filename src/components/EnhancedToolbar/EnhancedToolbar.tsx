@@ -45,8 +45,8 @@ export interface EnhancedToolbarProps {
 }
 
 const EnhancedToolbar: React.FC<EnhancedToolbarProps> = React.memo(({
-  selectedCodes,
-  recommendations,
+  selectedCodes = [],
+  recommendations = [],
   onBulkOperation,
   onFilterChange,
   onExport,
@@ -54,7 +54,7 @@ const EnhancedToolbar: React.FC<EnhancedToolbarProps> = React.memo(({
   onRedo,
   canUndo,
   canRedo,
-  totalSelectedFee,
+  totalSelectedFee = 0,
   conflictCount,
   isLoading = false
 }) => {
@@ -71,29 +71,37 @@ const EnhancedToolbar: React.FC<EnhancedToolbarProps> = React.memo(({
   const [exportFormat, setExportFormat] = useState<ExportFormat>('csv');
   const [feeValidationError, setFeeValidationError] = useState('');
   const [filtersActive, setFiltersActive] = useState(false);
+  const [showMoreFilters, setShowMoreFilters] = useState(false);
 
   // Memoized values for performance
   const uniqueCategories = useMemo(() => {
-    const categories = [...new Set(recommendations.map(rec => rec.category))].sort();
+    const categories = [
+      ...new Set(
+        recommendations
+          .map(rec => rec.mbsCategory)
+          .filter((c): c is EnhancedCodeRecommendation['mbsCategory'] => Boolean(c))
+      )
+    ].sort();
     return categories;
   }, [recommendations]);
 
   const selectionSummary = useMemo(() => {
-    const selectedCount = selectedCodes.length;
-    const totalCodes = recommendations.length;
-    const formattedFee = totalSelectedFee.toLocaleString('en-AU', {
+    const selectedCount = selectedCodes?.length || 0;
+    const totalCodes = recommendations?.length || 0;
+    const formattedFee = (totalSelectedFee || 0).toLocaleString('en-AU', {
       style: 'currency',
       currency: 'AUD',
       minimumFractionDigits: 2
     });
+    const safeConflictCount = conflictCount || 0;
     
     return {
       selectedCount,
       totalCodes,
       formattedFee,
-      conflictText: conflictCount === 1 ? '1 conflict' : `${conflictCount} conflicts`
+      conflictText: safeConflictCount === 1 ? '1 conflict' : `${safeConflictCount} conflicts`
     };
-  }, [selectedCodes.length, recommendations.length, totalSelectedFee, conflictCount]);
+  }, [selectedCodes?.length, recommendations?.length, totalSelectedFee, conflictCount]);
 
   // Debounced filter change handler
   const debouncedFilterChange = useCallback(
@@ -124,7 +132,7 @@ const EnhancedToolbar: React.FC<EnhancedToolbarProps> = React.memo(({
     
     setFilters(newFilters);
     setFiltersActive(
-      newFilters.category !== '' ||
+      (newFilters.category ?? '') !== '' ||
       newFilters.minFee > 0 ||
       newFilters.maxFee < 1000 ||
       newFilters.minConfidence > 0.6
@@ -223,61 +231,57 @@ const EnhancedToolbar: React.FC<EnhancedToolbarProps> = React.memo(({
       onKeyDown={handleKeyDown}
       tabIndex={-1}
     >
-      {/* Selection Summary */}
-      <div className="selection-summary" aria-label="Selection Summary">
-        <div className="summary-stat">
-          <span className="stat-value">{selectionSummary.selectedCount}</span>
-          <span className="stat-label">selected</span>
+      {/* First Row: Selection Summary + Quick Actions */}
+      <div className="toolbar-row">
+        {/* Selection Summary */}
+        <div className="selection-summary" aria-label="Selection Summary">
+          <div className="summary-stat">
+            <span className="stat-value">{selectionSummary.selectedCount}</span>
+            <span className="stat-label">selected</span>
+          </div>
+          <div className="summary-divider"></div>
+          <div className="summary-stat">
+            <span className="stat-value">{selectionSummary.formattedFee}</span>
+            <span className="stat-label">total fee</span>
+          </div>
+          <div className="summary-divider"></div>
+          <div className="summary-stat">
+            <span className={`stat-value ${conflictCount > 0 ? 'has-conflicts' : ''}`}>
+              {conflictCount || 0}
+            </span>
+            <span className="stat-label">conflicts</span>
+          </div>
+          <div className="summary-divider"></div>
+          <div className="summary-stat">
+            <span className="stat-value">{selectionSummary.totalCodes}</span>
+            <span className="stat-label">total codes</span>
+          </div>
         </div>
-        <div className="summary-divider">•</div>
-        <div className="summary-stat">
-          <span className="stat-value">{selectionSummary.formattedFee}</span>
-          <span className="stat-label">total fee</span>
-        </div>
-        <div className="summary-divider">•</div>
-        <div className="summary-stat">
-          <span className={`stat-value ${conflictCount > 0 ? 'has-conflicts' : ''}`}>
-            {conflictCount}
-          </span>
-          <span className="stat-label">
-            {conflictCount === 1 ? 'conflict' : 'conflicts'}
-          </span>
-        </div>
-        <div className="summary-divider">•</div>
-        <div className="summary-stat">
-          <span className="stat-value">{selectionSummary.totalCodes}</span>
-          <span className="stat-label">total codes</span>
-        </div>
-      </div>
 
-      {/* Bulk Operations Section */}
-      <div className="toolbar-section bulk-operations" aria-label="Bulk Operations">
-        <h3 className="section-title">Bulk Operations</h3>
-        <div className="button-group">
+        {/* Quick Actions */}
+        <div className="toolbar-section">
           <button
             type="button"
             className="toolbar-button primary"
             onClick={() => handleBulkOperation('select_all')}
             disabled={isLoading}
             title="Select All (Ctrl+A)"
-            aria-label="Select All Codes"
           >
             <span className="button-icon">☑️</span>
             <span className="button-text">Select All</span>
             <span className="keyboard-shortcut">Ctrl+A</span>
           </button>
-
+          
           <button
             type="button"
             className="toolbar-button secondary"
             onClick={() => handleBulkOperation('clear_all')}
             disabled={isLoading}
-            title="Clear Selection (Delete)"
-            aria-label="Clear Selection"
+            title="Clear All (Delete)"
           >
             <span className="button-icon">🗑️</span>
-            <span className="button-text">Clear Selection</span>
-            <span className="keyboard-shortcut">Delete</span>
+            <span className="button-text">Clear All</span>
+            <span className="keyboard-shortcut">Del</span>
           </button>
 
           <div className="category-dropdown">
@@ -286,11 +290,10 @@ const EnhancedToolbar: React.FC<EnhancedToolbarProps> = React.memo(({
               className="toolbar-button secondary"
               onClick={() => setCategoryDropdownOpen(!categoryDropdownOpen)}
               disabled={isLoading}
-              aria-label="Select by Category"
               aria-expanded={categoryDropdownOpen}
             >
               <span className="button-icon">📂</span>
-              <span className="button-text">Select by Category</span>
+              <span className="button-text">Category</span>
               <span className="dropdown-arrow">▼</span>
             </button>
             
@@ -304,181 +307,49 @@ const EnhancedToolbar: React.FC<EnhancedToolbarProps> = React.memo(({
                     onClick={() => handleCategorySelect(category)}
                     role="menuitem"
                   >
-                    Category {category}
+                    {category}
                   </button>
                 ))}
               </div>
             )}
           </div>
-
-          <button
-            type="button"
-            className="toolbar-button secondary"
-            onClick={() => handleBulkOperation('select_compatible')}
-            disabled={isLoading}
-            title="Select Compatible Codes"
-            aria-label="Select Compatible Codes"
-          >
-            <span className="button-icon">🔗</span>
-            <span className="button-text">Select Compatible</span>
-          </button>
-
-          <button
-            type="button"
-            className="toolbar-button secondary"
-            onClick={() => handleBulkOperation('invert_selection')}
-            disabled={isLoading}
-            title="Invert Selection"
-            aria-label="Invert Selection"
-          >
-            <span className="button-icon">🔄</span>
-            <span className="button-text">Invert Selection</span>
-          </button>
         </div>
-      </div>
 
-      {/* Quick Filters Section */}
-      <div className="toolbar-section quick-filters" aria-label="Quick Filters">
-        <div className="section-header">
-          <h3 className="section-title">Quick Filters</h3>
-          {filtersActive && (
+        {/* Export & History */}
+        <div className="toolbar-section">
+          <div className="export-controls">
+            <div className="export-group">
+              <select
+                className="filter-select"
+                value={exportFormat}
+                onChange={(e) => setExportFormat(e.target.value as ExportFormat)}
+                title="Export Format"
+              >
+                <option value="csv">CSV</option>
+                <option value="json">JSON</option>
+                <option value="html">HTML</option>
+                <option value="pdf">PDF</option>
+              </select>
+            </div>
+
             <button
               type="button"
-              className="reset-button"
-              onClick={handleResetFilters}
-              aria-label="Reset Filters"
+              className="toolbar-button primary"
+              onClick={handleExport}
+              disabled={selectedCodes.length === 0 || isLoading}
+              title="Export Selected Codes"
             >
-              Reset Filters
+              <span className="button-icon">💾</span>
+              <span className="button-text">Export</span>
             </button>
-          )}
-        </div>
-
-        <div className="filter-controls">
-          <div className="filter-group">
-            <label htmlFor="category-filter" className="filter-label">
-              Filter by Category
-            </label>
-            <select
-              id="category-filter"
-              className="filter-select"
-              value={filters.category}
-              onChange={(e) => handleFilterChange('category', e.target.value)}
-              aria-label="Filter by Category"
-            >
-              <option value="">All Categories</option>
-              {uniqueCategories.map(category => (
-                <option key={category} value={category}>
-                  Category {category}
-                </option>
-              ))}
-            </select>
           </div>
 
-          <div className="filter-group">
-            <label htmlFor="min-fee-filter" className="filter-label">
-              Minimum Fee
-            </label>
-            <input
-              id="min-fee-filter"
-              type="number"
-              className="filter-input"
-              value={filters.minFee}
-              onChange={(e) => handleFilterChange('minFee', Number(e.target.value))}
-              min="0"
-              step="0.01"
-              aria-label="Minimum Fee"
-            />
-          </div>
-
-          <div className="filter-group">
-            <label htmlFor="max-fee-filter" className="filter-label">
-              Maximum Fee
-            </label>
-            <input
-              id="max-fee-filter"
-              type="number"
-              className="filter-input"
-              value={filters.maxFee}
-              onChange={(e) => handleFilterChange('maxFee', Number(e.target.value))}
-              min="0"
-              step="0.01"
-              aria-label="Maximum Fee"
-            />
-          </div>
-
-          <div className="filter-group">
-            <label htmlFor="confidence-filter" className="filter-label">
-              Minimum Confidence ({Math.round(filters.minConfidence * 100)}%)
-            </label>
-            <input
-              id="confidence-filter"
-              type="range"
-              className="filter-slider"
-              value={filters.minConfidence}
-              onChange={(e) => handleFilterChange('minConfidence', Number(e.target.value))}
-              min="0"
-              max="1"
-              step="0.05"
-              aria-label="Minimum Confidence"
-            />
-          </div>
-        </div>
-
-        {feeValidationError && (
-          <div className="validation-error" role="alert">
-            {feeValidationError}
-          </div>
-        )}
-      </div>
-
-      {/* Export Options Section */}
-      <div className="toolbar-section export-options" aria-label="Export Options">
-        <h3 className="section-title">Export</h3>
-        <div className="export-controls">
-          <div className="export-group">
-            <label htmlFor="export-format" className="filter-label">
-              Export Format
-            </label>
-            <select
-              id="export-format"
-              className="filter-select"
-              value={exportFormat}
-              onChange={(e) => setExportFormat(e.target.value as ExportFormat)}
-              aria-label="Export Format"
-            >
-              <option value="csv">CSV</option>
-              <option value="json">JSON</option>
-              <option value="html">HTML</option>
-              <option value="pdf">PDF</option>
-            </select>
-          </div>
-
-          <button
-            type="button"
-            className="toolbar-button primary export-button"
-            onClick={handleExport}
-            disabled={selectedCodes.length === 0 || isLoading}
-            aria-label="Export Selected Codes"
-          >
-            <span className="button-icon">💾</span>
-            <span className="button-text">
-              {isLoading ? 'Exporting...' : 'Export Selected'}
-            </span>
-          </button>
-        </div>
-      </div>
-
-      {/* Undo/Redo Controls Section */}
-      <div className="toolbar-section undo-redo-controls" aria-label="Undo/Redo Controls">
-        <h3 className="section-title">History</h3>
-        <div className="button-group">
           <button
             type="button"
             className="toolbar-button secondary"
             onClick={onUndo}
             disabled={!canUndo || isLoading}
             title="Undo (Ctrl+Z)"
-            aria-label="Undo Last Action"
           >
             <span className="button-icon">↶</span>
             <span className="button-text">Undo</span>
@@ -491,7 +362,6 @@ const EnhancedToolbar: React.FC<EnhancedToolbarProps> = React.memo(({
             onClick={onRedo}
             disabled={!canRedo || isLoading}
             title="Redo (Ctrl+Y)"
-            aria-label="Redo Last Action"
           >
             <span className="button-icon">↷</span>
             <span className="button-text">Redo</span>
@@ -499,6 +369,107 @@ const EnhancedToolbar: React.FC<EnhancedToolbarProps> = React.memo(({
           </button>
         </div>
       </div>
+
+      {/* Second Row: Filters (collapsible) */}
+      {showMoreFilters && (
+        <div className="toolbar-row">
+          <div className="toolbar-section">
+            <span className="section-title">Filters:</span>
+          </div>
+          
+          <div className="filter-controls">
+            <div className="filter-group">
+              <label htmlFor="category-filter" className="filter-label">Category</label>
+              <select
+                id="category-filter"
+                className="filter-select"
+                value={filters.category}
+                onChange={(e) => handleFilterChange('category', e.target.value)}
+              >
+                <option value="">All</option>
+                {uniqueCategories.map(category => (
+                  <option key={category} value={category}>
+                    {category.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="filter-group">
+              <label htmlFor="min-fee-filter" className="filter-label">Min Fee</label>
+              <input
+                id="min-fee-filter"
+                type="number"
+                className="filter-input"
+                value={filters.minFee}
+                onChange={(e) => handleFilterChange('minFee', Number(e.target.value))}
+                min="0"
+                step="0.01"
+                placeholder="$0"
+              />
+            </div>
+
+            <div className="filter-group">
+              <label htmlFor="max-fee-filter" className="filter-label">Max Fee</label>
+              <input
+                id="max-fee-filter"
+                type="number"
+                className="filter-input"
+                value={filters.maxFee}
+                onChange={(e) => handleFilterChange('maxFee', Number(e.target.value))}
+                min="0"
+                step="0.01"
+                placeholder="$1000"
+              />
+            </div>
+
+            <div className="filter-group">
+              <label htmlFor="confidence-filter" className="filter-label">
+                Confidence ({Math.round(filters.minConfidence * 100)}%)
+              </label>
+              <input
+                id="confidence-filter"
+                type="range"
+                className="filter-slider"
+                value={filters.minConfidence}
+                onChange={(e) => handleFilterChange('minConfidence', Number(e.target.value))}
+                min="0"
+                max="1"
+                step="0.05"
+              />
+            </div>
+          </div>
+
+          <div className="toolbar-section">
+            <button
+              type="button"
+              className="reset-button"
+              onClick={handleResetFilters}
+              disabled={!filtersActive}
+            >
+              Reset Filters
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Filter Toggle */}
+      <div className="toolbar-row" style={{ justifyContent: 'center', paddingTop: '8px', borderTop: '1px solid #f3f4f6' }}>
+        <button
+          type="button"
+          className="reset-button"
+          onClick={() => setShowMoreFilters(!showMoreFilters)}
+        >
+          {showMoreFilters ? '▲ Hide Filters' : '▼ Show Filters'}
+          {filtersActive && <span style={{ marginLeft: '8px', color: '#3b82f6', fontWeight: '600' }}>●</span>}
+        </button>
+      </div>
+
+      {feeValidationError && (
+        <div className="validation-error" role="alert">
+          {feeValidationError}
+        </div>
+      )}
     </div>
   );
 });
@@ -506,11 +477,11 @@ const EnhancedToolbar: React.FC<EnhancedToolbarProps> = React.memo(({
 EnhancedToolbar.displayName = 'EnhancedToolbar';
 
 // Utility function for debouncing
-function debounce<T extends (...args: unknown[]) => void>(
+function debounce<T extends (...args: any[]) => void>(
   func: T,
   wait: number
 ): (...args: Parameters<T>) => void {
-  let timeout: NodeJS.Timeout;
+  let timeout: ReturnType<typeof setTimeout>;
   
   return (...args: Parameters<T>) => {
     clearTimeout(timeout);
