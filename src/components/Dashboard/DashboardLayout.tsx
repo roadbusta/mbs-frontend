@@ -213,7 +213,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({
       )}
 
       {/* Main Content Area */}
-      <main className="dashboard-main">
+      <main id="main-content" className="dashboard-main" role="main">
         {/* Header */}
         <header className="dashboard-header">
           {/* Mobile menu button */}

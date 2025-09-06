@@ -47,7 +47,7 @@ const AuditTrail: React.FC<AuditTrailProps> = ({
   showSummary = true
 }) => {
   // State management
-  const [filters, setFilters] = useState<AuditTrailFilters>({});
+  const [filters] = useState<AuditTrailFilters>({});
   const [searchText, setSearchText] = useState('');
   const [selectedActionTypes, setSelectedActionTypes] = useState<AuditActionType[]>([]);
   const [showFilters, setShowFilters] = useState(false);
@@ -105,22 +105,22 @@ const AuditTrail: React.FC<AuditTrailProps> = ({
 
   // Action type options for filtering
   const actionTypeOptions: { value: AuditActionType; label: string; category: string }[] = [
-    { value: 'code_select', label: 'Code Selected', category: 'Selection' },
-    { value: 'code_deselect', label: 'Code Deselected', category: 'Selection' },
-    { value: 'bulk_select_all', label: 'Select All', category: 'Bulk Operations' },
-    { value: 'bulk_clear_all', label: 'Clear All', category: 'Bulk Operations' },
-    { value: 'bulk_select_category', label: 'Select by Category', category: 'Bulk Operations' },
-    { value: 'bulk_select_compatible', label: 'Select Compatible', category: 'Bulk Operations' },
-    { value: 'bulk_invert_selection', label: 'Invert Selection', category: 'Bulk Operations' },
-    { value: 'analysis_start', label: 'Analysis Started', category: 'Analysis' },
-    { value: 'analysis_complete', label: 'Analysis Completed', category: 'Analysis' },
-    { value: 'analysis_error', label: 'Analysis Error', category: 'Analysis' },
-    { value: 'export_data', label: 'Data Exported', category: 'Export' },
-    { value: 'filter_apply', label: 'Filters Applied', category: 'Interface' },
-    { value: 'preset_save', label: 'Preset Saved', category: 'Presets' },
-    { value: 'preset_load', label: 'Preset Loaded', category: 'Presets' },
-    { value: 'session_start', label: 'Session Started', category: 'Session' },
-    { value: 'session_end', label: 'Session Ended', category: 'Session' },
+    { value: 'code_select', label: '✅ MBS Code Selected', category: 'Code Selection' },
+    { value: 'code_deselect', label: '❌ MBS Code Removed', category: 'Code Selection' },
+    { value: 'bulk_select_all', label: '☑️ Selected All Codes', category: 'Bulk Actions' },
+    { value: 'bulk_clear_all', label: '🗑️ Cleared All Selections', category: 'Bulk Actions' },
+    { value: 'bulk_select_category', label: '📂 Selected by Category', category: 'Bulk Actions' },
+    { value: 'bulk_select_compatible', label: '🔗 Selected Compatible Codes', category: 'Bulk Actions' },
+    { value: 'bulk_invert_selection', label: '🔄 Inverted Selection', category: 'Bulk Actions' },
+    { value: 'analysis_start', label: '🔍 Started Code Analysis', category: 'Analysis & Recommendations' },
+    { value: 'analysis_complete', label: '✨ Analysis Complete', category: 'Analysis & Recommendations' },
+    { value: 'analysis_error', label: '⚠️ Analysis Failed', category: 'Analysis & Recommendations' },
+    { value: 'export_data', label: '💾 Exported Selection Data', category: 'Data Export' },
+    { value: 'filter_apply', label: '🔎 Applied Search Filters', category: 'User Interface' },
+    { value: 'preset_save', label: '💼 Saved Selection Preset', category: 'Presets & Templates' },
+    { value: 'preset_load', label: '📋 Loaded Selection Preset', category: 'Presets & Templates' },
+    { value: 'session_start', label: '🟢 Session Started', category: 'Session Management' },
+    { value: 'session_end', label: '🔴 Session Ended', category: 'Session Management' },
   ];
 
   // Handle action type selection
@@ -338,9 +338,9 @@ const AuditTrail: React.FC<AuditTrailProps> = ({
         
         {!isLoading && filteredLogs.length === 0 && (
           <div className="empty-state">
-            <span className="empty-icon">📝</span>
-            <p>No audit entries found</p>
-            <small>User actions and system events will appear here</small>
+            <span className="empty-icon">📊</span>
+            <p>No audit entries to display</p>
+            <small>Your MBS code selections, analysis requests, and other actions will be tracked here for compliance and review purposes.</small>
           </div>
         )}
         
@@ -354,7 +354,7 @@ const AuditTrail: React.FC<AuditTrailProps> = ({
                 <span className="entry-action">{entry.description}</span>
                 <span className="entry-timestamp">{formatTimestamp(entry.timestamp)}</span>
               </div>
-              {entry.metadata.code && (
+              {entry.metadata?.code && (
                 <div className="entry-code">
                   Code: {entry.metadata.code}
                 </div>
@@ -362,30 +362,30 @@ const AuditTrail: React.FC<AuditTrailProps> = ({
             </div>
             
             {/* Entry Metadata */}
-            {(entry.metadata.codes || entry.metadata.newState || entry.metadata.export || entry.metadata.error) && (
+            {(entry.metadata?.codes || entry.metadata?.newState || entry.metadata?.export || entry.metadata?.error) && (
               <div className="entry-metadata">
-                {entry.metadata.codes && entry.metadata.codes.length > 0 && (
+                {entry.metadata?.codes && entry.metadata.codes.length > 0 && (
                   <div className="metadata-item">
-                    <strong>Codes:</strong> {entry.metadata.codes.join(', ')}
+                    <strong>📋 Affected MBS Codes:</strong> {entry.metadata.codes.join(', ')}
                   </div>
                 )}
                 
-                {entry.metadata.newState && (
+                {entry.metadata?.newState && (
                   <div className="metadata-item">
-                    <strong>Selection:</strong> {entry.metadata.newState.selectedCodes.length} codes, 
-                    ${entry.metadata.newState.totalFee.toFixed(2)} total
+                    <strong>📊 Current Selection:</strong> {entry.metadata.newState.selectedCodes.length} codes selected • 
+                    Total fee: ${entry.metadata.newState.totalFee.toFixed(2)}
                   </div>
                 )}
                 
-                {entry.metadata.export && (
+                {entry.metadata?.export && (
                   <div className="metadata-item">
-                    <strong>Export:</strong> {entry.metadata.export.codeCount} codes as {entry.metadata.export.format.toUpperCase()}
+                    <strong>💾 Export Details:</strong> {entry.metadata.export.codeCount} codes exported as {entry.metadata.export.format.toUpperCase()} format
                   </div>
                 )}
                 
-                {entry.metadata.error && (
+                {entry.metadata?.error && (
                   <div className="metadata-item error">
-                    <strong>Error:</strong> {entry.metadata.error.message}
+                    <strong>⚠️ Error Details:</strong> {entry.metadata.error.message}
                   </div>
                 )}
               </div>

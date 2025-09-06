@@ -1,5 +1,5 @@
 /**
- * Professional Reporting Service - Phase 4 Implementation
+ * Professional Reporting Service - Enhanced with PDF/Excel Export
  * 
  * Generates professional medical reports in various formats for:
  * - Consultation summaries
@@ -7,8 +7,13 @@
  * - Conflict analysis
  * - Code recommendations
  * 
- * Supports HTML and PDF export with professional medical formatting.
+ * Supports HTML, PDF, and Excel export with professional medical formatting.
  */
+
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 import {
   ReportConfiguration,
@@ -520,7 +525,7 @@ export class ReportingService {
     consultationNote: string,
     context: ConsultationContext,
     config: ReportConfiguration,
-    format: 'html' | 'pdf'
+    format: 'html' | 'pdf' | 'excel'
   ): Promise<string | Blob> {
     this.validateConfiguration(config);
 
@@ -544,10 +549,15 @@ export class ReportingService {
         throw new Error(`Unsupported report type: ${config.type}`);
     }
 
-    if (format === 'html') {
-      return this.generateHTMLReport(report, config);
-    } else {
-      return this.generatePDFReport(report, config);
+    switch (format) {
+      case 'html':
+        return this.generateHTMLReport(report, config);
+      case 'pdf':
+        return this.generatePDFReport(report, config);
+      case 'excel':
+        return this.generateExcelReport(report, config);
+      default:
+        throw new Error(`Unsupported format: ${format}`);
     }
   }
 
@@ -585,14 +595,53 @@ export class ReportingService {
     selectionState: SelectionState,
     recommendations: EnhancedCodeRecommendation[],
     config: ReportConfiguration,
-    format: 'html' | 'pdf'
+    format: 'html' | 'pdf' | 'excel'
   ): number {
     const baseTime = 500; // Base generation time
     const sectionMultiplier = Object.values(config.sections).filter(Boolean).length * 100;
     const dataMultiplier = (selectionState.selectedCodes.size + recommendations.length) * 10;
-    const formatMultiplier = format === 'pdf' ? 1000 : 200;
+    
+    let formatMultiplier = 200; // HTML default
+    if (format === 'pdf') formatMultiplier = 1500; // PDF takes longer due to rendering
+    if (format === 'excel') formatMultiplier = 800; // Excel is moderately complex
 
     return baseTime + sectionMultiplier + dataMultiplier + formatMultiplier;
+  }
+
+  /**
+   * Download report file with appropriate filename and extension
+   */
+  async downloadReport(
+    blob: Blob,
+    reportTitle: string,
+    format: 'html' | 'pdf' | 'excel'
+  ): Promise<void> {
+    const timestamp = new Date().toISOString().split('T')[0];
+    const sanitizedTitle = reportTitle.replace(/[^a-zA-Z0-9\s]/g, '').replace(/\s+/g, '_');
+    
+    let filename: string;
+    let mimeType: string;
+    
+    switch (format) {
+      case 'html':
+        filename = `${sanitizedTitle}_${timestamp}.html`;
+        mimeType = 'text/html';
+        break;
+      case 'pdf':
+        filename = `${sanitizedTitle}_${timestamp}.pdf`;
+        mimeType = 'application/pdf';
+        break;
+      case 'excel':
+        filename = `${sanitizedTitle}_${timestamp}.xlsx`;
+        mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+        break;
+      default:
+        throw new Error(`Unsupported format: ${format}`);
+    }
+    
+    // Create a new blob with the correct MIME type
+    const downloadBlob = new Blob([blob], { type: mimeType });
+    saveAs(downloadBlob, filename);
   }
 
   /**
@@ -656,12 +705,255 @@ export class ReportingService {
   }
 
   /**
-   * Generate PDF report (returns a mock Blob for now)
+   * Generate PDF report using jsPDF and html2canvas
    */
-  private generatePDFReport(report: BaseReport, config: ReportConfiguration): Blob {
-    // In a real implementation, this would use a library like jsPDF or Puppeteer
-    const htmlContent = this.generateHTMLReport(report, config);
-    return new Blob([htmlContent], { type: 'application/pdf' });
+  private async generatePDFReport(report: BaseReport, config: ReportConfiguration): Promise<Blob> {
+    try {
+      // Generate HTML content
+      const htmlContent = this.generateHTMLReport(report, config);
+      
+      // Create a temporary div to render the HTML
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = htmlContent;
+      tempDiv.style.position = 'absolute';
+      tempDiv.style.left = '-9999px';
+      tempDiv.style.top = '-9999px';
+      tempDiv.style.width = '210mm'; // A4 width
+      tempDiv.style.backgroundColor = 'white';
+      document.body.appendChild(tempDiv);
+      
+      try {
+        // Convert HTML to canvas
+        const canvas = await html2canvas(tempDiv, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: '#ffffff',
+          width: 794, // A4 width in pixels at 96 DPI
+          windowWidth: 794
+        });
+        
+        // Create PDF
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const imgData = canvas.toDataURL('image/png');
+        
+        const imgWidth = 210; // A4 width in mm
+        const pageHeight = 295; // A4 height in mm
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let heightLeft = imgHeight;
+        
+        let position = 0;
+        
+        // Add first page
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+        
+        // Add additional pages if needed
+        while (heightLeft >= 0) {
+          position = heightLeft - imgHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+        
+        return pdf.output('blob');
+      } finally {
+        // Clean up temp div
+        document.body.removeChild(tempDiv);
+      }
+    } catch (error) {
+      console.error('Failed to generate PDF:', error);
+      throw new Error('PDF generation failed');
+    }
+  }
+
+  /**
+   * Generate Excel report using XLSX
+   */
+  private generateExcelReport(report: BaseReport, config: ReportConfiguration): Blob {
+    try {
+      const workbook = XLSX.utils.book_new();
+      
+      // Create summary sheet
+      this.addSummarySheet(workbook, report);
+      
+      // Add data-specific sheets based on report type
+      if ('selectedCodes' in report.sections && report.sections.selectedCodes) {
+        this.addCodesSheet(workbook, report.sections.selectedCodes, 'Selected Codes');
+      }
+      
+      if ('categoryBreakdown' in report.sections && report.sections.categoryBreakdown) {
+        this.addCategorySheet(workbook, report.sections.categoryBreakdown, 'Category Breakdown');
+      }
+      
+      if ('billingInformation' in report.sections && report.sections.billingInformation) {
+        this.addBillingSheet(workbook, report.sections.billingInformation, 'Billing Details');
+      }
+      
+      if ('conflictAnalysis' in report.sections && report.sections.conflictAnalysis) {
+        this.addConflictsSheet(workbook, report.sections.conflictAnalysis, 'Conflicts');
+      }
+      
+      // Generate Excel file
+      const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+      return new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    } catch (error) {
+      console.error('Failed to generate Excel report:', error);
+      throw new Error('Excel generation failed');
+    }
+  }
+
+  /**
+   * Add summary sheet to Excel workbook
+   */
+  private addSummarySheet(workbook: XLSX.WorkBook, report: BaseReport): void {
+    const summaryData = [
+      ['Report Information', ''],
+      ['Title', report.title],
+      ['Generated At', new Date(report.generatedAt).toLocaleString()],
+      ['Report Type', report.metadata.reportType],
+      [''],
+      ['Summary', '']
+    ];
+    
+    if ('summary' in report.sections && report.sections.summary) {
+      const summary = report.sections.summary;
+      summaryData.push(['Total Codes', summary.totalCodes || 0]);
+      summaryData.push(['Total Fee', `$${(summary.totalFee || 0).toFixed(2)}`]);
+      summaryData.push(['Context', summary.consultationContext || 'N/A']);
+      summaryData.push(['Conflicts Detected', summary.conflictsDetected ? 'Yes' : 'No']);
+    }
+    
+    const worksheet = XLSX.utils.aoa_to_sheet(summaryData);
+    
+    // Set column widths
+    worksheet['!cols'] = [
+      { wch: 20 },
+      { wch: 30 }
+    ];
+    
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Summary');
+  }
+
+  /**
+   * Add codes sheet to Excel workbook
+   */
+  private addCodesSheet(workbook: XLSX.WorkBook, codes: any[], sheetName: string): void {
+    const headers = ['Code', 'Description', 'Schedule Fee', 'Confidence', 'Category'];
+    const data = [headers, ...codes.map(code => [
+      code.code,
+      code.description,
+      code.scheduleFee,
+      `${(code.confidence * 100).toFixed(1)}%`,
+      code.category || 'N/A'
+    ])];
+    
+    const worksheet = XLSX.utils.aoa_to_sheet(data);
+    
+    // Set column widths
+    worksheet['!cols'] = [
+      { wch: 10 },
+      { wch: 40 },
+      { wch: 15 },
+      { wch: 12 },
+      { wch: 20 }
+    ];
+    
+    XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+  }
+
+  /**
+   * Add category breakdown sheet to Excel workbook
+   */
+  private addCategorySheet(workbook: XLSX.WorkBook, categories: any[], sheetName: string): void {
+    const headers = ['Category', 'Code Count', 'Total Fee', 'Codes'];
+    const data = [headers, ...categories.map(cat => [
+      cat.categoryName,
+      cat.codeCount,
+      cat.totalFee,
+      cat.codes.join(', ')
+    ])];
+    
+    const worksheet = XLSX.utils.aoa_to_sheet(data);
+    
+    // Set column widths
+    worksheet['!cols'] = [
+      { wch: 25 },
+      { wch: 12 },
+      { wch: 15 },
+      { wch: 50 }
+    ];
+    
+    XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+  }
+
+  /**
+   * Add billing sheet to Excel workbook
+   */
+  private addBillingSheet(workbook: XLSX.WorkBook, billing: any, sheetName: string): void {
+    const headers = ['Code', 'Description', 'Fee'];
+    const data = [
+      headers,
+      ...(billing.itemizedCharges?.map((item: any) => [
+        item.code,
+        item.description,
+        item.fee
+      ]) || []),
+      ['', '', ''],
+      ['', 'Total', billing.total || billing.subtotal || 0]
+    ];
+    
+    const worksheet = XLSX.utils.aoa_to_sheet(data);
+    
+    // Set column widths
+    worksheet['!cols'] = [
+      { wch: 10 },
+      { wch: 40 },
+      { wch: 15 }
+    ];
+    
+    XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+  }
+
+  /**
+   * Add conflicts sheet to Excel workbook
+   */
+  private addConflictsSheet(workbook: XLSX.WorkBook, analysis: any, sheetName: string): void {
+    const data = [
+      ['Conflict Analysis', ''],
+      ['Has Conflicts', analysis.hasConflicts ? 'Yes' : 'No'],
+      [''],
+      ['Blocking Conflicts', '']
+    ];
+    
+    if (analysis.blockingConflicts?.length > 0) {
+      analysis.blockingConflicts.forEach((conflict: any) => {
+        data.push([conflict.reason, conflict.message]);
+      });
+    } else {
+      data.push(['None', '']);
+    }
+    
+    data.push(['']);
+    data.push(['Warnings', '']);
+    
+    if (analysis.warnings?.length > 0) {
+      analysis.warnings.forEach((warning: string) => {
+        data.push([warning, '']);
+      });
+    } else {
+      data.push(['None', '']);
+    }
+    
+    const worksheet = XLSX.utils.aoa_to_sheet(data);
+    
+    // Set column widths
+    worksheet['!cols'] = [
+      { wch: 30 },
+      { wch: 50 }
+    ];
+    
+    XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
   }
 
   /**

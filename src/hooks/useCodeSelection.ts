@@ -138,7 +138,7 @@ export function useCodeSelection(
   // Select a code
   const selectCode = useCallback((
     code: string,
-    recommendation: EnhancedCodeRecommendation
+    _recommendation: EnhancedCodeRecommendation
   ): ConflictValidation => {
     // Check if we've reached the maximum
     if (selectionState.selectedCodes.size >= maxCodes) {

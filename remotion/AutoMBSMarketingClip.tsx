@@ -4,7 +4,6 @@ import {
   interpolate,
   Sequence,
   useCurrentFrame,
-  useVideoConfig,
   spring,
 } from 'remotion';
 
@@ -502,7 +501,6 @@ const ProblemSlide: React.FC = () => {
 // Demo slide showing UI in action
 const UIInActionSlide: React.FC = () => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
   
   const headerOpacity = interpolate(frame, [0, 20], [0, 1]);
   const inputOpacity = interpolate(frame, [20, 40], [0, 1]);

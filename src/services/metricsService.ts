@@ -6,6 +6,7 @@
  */
 
 import { KPIData } from '../components/KPICards/KPICard';
+import { apiClient } from './apiClient';
 
 export interface MetricsData {
   accuracy: number;
@@ -39,15 +40,29 @@ class MetricsService {
    */
   async getKPIData(): Promise<KPIData[]> {
     try {
-      // In production, this would fetch from your API
-      // const response = await fetch(`${this.baseUrl}/api/metrics/kpis`);
-      // return await response.json();
+      // Try real API first if enabled
+      if (apiClient.isRealApiEnabled) {
+        console.log('🔄 Fetching KPI data from real API...');
+        const response = await apiClient.get<{kpis: KPIData[]}>('/api/metrics/kpis', {
+          cache: true,
+          cacheTTL: 60000 // Cache for 1 minute
+        });
 
-      // For now, return enhanced mock data based on screenshots
+        if (response.success && response.data?.kpis) {
+          console.log('✅ Real KPI data loaded successfully');
+          return response.data.kpis;
+        } else {
+          console.warn('⚠️ Real API returned invalid data, falling back to mock');
+        }
+      }
+
+      // Fallback to mock data (always available)
+      console.log('📊 Using mock KPI data');
       return this.getMockKPIData();
     } catch (error) {
-      console.error('Failed to fetch KPI data:', error);
-      throw new Error('Failed to load metrics data');
+      console.error('❌ Failed to fetch KPI data:', error);
+      // Graceful degradation - always return mock data on failure
+      return this.getMockKPIData();
     }
   }
 

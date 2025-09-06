@@ -1,0 +1,222 @@
+/**
+ * Evidence Highlighter Component Styles
+ * 
+ * Professional styling for clinical text evidence highlighting
+ */
+
+.evidence-highlighter {
+  line-height: 1.6;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #202124;
+  background: #ffffff;
+  padding: 16px;
+  border-radius: 8px;
+  border: 1px solid #e8eaed;
+}
+
+/* Evidence Highlights */
+.evidence-highlight {
+  padding: 2px 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 500;
+  position: relative;
+  border: 1px solid transparent;
+}
+
+.evidence-highlight:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  border-color: currentColor;
+}
+
+.evidence-highlight:focus {
+  outline: 2px solid #4285f4;
+  outline-offset: 2px;
+}
+
+.evidence-highlight:active {
+  transform: translateY(0);
+}
+
+/* Evidence Category Colors */
+.evidence-highlight--symptoms {
+  background: #e3f2fd;
+  color: #1565c0;
+  border-color: #bbdefb;
+}
+
+.evidence-highlight--symptoms:hover {
+  background: #bbdefb;
+  border-color: #1565c0;
+}
+
+.evidence-highlight--diagnosis {
+  background: #f3e5f5;
+  color: #7b1fa2;
+  border-color: #e1bee7;
+}
+
+.evidence-highlight--diagnosis:hover {
+  background: #e1bee7;
+  border-color: #7b1fa2;
+}
+
+.evidence-highlight--procedures {
+  background: #e8f5e8;
+  color: #2e7d32;
+  border-color: #c8e6c9;
+}
+
+.evidence-highlight--procedures:hover {
+  background: #c8e6c9;
+  border-color: #2e7d32;
+}
+
+.evidence-highlight--medications {
+  background: #fff3e0;
+  color: #ef6c00;
+  border-color: #ffcc80;
+}
+
+.evidence-highlight--medications:hover {
+  background: #ffcc80;
+  border-color: #ef6c00;
+}
+
+.evidence-highlight--investigations {
+  background: #fce4ec;
+  color: #c2185b;
+  border-color: #f8bbd9;
+}
+
+.evidence-highlight--investigations:hover {
+  background: #f8bbd9;
+  border-color: #c2185b;
+}
+
+.evidence-highlight--clinical_findings {
+  background: #f1f8e9;
+  color: #558b2f;
+  border-color: #dcedc8;
+}
+
+.evidence-highlight--clinical_findings:hover {
+  background: #dcedc8;
+  border-color: #558b2f;
+}
+
+.evidence-highlight--patient_history {
+  background: #e0f2f1;
+  color: #00695c;
+  border-color: #b2dfdb;
+}
+
+.evidence-highlight--patient_history:hover {
+  background: #b2dfdb;
+  border-color: #00695c;
+}
+
+.evidence-highlight--treatment_plan {
+  background: #f3e5f5;
+  color: #7b1fa2;
+  border-color: #e1bee7;
+}
+
+.evidence-highlight--treatment_plan:hover {
+  background: #e1bee7;
+  border-color: #7b1fa2;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .evidence-highlighter {
+    padding: 12px;
+    font-size: 14px;
+  }
+  
+  .evidence-highlight {
+    padding: 1px 3px;
+  }
+}
+
+@media (max-width: 480px) {
+  .evidence-highlighter {
+    padding: 8px;
+    font-size: 13px;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .evidence-highlight {
+    border-width: 2px;
+    font-weight: 600;
+  }
+  
+  .evidence-highlight--symptoms {
+    background: #0066cc;
+    color: white;
+  }
+  
+  .evidence-highlight--diagnosis {
+    background: #7b1fa2;
+    color: white;
+  }
+  
+  .evidence-highlight--procedures {
+    background: #2e7d32;
+    color: white;
+  }
+  
+  .evidence-highlight--medications {
+    background: #ef6c00;
+    color: white;
+  }
+  
+  .evidence-highlight--investigations {
+    background: #c2185b;
+    color: white;
+  }
+  
+  .evidence-highlight--clinical_findings {
+    background: #558b2f;
+    color: white;
+  }
+  
+  .evidence-highlight--patient_history {
+    background: #00695c;
+    color: white;
+  }
+  
+  .evidence-highlight--treatment_plan {
+    background: #7b1fa2;
+    color: white;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .evidence-highlight {
+    transition: none;
+  }
+  
+  .evidence-highlight:hover {
+    transform: none;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .evidence-highlighter {
+    border: 1px solid #000;
+    background: white;
+  }
+  
+  .evidence-highlight {
+    background: white !important;
+    border: 1px solid #000 !important;
+    color: #000 !important;
+  }
+}

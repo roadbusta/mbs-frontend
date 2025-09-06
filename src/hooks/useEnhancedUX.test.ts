@@ -8,18 +8,18 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import {
-  useEnhancedUX,
   useBulkOperations,
   useQuickFilters,
   useUndoRedo,
   useKeyboardShortcuts
 } from '../hooks/useEnhancedUX';
 import {
-  QuickFilterOptions,
   EnhancedCodeRecommendation,
-  MBSCategory,
-  SelectionHistoryEntry
+  MBSCategory
 } from '../types/api.types';
+
+// Unused imports kept for potential future tests:
+// useEnhancedUX, QuickFilterOptions, SelectionHistoryEntry
 
 describe('useEnhancedUX', () => {
   let mockRecommendations: EnhancedCodeRecommendation[];

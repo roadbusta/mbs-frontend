@@ -24,10 +24,9 @@ import { SelectionState, SelectionPreset, OptimizationSuggestion, SelectionHisto
 // Mock data for testing
 const mockSelectionState: SelectionState = {
   selectedCodes: new Set(['23', '36']),
-  conflicts: [],
+  conflicts: new Map(),
   warnings: ['Time management warning'],
-  totalFee: 120.20,
-  isValid: true
+  totalFee: 120.20
 };
 
 const mockPresets: SelectionPreset[] = [
@@ -192,10 +191,9 @@ describe('SelectionPanel', () => {
     it('handles empty selection state', () => {
       const emptySelectionState = {
         selectedCodes: new Set<string>(),
-        conflicts: [],
+        conflicts: new Map(),
         warnings: [],
         totalFee: 0,
-        isValid: true
       };
 
       render(
@@ -212,15 +210,14 @@ describe('SelectionPanel', () => {
     it('displays conflicts when present', () => {
       const conflictSelectionState = {
         ...mockSelectionState,
-        conflicts: [
-          {
-            conflictingCodes: ['23', '36'],
-            reason: 'time_overlap',
+        conflicts: new Map([
+          ['23', [{
+            conflictingCodes: ['36'],
+            reason: 'time_overlap' as const,
             severity: 'blocking' as const,
             message: 'Cannot bill multiple consultation levels'
-          }
-        ],
-        isValid: false
+          }]]
+        ])
       };
 
       render(
@@ -249,10 +246,9 @@ describe('SelectionPanel', () => {
     it('calculates fee totals correctly', () => {
       const largeSelection = {
         selectedCodes: new Set(['23', '36', '44', '104']),
-        conflicts: [],
+        conflicts: new Map(),
         warnings: [],
         totalFee: 256.80,
-        isValid: true
       };
 
       render(
@@ -479,10 +475,9 @@ describe('SelectionPanel', () => {
     it('displays comparison when in comparison mode', () => {
       const comparisonSelection = {
         selectedCodes: new Set(['44', '104']),
-        conflicts: [],
+        conflicts: new Map(),
         warnings: [],
         totalFee: 156.50,
-        isValid: true
       };
 
       render(
@@ -503,10 +498,9 @@ describe('SelectionPanel', () => {
     it('shows comparison differences', () => {
       const comparisonSelection = {
         selectedCodes: new Set(['44', '104']),
-        conflicts: [],
+        conflicts: new Map(),
         warnings: [],
         totalFee: 156.50,
-        isValid: true
       };
 
       render(
@@ -524,10 +518,9 @@ describe('SelectionPanel', () => {
     it('highlights unique codes in comparison', () => {
       const comparisonSelection = {
         selectedCodes: new Set(['23', '44']), // 23 is common, 44 is unique
-        conflicts: [],
+        conflicts: new Map(),
         warnings: [],
         totalFee: 135.60,
-        isValid: true
       };
 
       render(
@@ -660,10 +653,9 @@ describe('SelectionPanel', () => {
     it('handles invalid selection state gracefully', () => {
       const invalidState = {
         selectedCodes: new Set(['invalid-code']),
-        conflicts: [],
+        conflicts: new Map(),
         warnings: [],
         totalFee: NaN,
-        isValid: false
       };
 
       render(<SelectionPanel {...defaultProps} selectionState={invalidState} />);
@@ -717,10 +709,9 @@ describe('SelectionPanel', () => {
     it('handles very large selections efficiently', () => {
       const largeSelection = {
         selectedCodes: new Set(Array.from({ length: 100 }, (_, i) => `code-${i}`)),
-        conflicts: [],
+        conflicts: new Map(),
         warnings: [],
         totalFee: 5000.00,
-        isValid: true
       };
 
       render(<SelectionPanel {...defaultProps} selectionState={largeSelection} />);

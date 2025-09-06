@@ -594,6 +594,83 @@ class AuditService {
 }
 
 // Create and export singleton instance
-const auditService = new AuditService();
+const auditServiceInstance = new AuditService();
 
-export default auditService;
+export default auditServiceInstance;
+
+/**
+ * Audit Service API for React Hooks
+ * Provides Promise-based interface for async operations
+ */
+export const auditService = {
+  // Async data retrieval methods
+  getAuditLogs: async (): Promise<AuditLogEntry[]> => {
+    return Promise.resolve(auditServiceInstance.getLogs());
+  },
+
+  getAuditSummary: async (): Promise<AuditTrailSummary> => {
+    return Promise.resolve(auditServiceInstance.generateSummary());
+  },
+
+  getFilteredAuditLogs: async (filters: any): Promise<AuditLogEntry[]> => {
+    return Promise.resolve(auditServiceInstance.getFilteredLogs(filters));
+  },
+
+  exportAuditData: async (config: AuditTrailExportConfig): Promise<void> => {
+    const exportData = auditServiceInstance.exportAuditData(config);
+    
+    // Create and download the export file
+    let filename = `audit_export_${new Date().toISOString().split('T')[0]}`;
+    let mimeType = 'application/json';
+    
+    switch (config.format) {
+      case 'csv':
+        filename += '.csv';
+        mimeType = 'text/csv';
+        break;
+      case 'html':
+        filename += '.html';
+        mimeType = 'text/html';
+        break;
+      case 'json':
+      default:
+        filename += '.json';
+        mimeType = 'application/json';
+        break;
+    }
+    
+    const blob = new Blob([exportData], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    return Promise.resolve();
+  },
+
+  // Subscription method for real-time updates
+  subscribe: (listener: (logs: AuditLogEntry[]) => void): (() => void) => {
+    return auditServiceInstance.subscribe(listener);
+  },
+
+  // Action logging methods (pass through to instance)
+  logAction: (action: AuditActionType, description: string, metadata?: any): void => {
+    auditServiceInstance.logAction(action, description, metadata);
+  },
+
+  logCodeSelection: (code: string, description: string, previousState?: any, newState?: any): void => {
+    auditServiceInstance.logCodeSelection(code, description, previousState, newState);
+  },
+
+  logAnalysis: (phase: 'start' | 'complete' | 'error', consultationLength: number, context?: string, processingTimeMs?: number, recommendationCount?: number, error?: any): void => {
+    auditServiceInstance.logAnalysis(phase, consultationLength, context, processingTimeMs, recommendationCount, error);
+  },
+
+  logExport: (format: string, codeCount: number, filename?: string): void => {
+    auditServiceInstance.logExport(format, codeCount, filename);
+  }
+};

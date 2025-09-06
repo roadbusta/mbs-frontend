@@ -15,11 +15,11 @@
  * 8. Edge Cases and Error Handling
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
+import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import EnhancedToolbar from './EnhancedToolbar';
-import { EnhancedCodeRecommendation, ExportFormat, BulkOperationType, QuickFilters } from '../../types/api.types';
+import { EnhancedCodeRecommendation } from '../../types/api.types';
 
 // Mock data for testing
 const mockRecommendations: EnhancedCodeRecommendation[] = [
@@ -30,12 +30,9 @@ const mockRecommendations: EnhancedCodeRecommendation[] = [
     reasoning: 'Standard consultation',
     schedule_fee: 41.20,
     category: '1',
-    isSelected: false,
-    isBlocked: false,
-    hasConflicts: false,
-    compatibleCodes: ['36'],
-    conflictingCodes: [],
-    suggestions: []
+    conflicts: [],
+    compatibleWith: ['36'],
+    mbsCategory: 'professional_attendances'
   },
   {
     code: '36',
@@ -44,12 +41,9 @@ const mockRecommendations: EnhancedCodeRecommendation[] = [
     reasoning: 'Extended consultation',
     schedule_fee: 79.00,
     category: '1',
-    isSelected: true,
-    isBlocked: false,
-    hasConflicts: false,
-    compatibleCodes: ['23'],
-    conflictingCodes: [],
-    suggestions: []
+    conflicts: [],
+    compatibleWith: ['23'],
+    mbsCategory: 'professional_attendances'
   },
   {
     code: '104',
@@ -58,12 +52,9 @@ const mockRecommendations: EnhancedCodeRecommendation[] = [
     reasoning: 'Professional attendance',
     schedule_fee: 15.50,
     category: '2',
-    isSelected: false,
-    isBlocked: false,
-    hasConflicts: false,
-    compatibleCodes: ['23', '36'],
-    conflictingCodes: [],
-    suggestions: []
+    conflicts: [],
+    compatibleWith: ['23', '36'],
+    mbsCategory: 'professional_attendances'
   }
 ];
 
@@ -87,6 +78,10 @@ describe('EnhancedToolbar', () => {
     vi.clearAllMocks();
   });
 
+  afterEach(() => {
+    cleanup();
+  });
+
   /**
    * Component Rendering Tests
    */
@@ -96,9 +91,14 @@ describe('EnhancedToolbar', () => {
       
       // Check main sections exist
       expect(screen.getByLabelText('Bulk Operations')).toBeInTheDocument();
-      expect(screen.getByLabelText('Quick Filters')).toBeInTheDocument();
       expect(screen.getByLabelText('Export Options')).toBeInTheDocument();
-      expect(screen.getByLabelText('Undo/Redo Controls')).toBeInTheDocument();
+      
+      // Undo/Redo buttons exist but are within the Export Options section
+      expect(screen.getByRole('button', { name: /undo/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /redo/i })).toBeInTheDocument();
+      
+      // Filters are collapsed by default, check for the expand button
+      expect(screen.getByRole('button', { name: /show filters/i })).toBeInTheDocument();
     });
 
     it('displays selection summary correctly', () => {
@@ -237,20 +237,29 @@ describe('EnhancedToolbar', () => {
    * Quick Filters Tests
    */
   describe('Quick Filters', () => {
-    it('renders all filter controls', () => {
+    it('renders all filter controls when expanded', async () => {
+      const user = userEvent.setup();
       render(<EnhancedToolbar {...defaultProps} />);
       
-      expect(screen.getByLabelText(/filter by category/i)).toBeInTheDocument();
-      expect(screen.getByLabelText(/minimum fee/i)).toBeInTheDocument();
-      expect(screen.getByLabelText(/maximum fee/i)).toBeInTheDocument();
-      expect(screen.getByLabelText(/minimum confidence/i)).toBeInTheDocument();
+      // First expand the filters
+      const showFiltersButton = screen.getByRole('button', { name: /show filters/i });
+      await user.click(showFiltersButton);
+      
+      expect(screen.getByLabelText(/category/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/min fee/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/max fee/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/confidence/i)).toBeInTheDocument();
     });
 
     it('calls onFilterChange when category filter changes', async () => {
       const user = userEvent.setup();
       render(<EnhancedToolbar {...defaultProps} />);
       
-      const categorySelect = screen.getByLabelText(/filter by category/i);
+      // First expand the filters
+      const showFiltersButton = screen.getByRole('button', { name: /show filters/i });
+      await user.click(showFiltersButton);
+      
+      const categorySelect = screen.getByLabelText(/category/i);
       await user.selectOptions(categorySelect, '1');
       
       expect(defaultProps.onFilterChange).toHaveBeenCalledWith(
@@ -262,7 +271,11 @@ describe('EnhancedToolbar', () => {
       const user = userEvent.setup();
       render(<EnhancedToolbar {...defaultProps} />);
       
-      const minFeeInput = screen.getByLabelText(/minimum fee/i);
+      // First expand the filters
+      const showFiltersButton = screen.getByRole('button', { name: /show filters/i });
+      await user.click(showFiltersButton);
+      
+      const minFeeInput = screen.getByLabelText(/min fee/i);
       await user.clear(minFeeInput);
       await user.type(minFeeInput, '50');
       
@@ -277,7 +290,11 @@ describe('EnhancedToolbar', () => {
       const user = userEvent.setup();
       render(<EnhancedToolbar {...defaultProps} />);
       
-      const confidenceSlider = screen.getByLabelText(/minimum confidence/i);
+      // First expand the filters
+      const showFiltersButton = screen.getByRole('button', { name: /show filters/i });
+      await user.click(showFiltersButton);
+      
+      const confidenceSlider = screen.getByLabelText(/confidence/i);
       fireEvent.change(confidenceSlider, { target: { value: '0.8' } });
       
       expect(defaultProps.onFilterChange).toHaveBeenCalledWith(
@@ -289,8 +306,12 @@ describe('EnhancedToolbar', () => {
       const user = userEvent.setup();
       render(<EnhancedToolbar {...defaultProps} />);
       
-      const minFeeInput = screen.getByLabelText(/minimum fee/i);
-      const maxFeeInput = screen.getByLabelText(/maximum fee/i);
+      // First expand the filters
+      const showFiltersButton = screen.getByRole('button', { name: /show filters/i });
+      await user.click(showFiltersButton);
+      
+      const minFeeInput = screen.getByLabelText(/min fee/i);
+      const maxFeeInput = screen.getByLabelText(/max fee/i);
       
       await user.clear(minFeeInput);
       await user.type(minFeeInput, '100');
@@ -304,7 +325,11 @@ describe('EnhancedToolbar', () => {
       const user = userEvent.setup();
       render(<EnhancedToolbar {...defaultProps} />);
       
-      const categorySelect = screen.getByLabelText(/filter by category/i);
+      // First expand the filters
+      const showFiltersButton = screen.getByRole('button', { name: /show filters/i });
+      await user.click(showFiltersButton);
+      
+      const categorySelect = screen.getByLabelText(/category/i);
       await user.selectOptions(categorySelect, '1');
       
       expect(screen.getByRole('button', { name: /reset filters/i })).toBeInTheDocument();
@@ -314,8 +339,12 @@ describe('EnhancedToolbar', () => {
       const user = userEvent.setup();
       render(<EnhancedToolbar {...defaultProps} />);
       
+      // First expand the filters
+      const showFiltersButton = screen.getByRole('button', { name: /show filters/i });
+      await user.click(showFiltersButton);
+      
       // Apply some filters first
-      const categorySelect = screen.getByLabelText(/filter by category/i);
+      const categorySelect = screen.getByLabelText(/category/i);
       await user.selectOptions(categorySelect, '1');
       
       // Reset filters
@@ -495,8 +524,11 @@ describe('EnhancedToolbar', () => {
       
       expect(screen.getByLabelText('Enhanced Toolbar')).toBeInTheDocument();
       expect(screen.getByLabelText('Bulk Operations')).toBeInTheDocument();
-      expect(screen.getByLabelText('Quick Filters')).toBeInTheDocument();
       expect(screen.getByLabelText('Export Options')).toBeInTheDocument();
+      
+      // Quick Filters only exist when expanded
+      const showFiltersButton = screen.getByRole('button', { name: /show filters/i });
+      expect(showFiltersButton).toBeInTheDocument();
     });
 
     it('has proper button roles', () => {
@@ -566,7 +598,11 @@ describe('EnhancedToolbar', () => {
       const user = userEvent.setup();
       render(<EnhancedToolbar {...defaultProps} />);
       
-      const minFeeInput = screen.getByLabelText(/minimum fee/i);
+      // First expand the filters
+      const showFiltersButton = screen.getByRole('button', { name: /show filters/i });
+      await user.click(showFiltersButton);
+      
+      const minFeeInput = screen.getByLabelText(/min fee/i);
       await user.clear(minFeeInput);
       await user.type(minFeeInput, '-10');
       

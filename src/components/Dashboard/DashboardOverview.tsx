@@ -12,12 +12,14 @@
  * - Real-time updates capability
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import KPIGrid from '../KPICards/KPIGrid';
 import ActivityFeed, { ActivityItem } from '../ActivityFeed/ActivityFeed';
 import { KPIData } from '../KPICards/KPICard';
 import metricsService from '../../services/metricsService';
 import activityService from '../../services/activityService';
+import useRealtimeUpdates from '../../hooks/useRealtimeUpdates';
+import { ConnectionState } from '../../services/realtimeService';
 import './DashboardOverview.css';
 
 interface SystemHealthItem {
@@ -35,6 +37,21 @@ const DashboardOverview: React.FC = () => {
   const [systemHealth, setSystemHealth] = useState<SystemHealthItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [kpiError, setKpiError] = useState<string | null>(null);
+
+  // Real-time updates integration
+  const {
+    connectionState,
+    isConnected,
+    latestKPIUpdate,
+    latestAuditLog,
+    // recentAuditLogs,
+    eventsReceived,
+    connectionUptime
+  } = useRealtimeUpdates({
+    autoConnect: true,
+    enableMockData: true,
+    subscriptions: ['kpi_update', 'audit_log', 'system_status']
+  });
 
   // Initialize dashboard data with real metrics service
   useEffect(() => {
@@ -131,6 +148,58 @@ const DashboardOverview: React.FC = () => {
     }
   };
 
+  // Handle real-time KPI updates
+  const handleRealtimeKPIUpdate = useCallback(() => {
+    if (latestKPIUpdate) {
+      setKpiData(prevKPIs => {
+        return prevKPIs.map(kpi => {
+          if (kpi.id === latestKPIUpdate.kpiId) {
+            return {
+              ...kpi,
+              value: latestKPIUpdate.value,
+              change: {
+                value: Math.abs(latestKPIUpdate.value - latestKPIUpdate.previousValue),
+                type: latestKPIUpdate.value >= latestKPIUpdate.previousValue ? 'increase' : 'decrease',
+                period: '1h'
+              },
+              unit: latestKPIUpdate.unit
+            };
+          }
+          return kpi;
+        });
+      });
+    }
+  }, [latestKPIUpdate]);
+
+  // Handle real-time audit log updates (convert to activity items)
+  const handleRealtimeAuditUpdate = useCallback(() => {
+    if (latestAuditLog) {
+      const newActivity: ActivityItem = {
+        id: latestAuditLog.logEntry.id,
+        timestamp: new Date(latestAuditLog.logEntry.timestamp),
+        action: latestAuditLog.logEntry.action,
+        details: latestAuditLog.logEntry.description || 'Real-time audit update',
+        status: latestAuditLog.logEntry.status as 'success' | 'warning' | 'error' | 'info',
+        userId: latestAuditLog.logEntry.userId,
+        metadata: {
+          resource: latestAuditLog.logEntry.resource,
+          realtime: true
+        }
+      };
+      
+      setRecentActivity(prev => [newActivity, ...prev.slice(0, 9)]);
+    }
+  }, [latestAuditLog]);
+
+  // Apply real-time updates when new data arrives
+  useEffect(() => {
+    handleRealtimeKPIUpdate();
+  }, [handleRealtimeKPIUpdate]);
+
+  useEffect(() => {
+    handleRealtimeAuditUpdate();
+  }, [handleRealtimeAuditUpdate]);
+
   // Handle activity feed load more
   const handleActivityLoadMore = async () => {
     try {
@@ -187,6 +256,28 @@ const DashboardOverview: React.FC = () => {
 
   return (
     <div className="dashboard-overview">
+      {/* Real-time Connection Status */}
+      <div className="realtime-status-bar">
+        <div className="realtime-status">
+          <div className={`connection-indicator connection-indicator--${connectionState}`}>
+            <span className="indicator-dot"></span>
+            <span className="indicator-text">
+              {connectionState === ConnectionState.CONNECTED && 'Live Updates Active'}
+              {connectionState === ConnectionState.CONNECTING && 'Connecting...'}
+              {connectionState === ConnectionState.RECONNECTING && 'Reconnecting...'}
+              {connectionState === ConnectionState.DISCONNECTED && 'Updates Offline'}
+              {connectionState === ConnectionState.ERROR && 'Connection Error'}
+            </span>
+          </div>
+          {isConnected && (
+            <div className="realtime-stats">
+              <span className="stat-item">Uptime: {Math.floor(connectionUptime / 60)}m {connectionUptime % 60}s</span>
+              <span className="stat-item">Events: {eventsReceived}</span>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* KPI Cards Grid */}
       <section className="kpi-section" aria-labelledby="kpi-heading">
         <h2 id="kpi-heading" className="visually-hidden">Key Performance Indicators</h2>

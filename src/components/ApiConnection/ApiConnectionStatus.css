@@ -1,0 +1,223 @@
+/**
+ * API Connection Status Component Styles
+ */
+
+.api-connection-status {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e8eaed;
+  padding: 16px;
+  margin-bottom: 20px;
+  font-family: inherit;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.status-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.status-info {
+  flex: 1;
+}
+
+.status-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: #202124;
+  line-height: 1.4;
+}
+
+.status-time {
+  font-size: 12px;
+  color: #5f6368;
+  margin-top: 2px;
+}
+
+.status-actions {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.test-connection-btn,
+.clear-cache-btn {
+  padding: 6px 12px;
+  border: 1px solid #dadce0;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #202124;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.test-connection-btn:hover:not(:disabled),
+.clear-cache-btn:hover {
+  background: #f8f9fa;
+  border-color: #c4c7c5;
+}
+
+.test-connection-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.test-connection-btn {
+  background: #4285f4;
+  color: white;
+  border-color: #4285f4;
+}
+
+.test-connection-btn:hover:not(:disabled) {
+  background: #3367d6;
+}
+
+/* Status variants */
+.api-status--connected {
+  border-color: #34a853;
+}
+
+.api-status--connected .status-indicator {
+  color: #1e8e3e;
+}
+
+.api-status--error {
+  border-color: #ea4335;
+}
+
+.api-status--error .status-indicator {
+  color: #d33b2c;
+}
+
+.api-status--mock {
+  border-color: #ff9800;
+  background: linear-gradient(135deg, #fff8e1 0%, #ffffff 100%);
+}
+
+.api-status--mock .status-indicator {
+  color: #f57c00;
+}
+
+.api-status--testing {
+  border-color: #4285f4;
+}
+
+.api-status--testing .status-icon {
+  animation: spin 1s linear infinite;
+}
+
+.api-status--unknown {
+  border-color: #9aa0a6;
+}
+
+/* Configuration hint */
+.api-config-hint {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 12px;
+  border-left: 3px solid #ff9800;
+}
+
+.api-config-hint p {
+  font-size: 13px;
+  font-weight: 500;
+  color: #202124;
+  margin: 0 0 8px 0;
+}
+
+.api-config-hint ol {
+  font-size: 12px;
+  color: #5f6368;
+  margin: 0;
+  padding-left: 16px;
+}
+
+.api-config-hint li {
+  margin-bottom: 4px;
+}
+
+.api-config-hint code {
+  background: #e8f0fe;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  color: #1967d2;
+}
+
+/* Error details */
+.api-error-details {
+  background: #fef7f0;
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 12px;
+  border-left: 3px solid #ea4335;
+}
+
+.api-error-details strong {
+  font-size: 13px;
+  color: #d33b2c;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.api-error-details p {
+  font-size: 12px;
+  color: #5f6368;
+  margin: 0 0 8px 0;
+  word-break: break-word;
+}
+
+.api-error-details details {
+  font-size: 12px;
+  color: #5f6368;
+}
+
+.api-error-details summary {
+  cursor: pointer;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.api-error-details ul {
+  margin: 0;
+  padding-left: 16px;
+}
+
+.api-error-details li {
+  margin-bottom: 2px;
+}
+
+/* Animations */
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .status-actions {
+    flex-direction: column;
+  }
+  
+  .test-connection-btn,
+  .clear-cache-btn {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .api-config-hint,
+  .api-error-details {
+    padding: 10px;
+  }
+}

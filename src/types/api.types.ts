@@ -1232,3 +1232,27 @@ export interface AuditTrailExportConfig {
   /** Actions to include */
   actionTypes?: AuditActionType[];
 }
+
+/**
+ * Compliance metrics data structure
+ */
+export interface ComplianceMetrics {
+  /** Medicare compliance percentage */
+  medicareCompliance: number;
+  /** Audit success rate percentage */
+  auditSuccessRate: number;
+  /** Code variance percentage */
+  codeVariance: number;
+  /** Documentation quality score (0-100) */
+  documentationScore: number;
+  /** Compliance trend direction */
+  complianceTrend: 'improving' | 'stable' | 'declining';
+  /** Last compliance audit date */
+  lastAuditDate: string;
+  /** Next scheduled audit date */
+  nextAuditDate: string;
+  /** Number of compliance violations */
+  violationCount: number;
+  /** Risk assessment level */
+  riskLevel: 'low' | 'medium' | 'high' | 'critical';
+}

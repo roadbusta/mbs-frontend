@@ -36,6 +36,112 @@
   100% { transform: rotate(360deg); }
 }
 
+/* Real-time Status Bar */
+.realtime-status-bar {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  padding: 12px 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.realtime-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.connection-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.indicator-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Connection state styles */
+.connection-indicator--connected .indicator-dot {
+  background-color: #10b981;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+  animation: pulse-green 2s infinite;
+}
+
+.connection-indicator--connecting .indicator-dot,
+.connection-indicator--reconnecting .indicator-dot {
+  background-color: #f59e0b;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+  animation: pulse-yellow 1s infinite;
+}
+
+.connection-indicator--disconnected .indicator-dot {
+  background-color: #6b7280;
+}
+
+.connection-indicator--error .indicator-dot {
+  background-color: #ef4444;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+}
+
+.connection-indicator--connected .indicator-text {
+  color: #059669;
+}
+
+.connection-indicator--connecting .indicator-text,
+.connection-indicator--reconnecting .indicator-text {
+  color: #d97706;
+}
+
+.connection-indicator--disconnected .indicator-text {
+  color: #6b7280;
+}
+
+.connection-indicator--error .indicator-text {
+  color: #dc2626;
+}
+
+.realtime-stats {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.stat-item {
+  padding: 2px 8px;
+  background: rgba(148, 163, 184, 0.1);
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+/* Pulse animations */
+@keyframes pulse-green {
+  0%, 100% {
+    box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.1);
+  }
+}
+
+@keyframes pulse-yellow {
+  0%, 100% {
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(245, 158, 11, 0.1);
+  }
+}
+
 /* KPI Section */
 .kpi-section {
   margin-bottom: 32px;

@@ -156,7 +156,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
   const getSelectionStats = () => {
     const selectedCount = selectionState?.selectedCodes?.size || 0;
     const totalFee = selectionState?.totalFee || 0;
-    const hasConflicts = (selectionState?.conflicts?.length || 0) > 0;
+    const hasConflicts = (selectionState?.conflicts?.size || 0) > 0;
     const hasWarnings = (selectionState?.warnings?.length || 0) > 0;
     
     return {
@@ -204,7 +204,7 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
           </div>
           <div className="stat-item">
             <span className="stat-value">
-              {stats.hasConflicts ? `${selectionState?.conflicts?.length || 0} conflict${(selectionState?.conflicts?.length || 0) !== 1 ? 's' : ''}` : 'No conflicts'}
+              {stats.hasConflicts ? `${selectionState?.conflicts?.size || 0} conflict${(selectionState?.conflicts?.size || 0) !== 1 ? 's' : ''}` : 'No conflicts'}
             </span>
           </div>
           <div className="stat-item">
@@ -326,10 +326,12 @@ const SelectionPanel: React.FC<SelectionPanelProps> = ({
                   <h4 className="suggestion-title">
                     {suggestion.type === 'maximize_fee' ? 'Fee Maximization' : 'Conflict Minimization'}
                   </h4>
-                  <p className="suggestion-description">{suggestion.description}</p>
+                  <p className="suggestion-description">
+                    {suggestion.changes.length > 0 ? suggestion.changes[0].reason : 'No details available'}
+                  </p>
                   <div className="suggestion-impact">
                     <span className="impact-label">Potential Impact:</span>
-                    <span className="impact-value">+{formatFee(suggestion.potentialImprovement)}</span>
+                    <span className="impact-value">+{formatFee(suggestion.improvement)}</span>
                   </div>
                 </div>
                 <button

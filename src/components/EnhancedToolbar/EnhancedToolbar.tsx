@@ -259,7 +259,7 @@ const EnhancedToolbar: React.FC<EnhancedToolbarProps> = React.memo(({
         </div>
 
         {/* Quick Actions */}
-        <div className="toolbar-section">
+        <div className="toolbar-section" aria-label="Bulk Operations">
           <button
             type="button"
             className="toolbar-button primary"
@@ -316,7 +316,7 @@ const EnhancedToolbar: React.FC<EnhancedToolbarProps> = React.memo(({
         </div>
 
         {/* Export & History */}
-        <div className="toolbar-section">
+        <div className="toolbar-section" aria-label="Export Options">
           <div className="export-controls">
             <div className="export-group">
               <select
@@ -373,7 +373,7 @@ const EnhancedToolbar: React.FC<EnhancedToolbarProps> = React.memo(({
       {/* Second Row: Filters (collapsible) */}
       {showMoreFilters && (
         <div className="toolbar-row">
-          <div className="toolbar-section">
+          <div className="toolbar-section" aria-label="Quick Filters">
             <span className="section-title">Filters:</span>
           </div>
           

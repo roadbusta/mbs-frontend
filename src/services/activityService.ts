@@ -6,6 +6,7 @@
  */
 
 import { ActivityItem } from '../components/ActivityFeed/ActivityFeed';
+import { apiClient } from './apiClient';
 
 export interface ActivityFilters {
   status?: 'all' | 'success' | 'warning' | 'error' | 'info';
@@ -44,19 +45,28 @@ class ActivityService {
    */
   async getActivities(filters?: ActivityFilters): Promise<ActivityItem[]> {
     try {
-      // In production, this would fetch from your API
-      // const response = await fetch(`${this.baseUrl}/api/activities`, {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(filters)
-      // });
-      // return await response.json();
+      // Try real API first if enabled
+      if (apiClient.isRealApiEnabled) {
+        console.log('🔄 Fetching activity data from real API...');
+        const response = await apiClient.post<{activities: ActivityItem[], pagination?: any}>('/api/activities', filters, {
+          cache: false // Don't cache activities as they change frequently
+        });
 
-      // For now, return filtered mock data
+        if (response.success && response.data?.activities) {
+          console.log('✅ Real activity data loaded successfully');
+          return response.data.activities;
+        } else {
+          console.warn('⚠️ Real API returned invalid activity data, falling back to mock');
+        }
+      }
+
+      // Fallback to mock data (always available)
+      console.log('📊 Using mock activity data');
       return this.getFilteredMockData(filters);
     } catch (error) {
-      console.error('Failed to fetch activities:', error);
-      throw new Error('Failed to load activity data');
+      console.error('❌ Failed to fetch activities:', error);
+      // Graceful degradation - always return mock data on failure
+      return this.getFilteredMockData(filters);
     }
   }
 

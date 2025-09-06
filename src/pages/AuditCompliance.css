@@ -1,0 +1,388 @@
+/**
+ * Audit & Compliance Page Styles
+ * 
+ * Professional healthcare dashboard styling for audit trail and
+ * compliance monitoring interface. Follows medical-grade design patterns.
+ */
+
+.audit-compliance-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  padding: 24px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+/* Page Header */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.header-content {
+  flex: 1;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 8px 0;
+  line-height: 1.2;
+}
+
+.page-subtitle {
+  font-size: 1.125rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.refresh-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.last-updated {
+  font-size: 0.875rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.refresh-button {
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.15);
+}
+
+.refresh-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.25);
+  transform: translateY(-1px);
+}
+
+.refresh-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Section Styles */
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0 0 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.section-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.refresh-interval-select {
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.875rem;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.refresh-interval-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Compliance KPIs Section */
+.compliance-kpis {
+  margin-bottom: 40px;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.compliance-kpi-card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+
+.compliance-kpi-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+/* Audit Section */
+.audit-section {
+  margin-bottom: 40px;
+}
+
+/* Compliance Reports Section */
+.compliance-reports {
+  margin-bottom: 40px;
+}
+
+.reports-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  margin-top: 24px;
+}
+
+.report-card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  padding: 24px;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.report-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+  border-color: #c7d2fe;
+}
+
+.report-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.report-description {
+  font-size: 0.875rem;
+  color: #64748b;
+  line-height: 1.5;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.report-button {
+  border: none;
+  border-radius: 8px;
+  padding: 12px 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.report-button.primary {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  color: white;
+  box-shadow: 0 2px 4px rgba(5, 150, 105, 0.15);
+}
+
+.report-button.primary:hover {
+  background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+  box-shadow: 0 4px 8px rgba(5, 150, 105, 0.25);
+  transform: translateY(-1px);
+}
+
+.report-button.secondary {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  color: #475569;
+  border: 1px solid #cbd5e1;
+}
+
+.report-button.secondary:hover {
+  background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+  transform: translateY(-1px);
+  border-color: #94a3b8;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .audit-compliance-page {
+    padding: 16px;
+  }
+
+  .page-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .page-title {
+    font-size: 2rem;
+  }
+
+  .page-subtitle {
+    font-size: 1rem;
+  }
+
+  .header-actions {
+    justify-content: flex-start;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .kpi-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .reports-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-title {
+    font-size: 1.75rem;
+  }
+
+  .refresh-controls {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .report-card {
+    padding: 20px;
+  }
+}
+
+/* Loading States */
+.audit-compliance-page[data-loading="true"] {
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.audit-compliance-page[data-loading="true"] .refresh-button {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .audit-compliance-page {
+    background: white;
+  }
+
+  .page-header {
+    border-bottom-color: #000;
+  }
+
+  .report-card,
+  .compliance-kpi-card {
+    border-color: #000;
+  }
+
+  .refresh-button {
+    background: #000;
+    color: white;
+  }
+
+  .report-button.secondary {
+    background: white;
+    color: #000;
+    border-color: #000;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .audit-compliance-page {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    color: #f1f5f9;
+  }
+
+  .page-title {
+    color: #f1f5f9;
+  }
+
+  .page-subtitle,
+  .last-updated {
+    color: #94a3b8;
+  }
+
+  .section-title {
+    color: #f1f5f9;
+  }
+
+  .report-card,
+  .compliance-kpi-card {
+    background: #1e293b;
+    border-color: #334155;
+  }
+
+  .report-title {
+    color: #f1f5f9;
+  }
+
+  .report-description {
+    color: #94a3b8;
+  }
+
+  .refresh-interval-select {
+    background: #1e293b;
+    border-color: #334155;
+    color: #f1f5f9;
+  }
+}

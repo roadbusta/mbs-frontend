@@ -5,7 +5,7 @@
  * and selection history for advanced MBS code selection management
  */
 
-import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import {
   SelectionPreset,
   OptimizationSuggestion,
@@ -303,7 +303,7 @@ export function useSelectionOptimization(
     suggestion: OptimizationSuggestion,
     currentSelection: Set<string>
   ) => {
-    let newSelection = new Set(currentSelection);
+    const newSelection = new Set(currentSelection);
 
     suggestion.changes.forEach(change => {
       switch (change.action) {

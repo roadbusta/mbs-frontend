@@ -4,7 +4,7 @@
  * Provides container width based on available space for proper chart scaling
  */
 
-import { useState, useEffect, useRef, RefObject } from 'react';
+import { useState, useEffect, RefObject } from 'react';
 
 interface ContainerDimensions {
   width: number;

@@ -5,8 +5,7 @@
  */
 
 import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent, waitFor, cleanup } from '@testing-library/react';
-import React from 'react';
+import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import MBSCodeCard from './MBSCodeCard';
 import { EnhancedCodeRecommendation, ConflictRule } from '../../types/api.types';
 
@@ -39,13 +38,14 @@ const mockRecommendation: EnhancedCodeRecommendation = {
   }]
 };
 
-const mockConflictingRecommendation: EnhancedCodeRecommendation = {
-  ...mockRecommendation,
-  code: '44',
-  description: 'Level D consultation 60+ minutes',
-  schedule_fee: 105.55,
-  timeRequirement: 60
-};
+// Unused mock - keeping for potential future use
+// const mockConflictingRecommendation: EnhancedCodeRecommendation = {
+//   ...mockRecommendation,
+//   code: '44',
+//   description: 'Level D consultation 60+ minutes',
+//   schedule_fee: 105.55,
+//   timeRequirement: 60
+// };
 
 // Mock props for testing different states
 const mockProps = {

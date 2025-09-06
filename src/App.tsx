@@ -15,6 +15,7 @@
 
 import React from 'react';
 import AppRouter from './AppRouter';
+import SkipLink from './components/SkipLink';
 import './styles/App.css';
 
 /**
@@ -23,6 +24,7 @@ import './styles/App.css';
 const App: React.FC = () => {
   return (
     <div className="app">
+      <SkipLink targetId="main-content" />
       <AppRouter />
     </div>
   );

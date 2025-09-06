@@ -22,47 +22,9 @@ import {
 } from '../types/api.types';
 
 describe('useSelectionPresets', () => {
-  let mockRecommendations: EnhancedCodeRecommendation[];
-
   beforeEach(() => {
     localStorage.clear();
     vi.clearAllMocks();
-
-    mockRecommendations = [
-      {
-        code: '23',
-        description: 'Level A consultation',
-        confidence: 0.9,
-        schedule_fee: 41.20,
-        category: '1',
-        conflicts: [],
-        compatibleWith: ['110'],
-        mbsCategory: 'professional_attendances' as MBSCategory,
-        timeRequirement: 20
-      },
-      {
-        code: '36',
-        description: 'Level C consultation',
-        confidence: 0.8,
-        schedule_fee: 80.55,
-        category: '1',
-        conflicts: [],
-        compatibleWith: ['110'],
-        mbsCategory: 'professional_attendances' as MBSCategory,
-        timeRequirement: 40
-      },
-      {
-        code: '110',
-        description: 'ECG recording',
-        confidence: 0.85,
-        schedule_fee: 19.80,
-        category: '5',
-        conflicts: [],
-        compatibleWith: ['23', '36'],
-        mbsCategory: 'diagnostic_procedures' as MBSCategory,
-        timeRequirement: 10
-      }
-    ];
   });
 
   afterEach(() => {
@@ -239,10 +201,10 @@ describe('useSelectionPresets', () => {
 });
 
 describe('useSelectionComparison', () => {
-  let mockRecommendations: EnhancedCodeRecommendation[];
+  let _mockRecommendations: EnhancedCodeRecommendation[];
 
   beforeEach(() => {
-    mockRecommendations = [
+    _mockRecommendations = [
       {
         code: '23',
         description: 'Level A consultation',
@@ -277,7 +239,7 @@ describe('useSelectionComparison', () => {
   });
 
   it('should provide comparison functionality', () => {
-    const { result } = renderHook(() => useSelectionComparison(mockRecommendations));
+    const { result } = renderHook(() => useSelectionComparison(_mockRecommendations));
 
     expect(result.current).toHaveProperty('compareSelections');
     expect(result.current).toHaveProperty('comparisonResults');
@@ -285,7 +247,7 @@ describe('useSelectionComparison', () => {
   });
 
   it('should compare two selections', () => {
-    const { result } = renderHook(() => useSelectionComparison(mockRecommendations));
+    const { result } = renderHook(() => useSelectionComparison(_mockRecommendations));
 
     const selection1 = new Set(['23', '110']);
     const selection2 = new Set(['36', '110']);
@@ -302,7 +264,7 @@ describe('useSelectionComparison', () => {
   });
 
   it('should identify unique codes in each selection', () => {
-    const { result } = renderHook(() => useSelectionComparison(mockRecommendations));
+    const { result } = renderHook(() => useSelectionComparison(_mockRecommendations));
 
     const selection1 = new Set(['23', '110']);
     const selection2 = new Set(['36', '110']);
@@ -321,7 +283,7 @@ describe('useSelectionComparison', () => {
   it('should calculate conflict differences', () => {
     // Mock recommendations with conflicts
     const conflictedRecommendations = [
-      ...mockRecommendations,
+      ..._mockRecommendations,
       {
         code: '44',
         description: 'Level D consultation',
@@ -357,7 +319,7 @@ describe('useSelectionComparison', () => {
   });
 
   it('should clear comparison results', () => {
-    const { result } = renderHook(() => useSelectionComparison(mockRecommendations));
+    const { result } = renderHook(() => useSelectionComparison(_mockRecommendations));
 
     const selection1 = new Set(['23']);
     const selection2 = new Set(['36']);
@@ -377,10 +339,10 @@ describe('useSelectionComparison', () => {
 });
 
 describe('useSelectionOptimization', () => {
-  let mockRecommendations: EnhancedCodeRecommendation[];
+  let _mockRecommendations: EnhancedCodeRecommendation[];
 
   beforeEach(() => {
-    mockRecommendations = [
+    _mockRecommendations = [
       {
         code: '23',
         description: 'Level A consultation',
@@ -425,7 +387,7 @@ describe('useSelectionOptimization', () => {
   });
 
   it('should provide optimisation functionality', () => {
-    const { result } = renderHook(() => useSelectionOptimization(mockRecommendations));
+    const { result } = renderHook(() => useSelectionOptimization(_mockRecommendations));
 
     expect(result.current).toHaveProperty('generateOptimizationSuggestions');
     expect(result.current).toHaveProperty('optimisationResults');
@@ -434,7 +396,7 @@ describe('useSelectionOptimization', () => {
   });
 
   it('should suggest fee maximization', () => {
-    const { result } = renderHook(() => useSelectionOptimization(mockRecommendations));
+    const { result } = renderHook(() => useSelectionOptimization(_mockRecommendations));
 
     const currentSelection = new Set(['23', '110']); // Total: 61.00
 
@@ -451,7 +413,7 @@ describe('useSelectionOptimization', () => {
   });
 
   it('should suggest upgrade opportunities', () => {
-    const { result } = renderHook(() => useSelectionOptimization(mockRecommendations));
+    const { result } = renderHook(() => useSelectionOptimization(_mockRecommendations));
 
     const currentSelection = new Set(['23']); // Level A consultation
 
@@ -469,7 +431,7 @@ describe('useSelectionOptimization', () => {
   });
 
   it('should suggest compatible code additions', () => {
-    const { result } = renderHook(() => useSelectionOptimization(mockRecommendations));
+    const { result } = renderHook(() => useSelectionOptimization(_mockRecommendations));
 
     const currentSelection = new Set(['23']); // Only consultation
 
@@ -489,7 +451,7 @@ describe('useSelectionOptimization', () => {
   it('should suggest conflict minimization', () => {
     // Create recommendations with conflicts
     const conflictedRecommendations = [
-      ...mockRecommendations,
+      ..._mockRecommendations,
       {
         code: '44',
         description: 'Level D consultation',
@@ -529,7 +491,7 @@ describe('useSelectionOptimization', () => {
   it('should apply optimisation suggestions', () => {
     const mockOnSelectionChange = vi.fn();
     const { result } = renderHook(() => 
-      useSelectionOptimization(mockRecommendations, mockOnSelectionChange)
+      useSelectionOptimization(_mockRecommendations, mockOnSelectionChange)
     );
 
     const suggestion: OptimizationSuggestion = {
@@ -558,7 +520,7 @@ describe('useSelectionOptimization', () => {
   });
 
   it('should clear optimisation results', () => {
-    const { result } = renderHook(() => useSelectionOptimization(mockRecommendations));
+    const { result } = renderHook(() => useSelectionOptimization(_mockRecommendations));
 
     const currentSelection = new Set(['23']);
 

@@ -1,0 +1,415 @@
+/**
+ * Export Button Component Styles
+ * 
+ * Comprehensive styling for export functionality with professional design,
+ * progress indicators, and responsive dropdown menu.
+ */
+
+/* Container */
+.export-button-container {
+  position: relative;
+  display: inline-block;
+}
+
+/* Main Export Button */
+.export-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Button Variants */
+.export-button--primary {
+  background: linear-gradient(135deg, #4285f4 0%, #3367d6 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(66, 133, 244, 0.3);
+}
+
+.export-button--primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #3367d6 0%, #2951a3 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(66, 133, 244, 0.4);
+}
+
+.export-button--secondary {
+  background: linear-gradient(135deg, #5f6368 0%, #4a4d52 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(95, 99, 104, 0.3);
+}
+
+.export-button--secondary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #4a4d52 0%, #3c4043 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(95, 99, 104, 0.4);
+}
+
+.export-button--outline {
+  background: transparent;
+  color: #4285f4;
+  border: 2px solid #4285f4;
+  box-shadow: none;
+}
+
+.export-button--outline:hover:not(:disabled) {
+  background: #4285f4;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
+}
+
+/* Button Sizes */
+.export-button--small {
+  padding: 8px 16px;
+  font-size: 12px;
+  gap: 6px;
+}
+
+.export-button--medium {
+  padding: 12px 20px;
+  font-size: 14px;
+  gap: 8px;
+}
+
+.export-button--large {
+  padding: 16px 28px;
+  font-size: 16px;
+  gap: 10px;
+}
+
+/* Disabled State */
+.export-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Icons */
+.export-icon {
+  font-size: 1.2em;
+  line-height: 1;
+}
+
+.dropdown-arrow {
+  font-size: 0.8em;
+  transition: transform 0.2s ease;
+}
+
+.export-button[aria-expanded="true"] .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+/* Loading Spinner */
+.export-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid transparent;
+  border-top: 2px solid currentColor;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Dropdown Menu */
+.export-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.export-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  min-width: 280px;
+  background: white;
+  border: 1px solid #dadce0;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  overflow: hidden;
+  animation: dropdownFadeIn 0.2s ease;
+}
+
+@keyframes dropdownFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.export-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 16px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  text-align: left;
+}
+
+.export-dropdown-item:hover {
+  background: #f8f9fa;
+}
+
+.export-dropdown-item:focus {
+  outline: 2px solid #4285f4;
+  outline-offset: -2px;
+  background: #f1f3f4;
+}
+
+.format-icon {
+  font-size: 24px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.format-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.format-name {
+  font-weight: 500;
+  color: #202124;
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.format-description {
+  font-size: 12px;
+  color: #5f6368;
+  line-height: 1.3;
+}
+
+/* Progress Indicator */
+.export-progress {
+  margin-top: 12px;
+  text-align: center;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 4px;
+  background: #e8eaed;
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4285f4, #34a853);
+  border-radius: 2px;
+  animation: progressSlide 2s ease-in-out infinite;
+}
+
+@keyframes progressSlide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.progress-text {
+  font-size: 12px;
+  color: #5f6368;
+  line-height: 1.4;
+}
+
+.progress-text small {
+  font-size: 10px;
+  opacity: 0.8;
+}
+
+/* Error State */
+.export-error {
+  margin-top: 8px;
+  padding: 12px;
+  background: #fef7f0;
+  border: 1px solid #fcc02e;
+  border-radius: 8px;
+  color: #b05000;
+  font-size: 12px;
+  line-height: 1.4;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.error-icon {
+  flex-shrink: 0;
+  font-size: 16px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .export-dropdown-menu {
+    min-width: 260px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  .export-button--medium {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+  
+  .export-dropdown-item {
+    padding: 12px;
+  }
+  
+  .format-icon {
+    font-size: 20px;
+  }
+  
+  .format-name {
+    font-size: 13px;
+  }
+  
+  .format-description {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .export-button {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .export-dropdown-menu {
+    left: 0;
+    right: 0;
+    transform: none;
+    min-width: auto;
+  }
+  
+  .export-button--small {
+    padding: 8px 12px;
+    font-size: 11px;
+  }
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .export-button--primary {
+    background: #000;
+    border: 2px solid #000;
+  }
+  
+  .export-button--outline {
+    border-width: 3px;
+    font-weight: 600;
+  }
+  
+  .export-dropdown-menu {
+    border-width: 2px;
+    border-color: #000;
+  }
+  
+  .export-dropdown-item:hover {
+    background: #f0f0f0;
+  }
+  
+  .format-name {
+    font-weight: 600;
+    color: #000;
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .export-button,
+  .export-dropdown-item,
+  .dropdown-arrow,
+  .progress-fill {
+    transition: none;
+    animation: none;
+  }
+  
+  .export-button:hover:not(:disabled) {
+    transform: none;
+  }
+  
+  .export-dropdown-menu {
+    animation: none;
+  }
+  
+  .export-spinner {
+    animation: none;
+    border: 2px solid currentColor;
+    border-top: 2px solid transparent;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .export-button-container {
+    display: none;
+  }
+}
+
+/* Focus Styles */
+.export-button:focus-visible {
+  outline: 2px solid #4285f4;
+  outline-offset: 2px;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .export-dropdown-menu {
+    background: #2d2e30;
+    border-color: #5f6368;
+    color: #e8eaed;
+  }
+  
+  .export-dropdown-item:hover {
+    background: #3c4043;
+  }
+  
+  .format-name {
+    color: #e8eaed;
+  }
+  
+  .format-description {
+    color: #9aa0a6;
+  }
+  
+  .progress-bar {
+    background: #5f6368;
+  }
+  
+  .export-error {
+    background: #3c2e26;
+    border-color: #d4a843;
+    color: #f9ab00;
+  }
+}

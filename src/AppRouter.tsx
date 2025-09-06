@@ -18,20 +18,8 @@ import DashboardLayout from './components/Dashboard/DashboardLayout';
 import DashboardOverview from './components/Dashboard/DashboardOverview';
 import ConsultationAnalysis from './pages/ConsultationAnalysis';
 import PerformanceAnalytics from './pages/PerformanceAnalytics';
-
-const AuditPage: React.FC = () => (
-  <div style={{ padding: '40px', textAlign: 'center' }}>
-    <h1>Audit & Compliance</h1>
-    <p>Audit dashboard will be implemented in Phase 4</p>
-  </div>
-);
-
-const SettingsPage: React.FC = () => (
-  <div style={{ padding: '40px', textAlign: 'center' }}>
-    <h1>Settings</h1>
-    <p>Settings page will be implemented in Phase 6</p>
-  </div>
-);
+import AuditCompliance from './pages/AuditCompliance';
+import Settings from './pages/Settings';
 
 const AppRouter: React.FC = () => {
   return (
@@ -52,13 +40,13 @@ const AppRouter: React.FC = () => {
         
         <Route path="/audit" element={
           <DashboardLayout pageTitle="Audit & Compliance">
-            <AuditPage />
+            <AuditCompliance />
           </DashboardLayout>
         } />
         
         <Route path="/settings" element={
           <DashboardLayout pageTitle="Settings">
-            <SettingsPage />
+            <Settings />
           </DashboardLayout>
         } />
 

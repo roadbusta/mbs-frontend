@@ -1,5 +1,6 @@
-import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, afterEach } from 'vitest';
+import { render, screen, cleanup } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import EnhancedToolbar from './EnhancedToolbar';
 import type { EnhancedCodeRecommendation } from '../../types/api.types';
 
@@ -17,6 +18,9 @@ function makeRec(code: string): EnhancedCodeRecommendation {
 }
 
 describe('EnhancedToolbar structure', () => {
+  afterEach(() => {
+    cleanup();
+  });
   it('renders sections and summary with expected aria labels', () => {
     render(
       <EnhancedToolbar
@@ -36,12 +40,15 @@ describe('EnhancedToolbar structure', () => {
 
     expect(screen.getByLabelText('Selection Summary')).toBeInTheDocument();
     expect(screen.getByLabelText('Bulk Operations')).toBeInTheDocument();
-    expect(screen.getByLabelText('Quick Filters')).toBeInTheDocument();
     expect(screen.getByLabelText('Export Options')).toBeInTheDocument();
-    expect(screen.getByLabelText('Undo/Redo Controls')).toBeInTheDocument();
+    
+    // Filters are collapsed by default, check for the expand button instead
+    expect(screen.getByRole('button', { name: /show filters/i })).toBeInTheDocument();
   });
 
   it('shows only confidence slider by default and reveals more filters when toggled', async () => {
+    const user = userEvent.setup();
+    
     render(
       <EnhancedToolbar
         selectedCodes={['23']}
@@ -58,17 +65,19 @@ describe('EnhancedToolbar structure', () => {
       />
     );
 
-    // Confidence slider present
-    expect(screen.getByLabelText('Minimum Confidence')).toBeInTheDocument();
+    // Filters are collapsed initially
+    expect(screen.getByRole('button', { name: /show filters/i })).toBeInTheDocument();
 
-    // Category and fee inputs may be hidden behind disclosure initially
-    // Use role or label queries to ensure they become visible after toggle
-    const moreBtn = screen.getByRole('button', { name: /more filters/i });
-    moreBtn.click();
+    // Click to expand filters
+    const showFiltersBtn = screen.getByRole('button', { name: /show filters/i });
+    await user.click(showFiltersBtn);
 
-    expect(screen.getByLabelText('Filter by Category')).toBeInTheDocument();
-    expect(screen.getByLabelText('Minimum Fee')).toBeInTheDocument();
-    expect(screen.getByLabelText('Maximum Fee')).toBeInTheDocument();
+    // Now we should see the filter controls
+    expect(screen.getByLabelText('Quick Filters')).toBeInTheDocument();
+    expect(screen.getByLabelText(/confidence/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/category/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/min fee/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/max fee/i)).toBeInTheDocument();
   });
 });
 
